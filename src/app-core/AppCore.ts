@@ -69,9 +69,9 @@ export class HistoryRecord {
 // Singleton (used only by mobile side)
 let theApp:any;
 let theFrame:any;
-export function setTheApp(app:any, frame:any) {
+export function setTheApp(app:any, frame?:any) {
     theApp = app;
-    theFrame = frame;
+    theFrame = frame
     // console.log('app and frame set', theApp, theFrame)
 }
 export function getTheApp() {
@@ -110,7 +110,6 @@ export class AppCore {
         this.componentGate = new Promise(resolve => {
             this.componentGateResolver = resolve
         })
-
     }
     /**
      * get the model used for binding to the UI.
@@ -123,6 +122,17 @@ export class AppCore {
     }
     public get MainApi() {
         return mainApi
+    }
+
+    // Used by mobile
+    // alternative access as a static on AppCore rather than having to export / import
+    public static getTheApp() {
+        return getTheApp()
+    }
+    // Used by mobile
+    // alternative access as a static on AppCore rather than having to export / import
+    public static setTheApp(app:any, frame:any) {
+        return setTheApp(app, frame)
     }
 
     public waitForModel() {
