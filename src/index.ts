@@ -174,3 +174,13 @@ export const Log = {
     exception(...a:any) {console.error(...a)}
 }
 
+import {AppCore} from './app-core/AppCore'
+import {MenuItem, MenuApi} from "./application/MenuApi";
+import {setupMenu} from "./application/MenuDef";
+import {PathUtils} from "./application/PathUtils";
+
+export {AppCore as AppCore}
+export {MenuItem as MenuItem}
+export {MenuApi as MenuApi}
+export {setupMenu as setupMenu}
+export {PathUtils as PathUtils}

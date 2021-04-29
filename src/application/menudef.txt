@@ -1,0 +1,92 @@
+DEFINE RESOURCE PATH "resources"
+DEFINE MENU "main"
+@Dm#APP!ThunderBolt         // App menu - name of app (mac only)
+    @Dm#APP_ABOUT,About ThunderBolt
+    @Dm#APP_CHECKUPDATE,Check for Update
+    @Dm#--                                      // special notation for separator
+    @Dm#APP_SERVICES:services,Services          // customary on Mac
+    @Dm#--                                      // special notation for separator
+    @Dm#APP_HIDE:hide,Hide                      // customary on Mac
+    @Dm#APP_HIDEOTHERS:hideothers,Hide Others   // customary on Mac
+    @Dm#APP_UNHIDE:unhide,Show All              // customary on Mac
+    @Dm#--                                      // special notation for separator
+    @Dm#APP_QUIT:quit,Quit                      // customary on Mac
+
+#FILE:fileMenu!File                 // file menu (desktop)
+    #FILE_NEW,New...
+    #FILE_OPEN,Open...
+    @m#FILE_CLOSE:close, Close       // on mac, close the current app window, don't quit app
+    @wuai#FILE_QUIT:quit, Quit       // all others, close and quit
+
+#EDIT!Edit                 // edit menu
+    #EDIT_UNDO:undo,Undo
+    #EDIT_REDO:redo,Redo
+    #--
+    #EDIT_CUT:cut,Cut
+    #EDIT_COPY:copy,Copy
+    #EDIT_PASTE:paste,Paste
+    @m#EDIT_PASTEMATCH:pasteAndMatchStyle,Paste and Match Style
+    @m>>SPEECH!Speech                               // Customary on mac only
+        @m#SPEECH_STARTSPEECH:startSpeaking,Start Speaking
+        @m#SPEECH_STOPSPEECH:stopSpeaking,Stop Speaking
+    @m<<
+    #EDIT_DELETE:delete,Delete
+    #EDIT_SELECTALL:selectall,Select All
+
+#OPTIONS!Options
+#FOO,Foo<icon=/Users/sohmert/tbd/sniff/app/images/socicons/heartType/0_smile.png>
+#BAR,Bar<tooltip=Now is the time>
+#BAZ,Baz
+>>OPTIONS!Options
+#OPTION_1,One
+#OPTION_2,Two
+#OPTION_3,Three
+<<
+>>TEST!Test
+#TEST_NEWITEM,Add Item
+#TEST_DISABLE,Disable Items
+#TEST_ENABLE,Enable Items<disabled,checked>[CmdOrCtrl+Shift+E]
+<<
+
+#Tests!Tests
+>>LAYOUT,Layout Tests
+#VERTICAL_STACK,Vertical Stack[V]
+#HORIZONTAL_STACK,Horizontal Stack[H]
+#VERTICAL_STACK_ALIGNED,Vertical, with alignments[Alt+V]
+#HORIZONTAL_STACK_ALIGNED,Horizontal, with alignments[Alt+H]
+// #NESTED_STACK,Nested Stacks
+#--
+#VERTICAL_FLEX,Vertical Flex
+#HORIZONTAL_FLEX,Horizontal Flex
+#NESTED_FLEX,Nested Flex
+#--
+#GRID_1,Grid Example One
+#GRID_2,Grid Example Two
+#GRID_3,Grid Example Three
+<<
+
+
+@D#VIEW:viewMenu!View
+    #VIEW_RELOAD:reload,Reload
+    #VIEW_FORCERELOAD:forceReload,Force Reload
+    #VIEW_TOGGLEDEVTOOLS:toggleDevTools,Toggle developer tools
+    #VIEW_TOGGLEFULLSCREEN:togglefullscreen,Toggle full screen
+    #VIEW_RESETZOOM:resetZoom,Actual Size
+    #VIEW_ZOOMIN:zoomIn,Zoom in
+    #VIEW_ZOOMOut:zoomOut,Zoom out
+
+@D#WINDOW:windowMenu!Window
+
+@D#HELP:help!Help
+
+DEFINE TOOLBAR "main"
+#TB1, 1<state=on,icon=whatever.png,icon:active=active.png,icon:disabled=disabled.png>[CmdOrCtrl+Shift+Alt+1]
+#TB2, 2<class=myclassyclassclass,icon=whatever.png,icon:active=active.png,icon:disabled=disabled.png,state=bliss>[CmdOrCtrl+Shift+Alt+2]
+#TB3, 3<type=Example,tooltip=Far Out>[CmdOrCtrl+Shift+Alt+3]
+#TB4, 4<disabled>[CmdOrCtrl+Shift+Alt+4]
+
+DEFINE INDICATORS "main"
+#IN1, A<state=on>
+#IN2, B<class=myclassyclassclass>
+#IN3, C<type=Example,tooltip=Cooliomente,state=on>
+#IN4, D<state=foobar,icon:foobar=foobar.png>
