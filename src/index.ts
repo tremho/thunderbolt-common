@@ -8,6 +8,16 @@
 let electronApp:any, BrowserWindow:any, preloadPath:string, AppGateway:any, ipcMain:any
 let nscore:any, nativescriptApp:any
 
+
+console.log('wiring for mobile app handoff')
+try {
+    let {ComponentBase} = require('thunderbolt-mobile')
+    let {AppCore} = require('./app-core/AppCore')
+    ComponentBase.bridgeAppGetter(AppCore.getTheApp)
+} catch(e) {
+    console.error('app handoff fails because', e.message)
+}
+
 let frameworkContext:any
 
 function injectDesktopDependencies(injected:any) {
@@ -179,6 +189,7 @@ export function registerApp(injected:any, backApp:TBBackApp) : void {
         new AppGateway(ipcMain)  // wire up front and back
         console.log('Launching Electron App\n')
     } else {
+
         console.log('Launching Nativescript App\n')
     }
     frameworkContext = new FrameworkBackContext(backApp) // the constructor takes it away

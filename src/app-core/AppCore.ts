@@ -72,9 +72,10 @@ let theFrame:any;
 export function setTheApp(app:any, frame?:any) {
     theApp = app;
     theFrame = frame
-    // console.log('app and frame set', theApp, theFrame)
+    console.log('$$$$$$$$$$$ app and frame set', theApp, theFrame)
 }
 export function getTheApp() {
+    console.log('$$$$$$$$$$$ get app and frame', theApp, theFrame)
     return theApp
 }
 
@@ -500,7 +501,9 @@ export class AppCore {
      */
     public startPageLogic(id:string, activity:any, context?:object) {
         activity.activityId = id;
+        console.log('>>>>>>>>>>>> setting activity', activity)
         this.currentActivity = activity;
+        console.log('About to start activity ', this.currentActivity)
 
         if(!check.mobile) {
 
