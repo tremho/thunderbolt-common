@@ -72,10 +72,10 @@ let theFrame:any;
 export function setTheApp(app:any, frame?:any) {
     theApp = app;
     theFrame = frame
-    console.log('$$$$$$$$$$$ app and frame set', theApp, theFrame)
+    // console.log('$$$$$$$$$$$ app and frame set', theApp, theFrame)
 }
 export function getTheApp() {
-    console.log('$$$$$$$$$$$ get app and frame', theApp, theFrame)
+    // console.log('$$$$$$$$$$$ get app and frame', theApp, theFrame)
     return theApp
 }
 
@@ -185,7 +185,7 @@ export class AppCore {
                     const pathSetters = getRemoteSetters()
                     pathSetters.setCurrentWorkingDirectory(info.cwd)
                     let jp = this.Path.join(info.cwd, '..')
-                    console.log('$$$$$$$$ userAndPath DB:', jp)
+                    // console.log('$$$$$$$$ userAndPath DB:', jp)
                     pathSetters.setAppPath(this.Path.normalize(this.Path.join(info.cwd, '..')))
                     pathSetters.setHomeDirectory(info.home)
                     const env = this.model.getAtPath('environment')
@@ -223,7 +223,6 @@ export class AppCore {
     setupMenu(menuPath:string) {
         let menuData
         if(check.mobile) {
-            console.warn('please ignore warnings about Assets folder')
             let menuDataPath = nsfs.path.join(nsfs.knownFolders.currentApp().path, 'assets', menuPath)
             let file = nsfs.File.fromPath(menuDataPath)
             menuData = file.readTextSync((err:any) => {
@@ -236,7 +235,7 @@ export class AppCore {
             } catch(e) {}
         }
 
-        console.log('menu data', menuData)
+        // console.log('menu data', menuData)
         return setupMenu(this, menuData)
     }
 
@@ -358,7 +357,7 @@ export class AppCore {
 
         // set the page in the model.  For Riot, this forces the page to change on update
         // for mobile, we need to do that through native navigation, but we still want the model to be the same
-        console.log('$$$$$$$$$$ navigate to page '+pageId)
+        // console.log('$$$$$$$$$$ navigate to page '+pageId)
         const navInfo = this.model.getAtPath('page.navInfo')
         let prevPageId = navInfo.pageId
         let prevContext = navInfo.context
@@ -380,14 +379,14 @@ export class AppCore {
         if(check.mobile) {
             let pageref = '~/pages/' + pageId + '-page'
 
-            console.log('>>>>> mobile pageref', pageref)
+            // console.log('>>>>> mobile pageref', pageref)
 
             const navigationEntry = {
                 moduleName: pageref,
                 backstackVisible: !skipHistory
             };
-            console.log('>>> the frame', theFrame)
-            console.log('>>> navigation Entry', navigationEntry)
+            // console.log('>>> the frame', theFrame)
+            // console.log('>>> navigation Entry', navigationEntry)
 
             theFrame && theFrame.navigate(navigationEntry)
 
@@ -407,7 +406,7 @@ export class AppCore {
                 throw Error('No exported activity for '+ pageId)
             }
             activity.context = context;
-            console.log('$$$$ Starting page', pageId)
+            // console.log('$$$$ Starting page', pageId)
             this.startPageLogic(pageId, activity, context)
 
         }
@@ -420,7 +419,7 @@ export class AppCore {
      * @param activity
      */
     launchActivity(pageId:string, activity:any) {
-        console.log('$$$$ Starting page', pageId)
+        // console.log('$$$$ Starting page', pageId)
         this.startPageLogic(pageId, activity, reservedContext)
         reservedContext = null
     }
@@ -501,9 +500,9 @@ export class AppCore {
      */
     public startPageLogic(id:string, activity:any, context?:object) {
         activity.activityId = id;
-        console.log('>>>>>>>>>>>> setting activity', activity)
+        // console.log('>>>>>>>>>>>> setting activity', activity)
         this.currentActivity = activity;
-        console.log('About to start activity ', this.currentActivity)
+        // console.log('About to start activity ', this.currentActivity)
 
         if(!check.mobile) {
 

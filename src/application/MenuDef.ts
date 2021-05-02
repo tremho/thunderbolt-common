@@ -294,7 +294,7 @@ function commuteToModel(app:AppCore) {
 
 function processToolLine(line:string) {
     line = line.trim()
-    console.log('tool line', line)
+    // console.log('tool line', line)
     let target = ''
     let id = ''
     let label = ''
@@ -411,9 +411,9 @@ function processToolLine(line:string) {
 }
 
 function processIndicatorLine(line:string) {
-    console.log('indicator line', line)
+    // console.log('indicator line', line)
     line = line.trim()
-    console.log('tool line', line)
+    // console.log('tool line', line)
     let target = ''
     let id = ''
     let label = ''

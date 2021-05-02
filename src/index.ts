@@ -9,11 +9,12 @@ let electronApp:any, BrowserWindow:any, preloadPath:string, AppGateway:any, ipcM
 let nscore:any, nativescriptApp:any
 
 
-console.log('wiring for mobile app handoff')
+// console.log('wiring for mobile app handoff')
 try {
     let {ComponentBase} = require('thunderbolt-mobile')
+    let comCommon = require('./app-core/ComCommon')
     let {AppCore} = require('./app-core/AppCore')
-    ComponentBase.bridgeAppGetter(AppCore.getTheApp)
+    ComponentBase.bridgeAppGetter(AppCore.getTheApp, comCommon)
 } catch(e) {
     console.error('app handoff fails because', e.message)
 }
@@ -195,7 +196,7 @@ export function registerApp(injected:any, backApp:TBBackApp) : void {
     frameworkContext = new FrameworkBackContext(backApp) // the constructor takes it away
 }
 export function registerFrontApp(frontApp:TBFrontApp) : void {
-    console.log('front app being registered')
+    // console.log('front app being registered')
     frameworkContext.setFrontApp(frontApp)
 }
 export const Log = {
