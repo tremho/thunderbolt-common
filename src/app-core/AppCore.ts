@@ -388,6 +388,7 @@ export class AppCore {
             // console.log('>>> the frame', theFrame)
             // console.log('>>> navigation Entry', navigationEntry)
 
+            reservedContext = context // pass via this variable
             theFrame && theFrame.navigate(navigationEntry)
 
             // apparently, we can pass a function instead of a navigationEntry to construct a Page
@@ -414,12 +415,23 @@ export class AppCore {
     }
 
     /**
+     * Called by mobile page-launch wrapper (onLoaded) to set up bindings
+     * This does basically what the navigateToPage code does in the second part for desktop
+     */
+    setPageBindings(pageId:string, activity:any, pageMethods:object) {
+
+        const bindMe:any = {pageMethods}
+        bindMe.navInfo = {
+            pageId,
+            context: reservedContext
+        }
+        return bindMe
+    }
+    /**
      * Called by mobile page-launch wrapper (onNavigatedTo) to invoke the page logic (activity)
      * This does basically what the navigateToPage code does in the second part for desktop
-     * @param activity
      */
     launchActivity(pageId:string, activity:any) {
-        // console.log('$$$$ Starting page', pageId)
         this.startPageLogic(pageId, activity, reservedContext)
         reservedContext = null
     }
@@ -500,6 +512,7 @@ export class AppCore {
      */
     public startPageLogic(id:string, activity:any, context?:object) {
         activity.activityId = id;
+        activity.context = context;
         // console.log('>>>>>>>>>>>> setting activity', activity)
         this.currentActivity = activity;
         // console.log('About to start activity ', this.currentActivity)
