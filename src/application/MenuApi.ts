@@ -97,7 +97,7 @@ export class MenuApi {
         if(this.limitTarget(item, "Desktop")) {
             item.children = kidclone
             this.limitChildren(item, "Desktop")
-            this.app.MainApi && this.app.MainApi.addMenuItem(menuId, item, position)
+            this.app.ExtMenuApi && this.app.ExtMenuApi.addMenuItem(menuId, item, position)
         }
 
         // update the full model
@@ -221,7 +221,7 @@ export class MenuApi {
         // update the full model
         this.model.setAtPath('menu.'+menuName, topModel, true)
 
-        this.app.MainApi && this.app.MainApi && this.app.MainApi.deleteMenuItem(menuId, itemId)
+        this.app.ExtMenuApi && this.app.ExtMenuApi && this.app.ExtMenuApi.deleteMenuItem(menuId, itemId)
 
     }
 
@@ -255,7 +255,7 @@ export class MenuApi {
         // update the full model
         this.model.setAtPath('menu.'+menuName, topModel, true)
 
-        this.app.MainApi && this.app.MainApi.changeMenuItem(menuId, itemId, updatedItem)
+        this.app.ExtMenuApi && this.app.ExtMenuApi.changeMenuItem(menuId, itemId, updatedItem)
 
     }
 
@@ -282,7 +282,7 @@ export class MenuApi {
         // update the full model
         this.model.setAtPath('menu.'+menuName, topModel, true)
 
-        this.app.MainApi && this.app.MainApi.enableMenuItem(menuId, itemId, enabled)
+        this.app.ExtMenuApi && this.app.ExtMenuApi.enableMenuItem(menuId, itemId, enabled)
     }
 
     /**
@@ -306,7 +306,7 @@ export class MenuApi {
         // update the full model
         this.model.setAtPath('menu.'+menuName, topModel, true)
 
-        this.app.MainApi && this.app.MainApi.clearMenu(menuId)
+        this.app.ExtMenuApi && this.app.ExtMenuApi.clearMenu(menuId)
     }
 
     addToolbarItems(name:string, items:ToolItem[]) {

@@ -455,16 +455,21 @@ export class ComCommon extends NotCommon{
 
         // walk up from here until we lose parentage (page scope)
         // and gather the bind directives
-        const directives = []
-        let directive
+        const directives:string[] = []
+        let directiveSet
         while (scopeComp) {
-            directive = this.getComponentAttribute(scopeComp, 'bind')
-            if (directive) directives.push(directive)
+            directiveSet = this.getComponentAttribute(scopeComp, 'bind')
+            if(directiveSet) {
+                let statements = directiveSet.split(',')
+                statements.forEach(statement => {
+                    directives.push(statement.trim())
+                })
+            }
             scopeComp = this.getComponentParent(scopeComp)
         }
         // Now process all the directives that affect us
         for (let i = 0; i < directives.length; i++) {
-            directive = directives[i]
+            let directive = directives[i]
             // create a property in the local observable the markup implementation looks at
             let {section, prop, alias} = this.comBinder.deconstructBindStatement(directive)
             let startValue = (check.mobile && component.get(alias)) || this.model.getAtPath(section + '.' + prop)

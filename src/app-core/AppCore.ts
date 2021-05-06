@@ -16,9 +16,11 @@ import {StringParser} from '../general/StringParser'
 
 let nsfs:any
 let Imr:any
+let mainApiNS:any
 if(check.mobile) {
     try {
         nsfs = require('@nativescript/core/file-system')
+        mainApiNS = require('thunderbolt-mobile').mainApi
     } catch (e) {
     }
 } else {
@@ -51,7 +53,7 @@ function writeMessage(subject:string, message:string) {
     imrSingleton.write(subject, message)
 }
 const gwindow:any = typeof window !== 'undefined' ? window : {}
-const mainApi = check.mobile ? null : gwindow.api;
+const mainApi = check.mobile ? mainApiNS : gwindow.api;
 
 export class EventData {
     public app:AppCore|undefined
@@ -125,6 +127,14 @@ export class AppCore {
         return mainApi
     }
 
+    public get ExtMenuApi() {
+        return (mainApi && typeof mainApi.addMenuItem === 'function') ? mainApi : null
+    }
+
+    public isMobile():boolean {
+        return check.mobile
+    }
+
     // Used by mobile
     // alternative access as a static on AppCore rather than having to export / import
     public static getTheApp() {
@@ -181,22 +191,24 @@ export class AppCore {
                 imrSingleton.subscribe((msgArray:string[]) => {
                     this.model.setAtPath('infoMessage.messages', msgArray)
                 })
-                mainApi.getUserAndPathInfo().then((info:any) => {
-                    const pathSetters = getRemoteSetters()
-                    pathSetters.setCurrentWorkingDirectory(info.cwd)
-                    let jp = this.Path.join(info.cwd, '..')
-                    // console.log('$$$$$$$$ userAndPath DB:', jp)
-                    pathSetters.setAppPath(this.Path.normalize(this.Path.join(info.cwd, '..')))
-                    pathSetters.setHomeDirectory(info.home)
-                    const env = this.model.getAtPath('environment')
-                    const plat = env.platform.name === 'win32' ? 'win32' : 'posix'
-                    pathSetters.setPlatform(plat)
-                })
             })
-        } else {
-            // todo: use path setters to set our runtime specifics for mobile
-
         }
+        mainApi.getUserAndPathInfo().then((info:any) => {
+            const pathSetters = getRemoteSetters()
+            pathSetters.setCurrentWorkingDirectory(info.cwd)
+            // let jp = this.Path.join(info.cwd, '..')
+            // console.log('$$$$$$$$ userAndPath DB:', jp)
+            if(check.mobile) {
+                pathSetters.setAppPath(this.Path.normalize(this.Path.join(info.cwd, '..')))
+            } else {
+                pathSetters.setAppPath(info.cwd)
+            }
+            pathSetters.setHomeDirectory(info.home)
+            const env = this.model.getAtPath('environment')
+            const plat = env.platform.name === 'win32' ? 'win32' : 'posix'
+            pathSetters.setPlatform(plat)
+        })
+
         this.model.addSection('page', {navInfo: {pageId: '', context: {}}})
 
 
@@ -474,22 +486,24 @@ export class AppCore {
 
         let curActivityId = this.currentActivity && this.currentActivity.activityId
 
-        const pageComp = curActivityId && findPageComponent(curActivityId)
-        if(pageComp && pageComp.comBinder) {
-            pageComp.comBinder.applyComponentBindings(pageComp, 'page-data.' + fullPageName, (component:any, name:string, value:any, updateAlways:boolean) => {
-                // Handle the update to the component itself
-                // console.log('updating page')
-                if (check.riot) {
-                    try {
-                        component.bound.data = value
-                        component.update()
-                    } catch (e) {
+        if(!check.mobile) {
+            const pageComp = curActivityId && findPageComponent(curActivityId)
+            if (pageComp && pageComp.comBinder) {
+                pageComp.comBinder.applyComponentBindings(pageComp, 'page-data.' + fullPageName, (component: any, name: string, value: any, updateAlways: boolean) => {
+                    // Handle the update to the component itself
+                    // console.log('updating page')
+                    if (check.riot) {
+                        try {
+                            component.bound.data = value
+                            component.update()
+                        } catch (e) {
+                        }
+                    } else {
+                        component.bound.set(name, value)
                     }
-                } else {
-                    component.bound.set(name, value)
-                }
-            })
-            pageComp.reset()
+                })
+                pageComp.reset()
+            }
         }
 
     }
