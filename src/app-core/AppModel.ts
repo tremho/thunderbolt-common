@@ -218,7 +218,7 @@ export class AppModel {
      * @throws {ModelPathError} if the section path does not exist
      * @throws {TypeError} if `force` is not true, and new value changes the type, or if the property does not exist.
      */
-    setAtPath(path:string, value:any, force?:boolean) {
+    setAtPath(path:string, value:any, force?:boolean, noAnnounce = false) {
         const propObj = this.accessSection(path)
         const prop = path.substring(path.lastIndexOf('.')+1)
         if(!force) {
@@ -229,8 +229,12 @@ export class AppModel {
                 throw e
             }
         }
-        // @ts-ignore
-        propObj[prop] = value;
+        if(noAnnounce) {
+            Object.defineProperty(propObj, prop, {value})
+        } else {
+            // @ts-ignore
+            propObj[prop] = value;
+        }
     }
 }
 

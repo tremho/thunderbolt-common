@@ -478,10 +478,10 @@ export class AppCore {
             const pages = this.model.addSection('page-data', pgs)
         }
         if(typeof item === 'object') {
-            this.model.setAtPath('page-data.'+fullPageName, item)
+            this.model.setAtPath('page-data.'+fullPageName, item, false, true)
         } else {
             data[item] = value
-            this.model.setAtPath('page-data.'+fullPageName, data )
+            this.model.setAtPath('page-data.'+fullPageName, data, false, true)
         }
 
         let curActivityId = this.currentActivity && this.currentActivity.activityId
@@ -508,6 +508,11 @@ export class AppCore {
 
     }
 
+    public updatePage(pageName:string) {
+        const data = this.getPageData(pageName)
+        this.model.setAtPath('page-data.' + pageName, data)
+
+    }
 
     /**
      * Returns the data object for the named page, if one exists
