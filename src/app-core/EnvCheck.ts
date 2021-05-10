@@ -18,10 +18,19 @@ try {
 } catch(e) {
 }
 
-// the 'global' object is named in Node, but not native script
+// console.log(`\n-----------> Environment Recognize <-----------\n`)
+// console.log('nsplatform ', typeof nsplatform)
+
+// global is named in {N} and in Node...
 if (typeof global === 'object') {
+    // console.log('----> Detected global object <-----')
     const lookGlobal:any = global;
-    if (typeof lookGlobal.android === 'object' || typeof lookGlobal.ios === 'object') {
+    // console.log('----> Detected global object <-----', lookGlobal)
+    if (
+        (typeof lookGlobal.android === 'object' || typeof lookGlobal.ios === 'object')
+        || (lookGlobal.isAndroid || lookGlobal.isIos)
+        || (typeof nsplatform === 'object') // not the best option, but since the other 'sure things' seem to fail...
+       ) {
         if(!lookGlobal.__snapshot) console.log('{N} detected, version ' + lookGlobal.__runtimeVersion)
         environment.framework.nativeScript = lookGlobal.__runtimeVersion
         delete environment.framework.riot
@@ -37,7 +46,10 @@ if (typeof global === 'object') {
             console.log('NODE detected on a ' + environment.platform.name + ' system, version '+ environment.platform.version)
         }
     }
+// } else {
+//     console.log('----> No Detection of global object <-----')
 }
+// console.log('================================\n')
 
 class Check {
     public get riot() {
