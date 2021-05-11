@@ -631,6 +631,12 @@ export class AppCore {
     setToolState(toolId:string, state:string) {
         this.model.setAtPath('toolbar-'+toolId+'.state', state || 'default')
     }
+    getIndicatorState(indId:string):string {
+        return this.model.getAtPath('indicator-'+indId+".state") || 'default'
+    }
+    setIndicatorState(indId:string, state:string) {
+        this.model.setAtPath('indicator-'+indId+'.state', state || 'default')
+    }
 
 }
 
