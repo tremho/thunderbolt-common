@@ -625,6 +625,13 @@ export class AppCore {
         // return callExtensionApi(moduleName, functionName, args)
     }
 
+    getToolState(toolId:string):string {
+        return this.model.getAtPath('toolbar-'+toolId+".state") || 'default'
+    }
+    setToolState(toolId:string, state:string) {
+        this.model.setAtPath('toolbar-'+toolId+'.state', state || 'default')
+    }
+
 }
 
 // as it is from ComCommon
