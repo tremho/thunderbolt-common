@@ -79,6 +79,11 @@ export class FrameworkBackContext {
         } else {
             // nativescript
             this.backApp.appStart(this).then(() => {
+                // Potential TODO:
+                // this.nativescriptApp.on("orientationChanged", (arg:any) => {
+                //     console.log('application orientation changed', arg)
+                // })
+
                 this.nativescriptApp.run({moduleName: 'app-root'})
             })
 
