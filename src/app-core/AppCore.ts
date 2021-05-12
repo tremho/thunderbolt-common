@@ -10,6 +10,7 @@ import {MenuApi} from "../application/MenuApi";
 import {PathUtils, getRemoteSetters} from '../application/PathUtils'
 
 import {StringParser} from '../general/StringParser'
+import {ToolExtension} from "../extension/ToolExtension";
 
 // TODO: make a mobile equivalent
 // import {callExtensionApi} from "./ BackExtensionsFront";
@@ -38,10 +39,8 @@ if(!check.mobile) {
     } catch(e) {}
 }
 
-// TODO: dynamically build this mapping with a config or an enumerating tool.extension
-import {ExampleIndicator} from "../extension/ExampleIndicator"
+// tool Extensions are mapped into this
 const extensionTypes = {
-    Example: ExampleIndicator
 }
 
 let imrSingleton:any
@@ -636,6 +635,11 @@ export class AppCore {
     }
     setIndicatorState(indId:string, state:string) {
         this.model.setAtPath('indicator-'+indId+'.state', state || 'default')
+    }
+
+    registerToolExtension(name:string, extension:ToolExtension) {
+        // @ts-ignore
+        extensionTypes[name] = extension
     }
 
 }

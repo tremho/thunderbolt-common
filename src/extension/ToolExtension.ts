@@ -1,11 +1,16 @@
 
+class CompInfo {
+    info: any
+    component:any
+}
+
 export class ToolExtension {
 
     /**
      * When component is first mounted into layout, not yet rendered.
      * @param component
      */
-    onSetToPage(component:any) {
+    onSetToPage(compInfo:CompInfo) {
         // console.log('onSetToPage', component)
     }
 
@@ -14,7 +19,7 @@ export class ToolExtension {
      * @param component
      * @param state
      */
-    onStateChange(component:any, state:object|null|undefined) {
+    onStateChange(compInfo:CompInfo, state:string|undefined) {
         // console.log('onStateChange', component, state)
 
     }
@@ -25,7 +30,7 @@ export class ToolExtension {
      * @param component
      * @return {boolean} return true to prevent propagation / click handling
      */
-    onPress(component:any) {
+    onPress(compInfo:CompInfo) {
         // console.log('onPress', component)
     }
 
@@ -34,7 +39,7 @@ export class ToolExtension {
      * (mouseup or touch release)
      * @param component
      */
-    onRelease(component:any) {
+    onRelease(compInfo:CompInfo) {
         // console.log('onRelease', component)
 
     }

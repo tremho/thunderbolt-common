@@ -16,7 +16,9 @@ try {
     let {AppCore} = require('./app-core/AppCore')
     ComponentBase.bridgeAppGetter(AppCore.getTheApp, comCommon)
 } catch(e) {
-    console.error('app handoff fails because', e.message)
+    if(typeof window === 'undefined') {
+        console.error('app handoff fails because', e.message)
+    }
 }
 
 let frameworkContext:any
@@ -217,9 +219,11 @@ import {AppCore} from './app-core/AppCore'
 import {MenuItem, MenuApi} from "./application/MenuApi";
 import {setupMenu} from "./application/MenuDef";
 import {PathUtils} from "./application/PathUtils";
+import {ToolExtension} from "./extension/ToolExtension";
 
 export {AppCore as AppCore}
 export {MenuItem as MenuItem}
 export {MenuApi as MenuApi}
 export {setupMenu as setupMenu}
 export {PathUtils as PathUtils}
+export {ToolExtension as ToolExtension}
