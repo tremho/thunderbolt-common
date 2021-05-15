@@ -236,11 +236,11 @@ export class AppCore {
         } else {
             let platClass
             if(environment.platform.name === 'darwin') {
-                platClass = '.macos'
+                platClass = 'macos'
             } else if(environment.platform.name === 'win32') {
-                platClass = '.windows'
+                platClass = 'windows'
             } else {
-                platClass = '.linux'
+                platClass = 'linux'
             }
             document.body.classList.add(platClass)
         }
