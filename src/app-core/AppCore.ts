@@ -11,16 +11,21 @@ import {PathUtils, getRemoteSetters} from '../application/PathUtils'
 
 import {StringParser} from '../general/StringParser'
 import {ToolExtension} from "../extension/ToolExtension";
+import {platform} from "os";
 
 // TODO: make a mobile equivalent
 // import {callExtensionApi} from "./ BackExtensionsFront";
 
 let nsfs:any
+let nsplatform:any
+let nsscreen:any
 let Imr:any
 let mainApiNS:any
 if(check.mobile) {
     try {
         nsfs = require('@nativescript/core/file-system')
+        nsplatform = require('@nativescript/core/platform')
+        nsscreen = require('@nativescript/core/screen')
         mainApiNS = require('thunderbolt-mobile').mainApi
     } catch (e) {
     }
@@ -180,7 +185,16 @@ export class AppCore {
                         if (!env.screen) env.screen = {}
                         env.screen.width = evData[0]
                         env.screen.height = evData[1]
-                        this.model.setAtPath('environment', env)
+                        const window = {width:0, height:0}
+                        if(check.riot) {
+                          const bodSize = document.body.getBoundingClientRect()
+                          window.width = bodSize.width
+                          window.height = bodSize.height
+                        } else {
+                            console.warn("TODO: GET SIZE FROM FRAME")
+                        }
+                        this.model.setAtPath('environment.screen', env.screen)
+                        this.model.setAtPath('environment.window', window, true)
                     }
                     if(evName === 'menuAction') {
                         this.onMenuAction({id:evData})
@@ -213,6 +227,25 @@ export class AppCore {
 
         // Set environment items
         // this will allow us to do platform branching and so on
+
+        if(check.mobile) {
+            // ns already sets .ns-phone and .ns-tablet, plus .ns-portrait/.ns-landscape
+            // as well as .ns-ios and .ns-android,
+            // so I don't think there's much more needed
+            // and if there is, we should do it when we set the frame
+        } else {
+            let platClass
+            if(environment.platform.name === 'darwin') {
+                platClass = '.macos'
+            } else if(environment.platform.name === 'win32') {
+                platClass = '.windows'
+            } else {
+                platClass = '.linux'
+            }
+            document.body.classList.add(platClass)
+        }
+
+
         this.model.addSection('environment', environment)
 
         // Set up app models and menus

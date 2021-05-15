@@ -106,12 +106,11 @@ export class FrameworkBackContext {
                 }
             })
 
-            // send eindow events via ipc
+            // send window events via ipc
             mainWindow.on('resize', (e: any) => {
                 const size = mainWindow.getSize()
-                // console.log('electron sees resize ', size)
+                console.log('electron sees resize ', size)
                 AppGateway.sendMessage('EV', {subject: 'resize', data: size})
-
             })
 
             // and load the index.html of the app.
