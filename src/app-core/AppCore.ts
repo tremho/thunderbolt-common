@@ -25,9 +25,12 @@ if(check.mobile) {
     try {
         nsfs = require('@nativescript/core/file-system')
         nsplatform = require('@nativescript/core/platform')
-        nsscreen = require('@nativescript/core/screen')
+        let {Screen} = require('@nativescript/core')
+        nsscreen = Screen
         mainApiNS = require('thunderbolt-mobile').mainApi
+        console.log('Successfully loaded all Nativescript Imports')
     } catch (e) {
+        console.error('OOPS! -- Shit went sideways', e)
     }
 } else {
     Imr = require('./InfoMessageRecorder')
