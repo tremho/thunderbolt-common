@@ -11,9 +11,13 @@ let nscore:any, nativescriptApp:any
 
 // console.log('wiring for mobile app handoff')
 try {
+    console.log('getting ComponentBase...')
     let {ComponentBase} = require('thunderbolt-mobile')
+    console.log('getting comCommon...')
     let comCommon = require('./app-core/ComCommon')
+    console.log('getting AppCore...')
     let {AppCore} = require('./app-core/AppCore')
+    console.log('bridgeing App Getter...')
     ComponentBase.bridgeAppGetter(AppCore.getTheApp, comCommon)
 } catch(e) {
     if(typeof window === 'undefined') {

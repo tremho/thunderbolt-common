@@ -23,7 +23,7 @@ try {
 }
 
 // console.log(`\n-----------> Environment Recognize <-----------\n`)
-// console.log('nsplatform ', typeof nsplatform)
+// console.log('nsplatform ', nsplatform)
 
 // global is named in {N} and in Node...
 if (typeof global === 'object') {
@@ -43,13 +43,14 @@ if (typeof global === 'object') {
         environment.platform = {
             name: nsplatform ? nsplatform.device.os.toLowerCase() : 'nativescript',
             version: nsplatform ? nsplatform.device.osVersion : environment.framework.nativeScript,
-            deviceType: nsplatform.device.deviceType,
-            model: nsplatform.device.model,
-            language: nsplatform.device.language,
-            manufacturer: nsplatform.device.manufacturer,
-            region:nsplatform.device.region,
-            apiVersion:nsplatform.device.sdkVersion,
-            uuid: nsplatform.device.uuid // will be different on each re-install. (at least for ios)
+            deviceType: nsplatform && nsplatform.device.deviceType,
+            model: nsplatform && nsplatform.device.model,
+            language: nsplatform && nsplatform.device.language,
+            manufacturer: nsplatform && nsplatform.device.manufacturer,
+            region:nsplatform && nsplatform.device.region,
+            apiVersion:nsplatform && nsplatform.device.sdkVersion
+            // app will crash if we try to get uuid here. not sure why.
+            // uuid: nsplatform && nsplatform.device.uuid // will be different on each re-install. (at least for ios)
         }
     } else {
         if (typeof global.process === 'object') {
@@ -69,7 +70,8 @@ if (typeof global === 'object') {
 // } else {
 //     console.log('----> No Detection of global object <-----')
 }
-// console.log('================================\n')
+console.log('=======environment======\n', environment)
+console.log('================================\n')
 
 class Check {
     public get riot() {
