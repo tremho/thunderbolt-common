@@ -519,6 +519,7 @@ export class ComCommon extends NotCommon{
             const view = lb[0]
             const name = lb[1]
             const viewProp = lb[2]
+            console.log('applying local bind', view, name, viewProp)
             view.bindingContext = component.bound
             view.bind({sourceProperty: name, targetProperty: viewProp})
         }
