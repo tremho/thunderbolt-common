@@ -2,7 +2,7 @@
 
 // import {check} from "./EnvCheck";
 
-const extAccess = (window as any).extAccess
+let extAccess:any
 
 let nextId = 1
 
@@ -14,6 +14,7 @@ class Responder {
 
     constructor() {
         this.id = nextId++
+        extAccess = (window as any).extAccess
         this.promise = new Promise((resolve, reject) => {
             this.resolve = resolve;
             this.reject = reject;
@@ -38,8 +39,10 @@ export function callExtensionApi(moduleName:string, functionName:string, args:an
 
     const ipcRenderer = /* check.mobile ? null :*/ (window as any).ipcRenderer;
 
+
     const responder = new Responder()
     const id = responder.id
+    console.log('calling extApi', moduleName, functionName, id, args)
     ipcRenderer.send('extApi', {moduleName, functionName, id, args})
     return responder.promise
 }

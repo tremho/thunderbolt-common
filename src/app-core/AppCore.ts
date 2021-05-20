@@ -14,7 +14,8 @@ import {ToolExtension} from "../extension/ToolExtension";
 import {platform} from "os";
 
 // TODO: make a mobile equivalent
-// import {callExtensionApi} from "./ BackExtensionsFront";
+let callExtensionApi: any
+import * as BEF from "./ BackExtensionsFront";
 
 let nsfs:any
 let nsplatform:any
@@ -28,12 +29,14 @@ if(check.mobile) {
         let {Screen} = require('@nativescript/core')
         nsscreen = Screen
         mainApiNS = require('thunderbolt-mobile').mainApi
+        callExtensionApi = require('thunderbolt-mobile').callExtensionApi
         console.log('Successfully loaded all Nativescript Imports')
     } catch (e) {
         console.error('OOPS! -- Shit went sideways', e)
     }
 } else {
     Imr = require('./InfoMessageRecorder')
+    callExtensionApi = BEF.callExtensionApi
 }
 
 let riot, ComBinder
@@ -669,8 +672,7 @@ export class AppCore {
 
     // extensions
     callExtension(moduleName:string, functionName:string, ...args:any) {
-        // TODO: need mobile equivalent
-        // return callExtensionApi(moduleName, functionName, args)
+        return callExtensionApi(moduleName, functionName, args)
     }
 
     getToolState(toolId:string):string {

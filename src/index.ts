@@ -6,7 +6,7 @@
 */
 
 let electronApp:any, BrowserWindow:any, preloadPath:string, AppGateway:any, ipcMain:any
-let nscore:any, nativescriptApp:any
+let nscore:any, nativescriptApp:any, registerExtensionModule:any
 
 
 // console.log('wiring for mobile app handoff')
@@ -35,6 +35,7 @@ function injectDesktopDependencies(injected:any) {
         ipcMain = injected.ipcMain
         nscore = injected.nscore
         nativescriptApp = injected.nativescriptApp
+        registerExtensionModule = injected.registerExtensionModule
 }
 
 /**
@@ -135,8 +136,8 @@ export class FrameworkBackContext {
     }
 
     registerExtensionModule(name:string, module:any) {
-        console.log('TODO: registerExtensionModule(name, module)')
-        // registerExtensionModule(name, module)
+        // console.log('TODO: registerExtensionModule(name, module)', registerExtensionModule)
+        registerExtensionModule(name, module)
     }
 
 }
