@@ -11,7 +11,8 @@ import {PathUtils, getRemoteSetters} from '../application/PathUtils'
 
 import {StringParser} from '../general/StringParser'
 import {ToolExtension} from "../extension/ToolExtension";
-import {platform} from "os";
+
+import {ResizeSensor} from "css-element-queries";
 
 // TODO: make a mobile equivalent
 let callExtensionApi: any
@@ -196,11 +197,8 @@ export class AppCore {
                           const bodSize = document.body.getBoundingClientRect()
                           window.width = bodSize.width
                           window.height = bodSize.height
-                        } else {
-                            console.warn("TODO: GET SIZE FROM FRAME")
                         }
                         this.model.setAtPath('environment.screen', env.screen)
-                        this.model.setAtPath('environment.window', window, true)
                     }
                     if(evName === 'menuAction') {
                         this.onMenuAction({id:evData})
@@ -227,6 +225,21 @@ export class AppCore {
             const plat = env.platform.name === 'win32' ? 'win32' : 'posix'
             pathSetters.setPlatform(plat)
         })
+
+        if(!check.mobile) {
+            console.log('##### Setting up resize checker -----------')
+            const window = {width:0, height:0}
+            // let resizeInterval = setInterval(() => {
+            let resizeChecker = new ResizeSensor(document.body, () =>{
+                const bodSize = document.body.getBoundingClientRect()
+                if (window.width != bodSize.width || window.height !== bodSize.height) {
+                    window.width = bodSize.width
+                    window.height = bodSize.height
+                    // console.log('see a body resize event', window)
+                    this.model.setAtPath('environment.window', window, true)
+                }
+            })
+        }
 
         this.model.addSection('page', {navInfo: {pageId: '', context: {}}})
 
@@ -447,11 +460,11 @@ export class AppCore {
             // Function needs to build full page including the layout stack and any event handlers.
             // not sure what effect this has on back history, since there's nothing passed for that.
 
-            console.log('------------------')
-            console.log(' -- Looking at Frame classes')
-            console.log('className', theFrame.className)
-            console.log('cssClasses', theFrame.cssClasses)
-            console.log('------------------')
+            // console.log('------------------')
+            // console.log(' -- Looking at Frame classes')
+            // console.log('className', theFrame.className)
+            // console.log('cssClasses', theFrame.cssClasses)
+            // console.log('------------------')
 
 
         } else {
@@ -459,11 +472,11 @@ export class AppCore {
             if(!pageComponent) {
                 throw Error('No page component for '+ pageId)
             }
-            console.log('------------------')
-            console.log(' -- Looking at body classes')
-            console.log('className', document.body.className)
-            console.log('classList', document.body.classList)
-            console.log('------------------')
+            // console.log('------------------')
+            // console.log(' -- Looking at body classes')
+            // console.log('className', document.body.className)
+            // console.log('classList', document.body.classList)
+            // console.log('------------------')
 
             const activity = pageComponent.activity;
             if(!activity) {

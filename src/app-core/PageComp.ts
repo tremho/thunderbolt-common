@@ -26,10 +26,11 @@ export default {
         console.log(this.root.tagName, 'onBeforeUpdate', props, state)
         // @ts-ignore
         this.bound.data = cm.getApp().getPageData(this.root.tagName.toLowerCase())
-        // @ts-ignore
-        if(this.root.tagName.toLowerCase() === 'file-test-page') {
-            // console.log('app path at page level = ', this.bound.data.appPath)
-        }
+        // let ord = 0
+        // let c:any;
+        // while((c = cm.getComponentChild(this,'', ++ord))) {
+        //     c.update()
+        // }
     },
     onUpdated(props:object|null, state:object|null|undefined) {
         // @ts-ignore

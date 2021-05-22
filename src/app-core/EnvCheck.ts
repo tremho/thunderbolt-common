@@ -17,8 +17,8 @@ try {
 }
 try {
     nsplatform = require('@nativescript/core/platform')
-    nsdevice = require('@nativescript/core/device')
-    nsscreen = require('@nativescript/core/screen')
+    nsdevice = nsplatform.device
+    nsscreen = require('@nativescript/core').Screen
 } catch(e) {
 }
 

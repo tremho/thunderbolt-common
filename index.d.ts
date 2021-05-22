@@ -5,4 +5,10 @@ declare module "thunderbolt-common" {
     }
     function registerApp(targetPlatform:object, backApp:TBBackApp) : void
     class ToolExtension {}
+    class AppCore {
+        static getTheApp():any;
+        static setTheApp(app:any, frame?:any);
+    }
 }
+
+declare module "add-resize-listener"

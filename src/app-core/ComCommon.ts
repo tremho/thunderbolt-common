@@ -42,7 +42,7 @@ export class ComCommon extends NotCommon{
     constructor(arg:any)
     {
         super(arg)
-        arg.b = this.evalBinding
+        arg.b = this.evalBinding.bind(this)
         this.fits = []
         this.fitNum = 0;
         this._app = this.getApp()
@@ -118,7 +118,9 @@ export class ComCommon extends NotCommon{
 
     public evalBinding(name:string) {
         const segs = name.split('.')
-        let v = this.bound || {}
+        //@ts-ignore
+        const comp = this.riot || this.rootComponent
+        let v = comp.bound || {} // per component
         let seg
         while(seg = segs.shift()) {
             // @ts-ignore
@@ -383,18 +385,22 @@ export class ComCommon extends NotCommon{
      * @param {object} props properties with values to set
      * @param {object} defaults defaults to use if props not specified
      */
-    setCommonProps(el:HTMLElement, props:{width?:string, height?:string, background?:string, backgroundColor?:string}, defaults?:{width?:string, height?:string, background?:string, backgroundColor?:string}) {
+    setCommonProps(el:HTMLElement, props:{id?:string, width?:string, height?:string, background?:string, backgroundColor?:string}, defaults?:{id?:string, width?:string, height?:string, background?:string, backgroundColor?:string}) {
         if(check.mobile) {
             throw Error('Not Implemented: ComCommon.setCommonProps')
         }
         if(!defaults) defaults = {
-            width: '100%',
-            height: '100%'
+            width: 'inherit',
+            height: 'inherit',
+            background: 'inherit',
+            backgroundColor: 'inherit'
         }
+        let id:any = (props.id || defaults.id)
         let width:any = (props.width || defaults.width)
         let height:any = (props.height || defaults.height)
         if(typeof width === 'number') width = width + 'px'
         if(typeof height === 'number') height = height + 'px'
+        el.id = id;
         el.style.width = width;
         el.style.height = height;
         el.style.background = props.background || defaults.background || ''
