@@ -189,6 +189,21 @@ export class ComCommon extends NotCommon{
         return null; // not found.
     }
 
+    getPageComponent() {
+        // @ts-ignore
+        let comp = this.riot
+        if(!comp) return; // just riot for now
+        let par = this.getComponentParent(comp)
+        while(par) {
+            let taglc = par.root.tagName.toLowerCase()
+            if(taglc.substring(taglc.length-5) === '-page') {
+                return par
+            }
+            par = this.getComponentParent(par)
+        }
+        return null;
+    }
+
     /**
      * returns the component that is the child of the given component of the given tag,
      * optionally the given ordinal occurrence.
