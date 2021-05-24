@@ -170,11 +170,30 @@ export class ComCommon extends NotCommon{
      */
     getComponentParent(comp:any, tag?:string):any {
         if(!comp) return null;
+        const ocomp = comp
         if(check.riot) {
             tag = (tag && tag.toUpperCase())
             while (comp) {
                 comp = this.getComponent(comp.root.parentElement)
                 if (!tag || comp.root.tagName === tag) {
+                    // This looks like a hack, but it's actually needed because
+                    // we can have an out-of scope and unmounted cond-sect that is not attached to a parent
+                    // any longer, so it's dom may be invalid.  This finds such cases and declares "that's all folks" instead.
+                    if(ocomp.root.tagName === 'COND-SECT') {
+                        const pel = comp.root
+                        const kids = pel.children
+                        let found = false;
+                        for (let i = 0; i < kids.length; i++) {
+                            if (kids[i] === ocomp.root) {
+                                found = true;
+                                break;  // parent is valid
+                            }
+                        }
+                        if (!found) {
+                            // console.warn('Incorrect parentage')
+                            return null // no parent, stop any further searching.
+                        }
+                    }
                     return comp;
                 }
             }
