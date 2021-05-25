@@ -10,8 +10,8 @@ declare module "thunderbolt-common" {
         static setTheApp(app:any, frame?:any);
     }
     class MenuItem {
-        public label:string = ''
-        public id:string = ''
+        public label:string
+        public id:string
         public role?:string // parsed and used for desktop (per Electron)
         public type?:string // submenu, separator, checkbox, radio; set to model
         public targetCode?:string // used to apply to different platforms

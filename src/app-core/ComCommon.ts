@@ -419,26 +419,94 @@ export class ComCommon extends NotCommon{
      * @param {object} props properties with values to set
      * @param {object} defaults defaults to use if props not specified
      */
-    setCommonProps(el:HTMLElement, props:{id?:string, width?:string, height?:string, background?:string, backgroundColor?:string}, defaults?:{id?:string, width?:string, height?:string, background?:string, backgroundColor?:string}) {
+    setCommonProps(el:HTMLElement, props:any, defaults?:any) {
         if(check.mobile) {
             throw Error('Not Implemented: ComCommon.setCommonProps')
         }
-        if(!defaults) defaults = {
-            width: 'inherit',
-            height: 'inherit',
-            background: 'inherit',
-            backgroundColor: 'inherit'
+
+        // Check for special handling for alignment (via flex)
+        const comp = this.getComponent(el)
+        let container = this.getComponentParent(comp)
+        const taglc = container.root.tagName.toLowerCase()
+        let flexChild = (taglc === 'stack-layout' || taglc === 'flex-layout')
+        let stretchHeight
+        if(flexChild) {
+            if(this.getComponentAttribute(container, 'orientation') === 'horizontal') {
+                stretchHeight = this.getComponentAttribute(container, 'height')
+            }
         }
+
+        if(!defaults) defaults = {}
         let id:any = (props.id || defaults.id)
+        let padding:any = (props.padding || defaults.padding)
+        let margin:any = (props.margin || defaults.margin)
+        let paddingTop:any = (props.paddingTop || defaults.paddingTop)
+        let paddingRight:any = (props.paddingRight || defaults.paddingRight)
+        let paddingBottom:any = (props.paddingBottom || defaults.paddingBottom)
+        let paddingLeft:any = (props.paddingLeft || defaults.paddingLeft)
+        let marginTop:any = (props.marginTop || defaults.marginTop)
+        let marginRight:any = (props.marginRight || defaults.marginRight)
+        let marginBottom:any = (props.marginBottom || defaults.marginBottom)
+        let marginLeft:any = (props.marginLeft || defaults.marginLeft)
         let width:any = (props.width || defaults.width)
         let height:any = (props.height || defaults.height)
+        let align:any = (props.align || props.alignment|| props.alignSelf)
+        if(''+Number(width) === width) width = Number(width)
+        if(''+Number(height) === height) height = Number(height)
+        if(''+Number(padding) === padding) padding = Number(padding)
+        if(''+Number(paddingTop) === paddingTop) paddingTop = Number(paddingTop)
+        if(''+Number(paddingRight) === paddingRight) paddingRight = Number(paddingRight)
+        if(''+Number(paddingBottom) === paddingBottom) paddingBottom = Number(paddingBottom)
+        if(''+Number(paddingLeft) === paddingLeft) paddingLeft = Number(paddingLeft)
+        if(''+Number(margin) === margin) margin = Number(margin)
+        if(''+Number(marginTop) === marginTop) marginTop = Number(marginTop)
+        if(''+Number(marginRight) === marginRight) marginRight = Number(marginRight)
+        if(''+Number(marginBottom) === marginBottom) marginBottom = Number(marginBottom)
+        if(''+Number(marginLeft) === marginLeft) marginLeft = Number(marginLeft)
+        
+        if(typeof padding === 'number') padding = padding + 'px'
+        if(typeof paddingTop === 'number') paddingTop = paddingTop + 'px'
+        if(typeof paddingRight === 'number') paddingRight = paddingRight + 'px'
+        if(typeof paddingBottom === 'number') paddingBottom = paddingBottom + 'px'
+        if(typeof paddingLeft === 'number') paddingLeft = paddingLeft + 'px'
+
+        if(typeof margin === 'number') margin = margin + 'px'
+        if(typeof marginTop === 'number') marginTop = marginTop + 'px'
+        if(typeof marginRight === 'number') marginRight = marginRight + 'px'
+        if(typeof marginBottom === 'number') marginBottom = marginBottom + 'px'
+        if(typeof marginLeft === 'number') marginLeft = marginLeft + 'px'
+
         if(typeof width === 'number') width = width + 'px'
         if(typeof height === 'number') height = height + 'px'
-        el.id = id;
-        el.style.width = width;
-        el.style.height = height;
+        if(id) el.id = id;
+        if(align === 'left' || align === 'top') align = 'flex-start'
+        if(align === 'right' || align === 'bottom') align = 'flex-end'
+        if(align === 'middle') align = 'center'
+        if(align === 'stretch' && stretchHeight) {
+            el.style.height = stretchHeight
+        }
+        if(el.parentElement && flexChild) {
+            el.parentElement.style.alignSelf = align
+            el.parentElement.style.width = width;
+            el.parentElement.style.height = height;
+        } else {
+            el.style.width = width;
+            el.style.height = height;
+        }
+        el.style.padding = padding
+        el.style.paddingTop = paddingTop
+        el.style.paddingRight = paddingRight
+        el.style.paddingBottom = paddingBottom
+        el.style.paddingLeft = paddingLeft
+        el.style.margin = margin
+        el.style.marginTop = marginTop
+        el.style.marginRight = marginRight
+        el.style.marginBottom = marginBottom
+        el.style.marginLeft = marginLeft
+
+        el.style.color = props.color || defaults.color || undefined
         el.style.background = props.background || defaults.background || ''
-        el.style.backgroundColor = props.backgroundColor || defaults.backgroundColor || ''
+        el.style.backgroundColor = props.backgroundColor  || props.backgroundcolor || defaults.backgroundColor || ''
     }
 
     /**
