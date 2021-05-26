@@ -508,6 +508,67 @@ export class ComCommon extends NotCommon{
         el.style.background = props.background || defaults.background || ''
         el.style.backgroundColor = props.backgroundColor  || props.backgroundcolor || defaults.backgroundColor || ''
     }
+    
+    setCommonPropsMobile(component:any, defaults:any) {
+
+        // Check for the container we are in
+        let container = this.getComponentParent(component)
+        let alignable = container.constructor.name.toLowerCase() === 'stacklayout'
+        let isHorizontal = this.getComponentAttribute(container, 'orientation')
+
+
+        if(!defaults) defaults = {}
+        let id:any = (this.getComponentAttribute(component, 'id') || defaults.id)
+        let padding:any = (this.getComponentAttribute(component, 'padding') || defaults.padding)
+        let margin:any = (this.getComponentAttribute(component, 'margin') || defaults.margin)
+        let paddingTop:any = (this.getComponentAttribute(component, 'paddingTop') || defaults.paddingTop)
+        let paddingRight:any = (this.getComponentAttribute(component, 'paddingRight') || defaults.paddingRight)
+        let paddingBottom:any = (this.getComponentAttribute(component, 'paddingBottom') || defaults.paddingBottom)
+        let paddingLeft:any = (this.getComponentAttribute(component, 'paddingLeft') || defaults.paddingLeft)
+        let marginTop:any = (this.getComponentAttribute(component, 'marginTop') || defaults.marginTop)
+        let marginRight:any = (this.getComponentAttribute(component, 'marginRight') || defaults.marginRight)
+        let marginBottom:any = (this.getComponentAttribute(component, 'marginBottom') || defaults.marginBottom)
+        let marginLeft:any = (this.getComponentAttribute(component, 'marginLeft') || defaults.marginLeft)
+        let width:any = (this.getComponentAttribute(component, 'width') || defaults.width)
+        let height:any = (this.getComponentAttribute(component, 'height') || defaults.height)
+        let align:any = (this.getComponentAttribute(component, 'alignment') 
+            || this.getComponentAttribute(component, 'align')
+            || this.getComponentAttribute(component, 'align-self')
+            || this.getComponentAttribute(component, 'horizontal-alignment')
+            || this.getComponentAttribute(component, 'vertical-alignment'))
+        if(''+Number(width) === width) width = Number(width)
+        if(''+Number(height) === height) height = Number(height)
+        if(''+Number(padding) === padding) padding = Number(padding)
+        if(''+Number(paddingTop) === paddingTop) paddingTop = Number(paddingTop)
+        if(''+Number(paddingRight) === paddingRight) paddingRight = Number(paddingRight)
+        if(''+Number(paddingBottom) === paddingBottom) paddingBottom = Number(paddingBottom)
+        if(''+Number(paddingLeft) === paddingLeft) paddingLeft = Number(paddingLeft)
+        if(''+Number(margin) === margin) margin = Number(margin)
+        if(''+Number(marginTop) === marginTop) marginTop = Number(marginTop)
+        if(''+Number(marginRight) === marginRight) marginRight = Number(marginRight)
+        if(''+Number(marginBottom) === marginBottom) marginBottom = Number(marginBottom)
+        if(''+Number(marginLeft) === marginLeft) marginLeft = Number(marginLeft)
+
+        if(alignable) {
+            let prop = isHorizontal ? 'vertical-alignment' : 'horizontal-alignment'
+            component.set(prop, align)
+        }        
+        
+        component.set('padding', padding)
+        component.set('paddingTop', paddingTop)
+        component.set('paddingRight', paddingRight)
+        component.set('paddingBottom', paddingBottom)
+        component.set('paddingLeft', paddingLeft)
+        component.set('margin', margin)
+        component.set('marginTop', marginTop)
+        component.set('marginRight', marginRight)
+        component.set('marginBottom', marginBottom)
+        component.set('marginLeft', marginLeft)
+
+        component.set('color', component.get('color') || defaults.color || '')
+        component.set('background', component.get('background') || defaults.background || '')
+        component.set('backgroundColor', component.get('backgroundColor') || defaults.backgroundColor || '')
+    }
 
     /**
      * Applies a 'style' line of css values to the given container element
