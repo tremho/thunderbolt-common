@@ -420,7 +420,7 @@ export class AppCore {
 
         // set the page in the model.  For Riot, this forces the page to change on update
         // for mobile, we need to do that through native navigation, but we still want the model to be the same
-        // console.log('$$$$$$$$$$ navigate to page '+pageId)
+        console.log('$$$$$$$$$$ navigate to page '+pageId)
         const navInfo = this.model.getAtPath('page.navInfo')
         let prevPageId = navInfo.pageId
         let prevContext = navInfo.context
@@ -510,6 +510,19 @@ export class AppCore {
     launchActivity(pageId:string, activity:any) {
         this.startPageLogic(pageId, activity, reservedContext)
         reservedContext = null
+    }
+
+    /**
+     * reload the current page.
+     * May be necessary on orientation change
+     */
+    reloadCurrentPage() {
+        // console.log('%%%%%%%%%% in reload current page %%%%%%%%%', this.currentActivity)
+        let activity = this.currentActivity
+        if(activity) {
+            let context = activity.context
+            this.navigateToPage(activity.id, context, true)
+        }
     }
 
     /**
