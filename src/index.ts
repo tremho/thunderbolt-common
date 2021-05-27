@@ -11,13 +11,13 @@ let nscore:any, nativescriptApp:any, registerExtensionModule:any
 
 // console.log('wiring for mobile app handoff')
 try {
-    console.log('getting ComponentBase...')
+    // console.log('getting ComponentBase...')
     let {ComponentBase} = require('thunderbolt-mobile')
-    console.log('getting comCommon...')
+    // console.log('getting comCommon...')
     let comCommon = require('./app-core/ComCommon')
-    console.log('getting AppCore...')
+    // console.log('getting AppCore...')
     let {AppCore} = require('./app-core/AppCore')
-    console.log('bridgeing App Getter...')
+    // console.log('bridging App Getter...')
     ComponentBase.bridgeAppGetter(AppCore.getTheApp, comCommon)
 } catch(e) {
     if(typeof window === 'undefined') {

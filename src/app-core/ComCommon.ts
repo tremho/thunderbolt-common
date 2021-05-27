@@ -7,6 +7,9 @@ import {AppModel} from "./AppModel";
 
 let View = class {}
 let Observable = class {}
+let Color = class {
+    constructor(arg:string) {}
+}
 
 export type LocalBind = [any, string, string]
 
@@ -19,6 +22,7 @@ if(check.mobile) {
         }
     }
     try {
+        Color = require('@nativescript/core').Color
         View = require('@nativescript/core').View
         Observable = require('@nativescript/core').Observable
     } catch(e) {}
@@ -511,10 +515,20 @@ export class ComCommon extends NotCommon{
     
     setCommonPropsMobile(component:any, defaults:any) {
 
+        // console.log('setCommonPropsMobile', component)
+
         // Check for the container we are in
         let container = this.getComponentParent(component)
-        let alignable = container.constructor.name.toLowerCase() === 'stacklayout'
-        let isHorizontal = this.getComponentAttribute(container, 'orientation')
+        let orientation = this.getComponentAttribute(container, 'orientation')
+        let alignable = component.constructor.name.toLowerCase() === 'simplelabel' // TODO: DEBUG only
+        let isHorizontal =  (orientation === 'horizontal')
+
+        // console.log('container', container)
+        // console.log('container name', container.constructor.name)
+        // console.log('component text', component.get('text'))
+        // console.log('orientation', orientation)
+        // console.log('alignable', alignable)
+        // console.log('isHorizontal', isHorizontal)
 
 
         if(!defaults) defaults = {}
@@ -533,9 +547,9 @@ export class ComCommon extends NotCommon{
         let height:any = (this.getComponentAttribute(component, 'height') || defaults.height)
         let align:any = (this.getComponentAttribute(component, 'alignment') 
             || this.getComponentAttribute(component, 'align')
-            || this.getComponentAttribute(component, 'align-self')
-            || this.getComponentAttribute(component, 'horizontal-alignment')
-            || this.getComponentAttribute(component, 'vertical-alignment'))
+            || this.getComponentAttribute(component, 'alignS elf')
+            || this.getComponentAttribute(component, 'horizontalAlignment')
+            || this.getComponentAttribute(component, 'verticalAlignment'))
         if(''+Number(width) === width) width = Number(width)
         if(''+Number(height) === height) height = Number(height)
         if(''+Number(padding) === padding) padding = Number(padding)
@@ -550,24 +564,48 @@ export class ComCommon extends NotCommon{
         if(''+Number(marginLeft) === marginLeft) marginLeft = Number(marginLeft)
 
         if(alignable) {
-            let prop = isHorizontal ? 'vertical-alignment' : 'horizontal-alignment'
+            let prop = isHorizontal ? 'verticalAlignment' : 'horizontalAlignment'
+            // console.log('setting '+prop+' to '+align)
             component.set(prop, align)
-        }        
-        
+        }
+
+        // console.log('setting padding')
         component.set('padding', padding)
         component.set('paddingTop', paddingTop)
         component.set('paddingRight', paddingRight)
         component.set('paddingBottom', paddingBottom)
         component.set('paddingLeft', paddingLeft)
+        // console.log('setting margin')
         component.set('margin', margin)
         component.set('marginTop', marginTop)
         component.set('marginRight', marginRight)
         component.set('marginBottom', marginBottom)
         component.set('marginLeft', marginLeft)
 
-        component.set('color', component.get('color') || defaults.color || '')
-        component.set('background', component.get('background') || defaults.background || '')
-        component.set('backgroundColor', component.get('backgroundColor') || defaults.backgroundColor || '')
+        let color = component.get('color') || defaults.color
+        let background = component.get('background') || defaults.background
+        let backgroundColor = component.get('backgroundColor') || defaults.backgroundColor
+        if(color === 'undefined') color = undefined
+        while(background.indexOf('undefined') !== -1) {
+            background = background.replace('undefined', '')
+        }
+        background = background.trim()
+        if(backgroundColor === 'undefined') backgroundColor = undefined
+        if(color || background || backgroundColor) {
+            if (color) {
+                // console.log('setting color to '+color)
+                component.set('color', new Color(color))
+            }
+            if (background) {
+                // console.log('setting background to '+background)
+                component.set('background', background)
+            }
+            if (backgroundColor) {
+                // console.log('setting backgroundColor to '+backgroundColor)
+                component.set('backgroundColor', new Color(backgroundColor))
+            }
+        }
+        // console.log("==========")
     }
 
     /**
@@ -688,7 +726,7 @@ export class ComCommon extends NotCommon{
             const view = lb[0]
             const name = lb[1]
             const viewProp = lb[2]
-            console.log('applying local bind', view, name, viewProp)
+            // console.log('applying local bind', view, name, viewProp)
             view.bindingContext = component.bound
             view.bind({sourceProperty: name, targetProperty: viewProp})
         }

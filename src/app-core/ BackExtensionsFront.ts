@@ -42,7 +42,7 @@ export function callExtensionApi(moduleName:string, functionName:string, args:an
 
     const responder = new Responder()
     const id = responder.id
-    console.log('calling extApi', moduleName, functionName, id, args)
+    // console.log('calling extApi', moduleName, functionName, id, args)
     ipcRenderer.send('extApi', {moduleName, functionName, id, args})
     return responder.promise
 }
