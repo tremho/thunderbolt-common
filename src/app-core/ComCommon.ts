@@ -433,10 +433,13 @@ export class ComCommon extends NotCommon{
         let container = this.getComponentParent(comp)
         const taglc = container.root.tagName.toLowerCase()
         let flexChild = (taglc === 'stack-layout' || taglc === 'flex-layout')
-        let stretchHeight
+        let stretchHeight, stretchWidth
         if(flexChild) {
             if(this.getComponentAttribute(container, 'orientation') === 'horizontal') {
                 stretchHeight = this.getComponentAttribute(container, 'height')
+            }
+            if(this.getComponentAttribute(container, 'orientation') === 'vertical') {
+                stretchWidth = this.getComponentAttribute(container, 'width')
             }
         }
 
@@ -444,17 +447,17 @@ export class ComCommon extends NotCommon{
         let id:any = (props.id || defaults.id)
         let padding:any = (props.padding || defaults.padding)
         let margin:any = (props.margin || defaults.margin)
-        let paddingTop:any = (props.paddingTop || defaults.paddingTop)
-        let paddingRight:any = (props.paddingRight || defaults.paddingRight)
-        let paddingBottom:any = (props.paddingBottom || defaults.paddingBottom)
-        let paddingLeft:any = (props.paddingLeft || defaults.paddingLeft)
-        let marginTop:any = (props.marginTop || defaults.marginTop)
-        let marginRight:any = (props.marginRight || defaults.marginRight)
-        let marginBottom:any = (props.marginBottom || defaults.marginBottom)
-        let marginLeft:any = (props.marginLeft || defaults.marginLeft)
+        let paddingTop:any = (props.paddingtop || props.paddingTop || defaults.paddingTop)
+        let paddingRight:any = (props.paddingright || props.paddingRight || defaults.paddingRight)
+        let paddingBottom:any = (props.paddingbottom || props.paddingBottom || defaults.paddingBottom)
+        let paddingLeft:any = (props.paddingleft || props.paddingLeft || defaults.paddingLeft)
+        let marginTop:any = (props.margintop ||props.marginTop || defaults.marginTop)
+        let marginRight:any = (props.marginright || props.marginRight || defaults.marginRight)
+        let marginBottom:any = (props.marginbottom || props.marginBottom || defaults.marginBottom)
+        let marginLeft:any = (props.marginleft || props.marginLeft || defaults.marginLeft)
         let width:any = (props.width || defaults.width)
         let height:any = (props.height || defaults.height)
-        let align:any = (props.align || props.alignment|| props.alignSelf)
+        let align:any = (props.align || props.alignment|| props.alignself || props.alignSelf)
         if(''+Number(width) === width) width = Number(width)
         if(''+Number(height) === height) height = Number(height)
         if(''+Number(padding) === padding) padding = Number(padding)
@@ -489,10 +492,24 @@ export class ComCommon extends NotCommon{
         if(align === 'stretch' && stretchHeight) {
             el.style.height = stretchHeight
         }
+        if(align === 'stretch' && stretchWidth) {
+            el.style.width = stretchWidth
+        }
         if(el.parentElement && flexChild) {
-            el.parentElement.style.alignSelf = align
+            if(container.root.tagName.toLowerCase() !== 'flex-layout') {
+                el.parentElement.style.alignSelf = align
+            }
             el.parentElement.style.width = width;
             el.parentElement.style.height = height;
+
+            let order = props.order
+            let flexGrow = props.flexgrow || props.flexGrow || props.grow
+            let flexShrink = props.flexshrink || props.flexShrink || props.shrink
+            // flex, basis will not be supported unless I find it in {N}
+            if(order) el.parentElement.style.order = order
+            if(flexGrow) el.parentElement.style.flexGrow = flexGrow
+            if(flexShrink) el.parentElement.style.flexShrink = flexShrink
+
         } else {
             el.style.width = width;
             el.style.height = height;
@@ -511,6 +528,10 @@ export class ComCommon extends NotCommon{
         el.style.color = props.color || defaults.color || undefined
         el.style.background = props.background || defaults.background || ''
         el.style.backgroundColor = props.backgroundColor  || props.backgroundcolor || defaults.backgroundColor || ''
+
+        let fontSize = props.fontSize || props.fontsize
+        if(fontSize) el.style.fontSize = fontSize
+
     }
     
     setCommonPropsMobile(component:any, defaults:any) {
@@ -605,6 +626,10 @@ export class ComCommon extends NotCommon{
                 component.set('backgroundColor', new Color(backgroundColor))
             }
         }
+
+        let fontSize = component.get('fontsize') || component.get('font-size')
+        if(fontSize) component.set('fontSize', fontSize)
+
         // console.log("==========")
     }
 
