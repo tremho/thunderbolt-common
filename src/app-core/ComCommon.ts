@@ -496,7 +496,7 @@ export class ComCommon extends NotCommon{
             el.style.width = stretchWidth
         }
         if(el.parentElement && flexChild) {
-            if(container.root.tagName.toLowerCase() !== 'flex-layout') {
+            if(el.parentElement.tagName.toLowerCase() !== 'flex-layout') {
                 el.parentElement.style.alignSelf = align
             }
             el.parentElement.style.width = width;
