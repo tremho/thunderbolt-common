@@ -568,7 +568,7 @@ export class ComCommon extends NotCommon{
         let height:any = (this.getComponentAttribute(component, 'height') || defaults.height)
         let align:any = (this.getComponentAttribute(component, 'alignment') 
             || this.getComponentAttribute(component, 'align')
-            || this.getComponentAttribute(component, 'alignS elf')
+            // || this.getComponentAttribute(component, 'alignSelf')
             || this.getComponentAttribute(component, 'horizontalAlignment')
             || this.getComponentAttribute(component, 'verticalAlignment'))
         if(''+Number(width) === width) width = Number(width)
