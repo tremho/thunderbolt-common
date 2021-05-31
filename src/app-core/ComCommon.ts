@@ -525,6 +525,22 @@ export class ComCommon extends NotCommon{
         el.style.marginBottom = marginBottom
         el.style.marginLeft = marginLeft
 
+        let row = Number(props.row) +1
+        let col = Number(props.col) +1
+        let rowSpan = Number(props.rowspan ||'0') +1
+        let colSpan = Number(props.colspan ||'0') +1
+
+        if(el.parentElement) {
+            if (isFinite(col)) {
+                el.parentElement.style.gridColumnStart = '' + col
+                el.parentElement.style.gridColumnEnd = '' + (col + colSpan)
+            }
+            if (isFinite(row)) {
+                el.parentElement.style.gridRowStart = '' + row
+                el.parentElement.style.gridRowEnd = '' + (row + rowSpan)
+            }
+        }
+
         el.style.color = props.color || defaults.color || undefined
         el.style.background = props.background || defaults.background || ''
         el.style.backgroundColor = props.backgroundColor  || props.backgroundcolor || defaults.backgroundColor || ''
@@ -583,6 +599,7 @@ export class ComCommon extends NotCommon{
         if(''+Number(marginRight) === marginRight) marginRight = Number(marginRight)
         if(''+Number(marginBottom) === marginBottom) marginBottom = Number(marginBottom)
         if(''+Number(marginLeft) === marginLeft) marginLeft = Number(marginLeft)
+
 
         if(alignable) {
             let prop = isHorizontal ? 'verticalAlignment' : 'horizontalAlignment'
