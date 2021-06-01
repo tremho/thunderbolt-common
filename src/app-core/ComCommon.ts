@@ -529,6 +529,7 @@ export class ComCommon extends NotCommon{
         let col = Number(props.col) +1
         let rowSpan = Number(props.rowspan ||'0') +1
         let colSpan = Number(props.colspan ||'0') +1
+        let gridArea = props.gridArea || props.gridarea
 
         if(el.parentElement) {
             if (isFinite(col)) {
@@ -538,6 +539,9 @@ export class ComCommon extends NotCommon{
             if (isFinite(row)) {
                 el.parentElement.style.gridRowStart = '' + row
                 el.parentElement.style.gridRowEnd = '' + (row + rowSpan)
+            }
+            if(gridArea) {
+                el.parentElement.style.gridArea = gridArea
             }
         }
 
@@ -644,8 +648,25 @@ export class ComCommon extends NotCommon{
             }
         }
 
-        let fontSize = component.get('fontsize') || component.get('font-size')
+        let fontSize = component.get('fontSize') || component.get('fontsize') || component.get('font-size') || ''
         if(fontSize) component.set('fontSize', fontSize)
+
+        let gridArea = component.get('gridArea') || component.get('gridarea') || component.get('grid-area') || ''
+        if(gridArea) {
+            if (container.findGridArea) {
+                let areaInfo = container.findGridArea(gridArea)
+                let col = areaInfo.firstColumn
+                let row = areaInfo.firstRow
+                let colSpan = areaInfo.lastColumn - areaInfo.firstColumn
+                let rowSpan = areaInfo.lastRow - areaInfo.firstRow
+                if(isFinite(col)) component.set('col', col)
+                if(isFinite(row)) component.set('row', row)
+                if(colSpan) component.set('colSpan', colSpan)
+                if(rowSpan) component.set('rowSpan', rowSpan)
+            } else {
+                console.error('--- Looking for grid area but container is not a grid', container)
+            }
+        }
 
         // console.log("==========")
     }
