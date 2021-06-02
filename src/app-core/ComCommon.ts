@@ -445,6 +445,7 @@ export class ComCommon extends NotCommon{
 
         if(!defaults) defaults = {}
         let id:any = (props.id || defaults.id)
+        let position = (props.position || defaults.position)
         let padding:any = (props.padding || defaults.padding)
         let margin:any = (props.margin || defaults.margin)
         let paddingTop:any = (props.paddingtop || props.paddingTop || defaults.paddingTop)
@@ -564,6 +565,9 @@ export class ComCommon extends NotCommon{
         }
 
         if(el.parentElement) {
+            if(position) {
+                el.parentElement.style.position = position
+            }
             if(gridArea) {
                 el.parentElement.style.gridArea = gridArea
                 // pick up what was auto-set by setting grid area
@@ -688,6 +692,11 @@ export class ComCommon extends NotCommon{
 
         let fontSize = component.get('fontSize') || component.get('fontsize') || component.get('font-size') || ''
         if(fontSize) component.set('fontSize', fontSize)
+
+        let position = component.get('position')
+        if(position) {
+            container.set('position', position)
+        }
 
         let gridArea = component.get('gridArea') || component.get('gridarea') || component.get('grid-area') || ''
         if(gridArea) {
