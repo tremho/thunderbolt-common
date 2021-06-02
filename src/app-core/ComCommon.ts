@@ -536,8 +536,9 @@ export class ComCommon extends NotCommon{
             let cs = (props.col || '').trim()
             rowRel = Number(rs)
             colRel = Number(cs)
-            if(!isFinite(rowRel)) rowRel = 0
-            if(!isFinite(colRel)) colRel = 0
+            // {N} won't allow negative offsets here, so we will normalize to that restriction here too
+            if(!isFinite(rowRel) || rowRel < 0) rowRel = 0
+            if(!isFinite(colRel) || colRel < 0) colRel = 0
         }
 
         const areaToNumber = (type:string, a:number|string):number => {
