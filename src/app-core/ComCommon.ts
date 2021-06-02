@@ -527,21 +527,58 @@ export class ComCommon extends NotCommon{
 
         let row = Number(props.row) +1
         let col = Number(props.col) +1
+        let rowRel = 0, colRel = 0
         let rowSpan = Number(props.rowspan ||'0') +1
         let colSpan = Number(props.colspan ||'0') +1
         let gridArea = props.gridArea || props.gridarea
+        if(gridArea) {
+            let rs = (props.row || '').trim()
+            let cs = (props.col || '').trim()
+            rowRel = Number(rs)
+            colRel = Number(cs)
+            if(!isFinite(rowRel)) rowRel = 0
+            if(!isFinite(colRel)) colRel = 0
+        }
+
+        const areaToNumber = (type:string, a:number|string):number => {
+            if(isFinite(Number(a))) return Number(a)
+            let grid:string[] = []
+            let i = 1;
+            let areaRow
+            while((areaRow = container.root.getAttribute('areaRow'+i ))) {
+                grid.push(areaRow)
+                i++
+            }
+            let r, c
+            for (r=0; r<grid.length; r++) {
+                let cols = grid[r].split(' ')
+                for(c =0; c < cols.length; c++) {
+                    if (cols[c] === a) {
+                        if(type === 'row') return r +1
+                        return c +1
+                    }
+                }
+            }
+            return Number.NaN
+        }
 
         if(el.parentElement) {
-            if (isFinite(col)) {
-                el.parentElement.style.gridColumnStart = '' + col
-                el.parentElement.style.gridColumnEnd = '' + (col + colSpan)
-            }
-            if (isFinite(row)) {
-                el.parentElement.style.gridRowStart = '' + row
-                el.parentElement.style.gridRowEnd = '' + (row + rowSpan)
-            }
             if(gridArea) {
                 el.parentElement.style.gridArea = gridArea
+                // pick up what was auto-set by setting grid area
+                col = areaToNumber('col', el.parentElement.style.gridColumnStart)
+                colSpan = areaToNumber('col', el.parentElement.style.gridColumnEnd) - col +1
+                row = areaToNumber('row', el.parentElement.style.gridRowStart)
+                rowSpan = areaToNumber('row', el.parentElement.style.gridRowEnd) - row +1
+
+            }
+            if (isFinite(col)) {
+                el.parentElement.style.gridColumnStart = '' + (col + colRel)
+                el.parentElement.style.gridColumnEnd = '' + (col + colRel + colSpan)
+            }
+            if (isFinite(row)) {
+                el.parentElement.style.gridRowStart = '' + (row + rowRel)
+                el.parentElement.style.gridRowEnd = '' + (row + rowRel + rowSpan)
             }
         }
 
@@ -654,11 +691,20 @@ export class ComCommon extends NotCommon{
         let gridArea = component.get('gridArea') || component.get('gridarea') || component.get('grid-area') || ''
         if(gridArea) {
             if (container.findGridArea) {
+                let relRow = 0, relCol = 0
+                let rs = ''+component.get('row')
+                relRow = Number(rs)
+                let cs = ''+component.get('col')
+                relCol = Number(cs)
+
+                if(!isFinite(relRow)) relRow = 0;
+                if(!isFinite(relCol)) relCol = 0;
+
                 let areaInfo = container.findGridArea(gridArea)
-                let col = areaInfo.firstColumn
-                let row = areaInfo.firstRow
-                let colSpan = areaInfo.lastColumn - areaInfo.firstColumn
-                let rowSpan = areaInfo.lastRow - areaInfo.firstRow
+                let col = areaInfo.firstColumn + relCol
+                let row = areaInfo.firstRow + relRow
+                let colSpan = areaInfo.lastColumn - col
+                let rowSpan = areaInfo.lastRow - row
                 if(isFinite(col)) component.set('col', col)
                 if(isFinite(row)) component.set('row', row)
                 if(colSpan) component.set('colSpan', colSpan)
