@@ -526,11 +526,17 @@ export class ComCommon extends NotCommon{
         el.style.marginBottom = marginBottom
         el.style.marginLeft = marginLeft
 
-        let row = Number(props.row) +1
-        let col = Number(props.col) +1
+        let row = Number(props.gridRowStart || props.gridrowstart) || (Number(props.row) +1)
+        let col = Number(props.gridColumnStart || props.gridcolumnstart) || (Number(props.col) +1)
+        let colend = Number(props.gridColumnEnd || props.gridcolumnend) || col
+        let rowend = Number(props.gridRowEnd || props.gridrowend) || row
         let rowRel = 0, colRel = 0
-        let rowSpan = Number(props.rowspan ||'0') +1
-        let colSpan = Number(props.colspan ||'0') +1
+        let rowSpan = ((props.rowSpan || props.rowspan) && Number(props.rowspan || props.rowSpan ||'0') +1) || (rowend-row)+1
+        let colSpan = ((props.colSpan || props.colspan) && Number(props.colspan || props.rowSpan ||'0') +1) || (colend-col)+1
+        if(rowSpan < 1) rowSpan = 1;
+        if(colSpan < 1) colSpan = 1;
+        if(col < 1) col = 1;
+        if(row < 1) row = 1;  // negative references not supported
         let gridArea = props.gridArea || props.gridarea
         if(gridArea) {
             let rs = (props.row || '').trim()
@@ -544,13 +550,8 @@ export class ComCommon extends NotCommon{
 
         const areaToNumber = (type:string, a:number|string):number => {
             if(isFinite(Number(a))) return Number(a)
-            let grid:string[] = []
-            let i = 1;
-            let areaRow
-            while((areaRow = container.root.getAttribute('areaRow'+i ))) {
-                grid.push(areaRow)
-                i++
-            }
+            let areas = container.root.getAttribute('gridTemplateAreas') || container.root.getAttribute('areas') || ''
+            let grid:string[] = areas.split('/')
             let r, c
             for (r=0; r<grid.length; r++) {
                 let cols = grid[r].split(' ')
@@ -721,6 +722,35 @@ export class ComCommon extends NotCommon{
                 if(rowSpan) component.set('rowSpan', rowSpan)
             } else {
                 console.error('--- Looking for grid area but container is not a grid', container)
+            }
+        } else {
+            let gcs = component.get('gridColumnStart') || component.get('gridcolumnstart') || component.get('grid-column-start')
+            if(gcs) {
+                let v = Number(gcs)
+                if(isFinite(v)) component.set('col', v-1)
+            }
+            let gce = component.get('gridColumnEnd') || component.get('gridcolumnend') || component.get('grid-column-end')
+            if(gce) {
+                let v = Number(gce)
+                if (isFinite(v)) {
+                    let sp = v - Number(component.get('col'))
+                    if (sp < 1) sp = 1
+                    component.set('colSpan', sp)
+                }
+            }
+            let grs = component.get('gridRowStart') || component.get('gridrowstart') || component.get('grid-row-start')
+            if(grs) {
+                let v = Number(grs)
+                if(isFinite(v)) component.set('row', v-1)
+            }
+            let gre = component.get('gridRowEnd') || component.get('gridrowend') || component.get('grid-row-end')
+            if(gre) {
+                let v = Number(gre)
+                if (isFinite(v)) {
+                    let sp = v - Number(component.get('row'))
+                    if (sp < 1) sp = 1
+                    component.set('rowSpan', sp)
+                }
             }
         }
 
