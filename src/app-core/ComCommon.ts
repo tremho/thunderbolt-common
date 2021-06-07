@@ -458,7 +458,6 @@ export class ComCommon extends NotCommon{
         let marginLeft:any = (props.marginleft || props.marginLeft || defaults.marginLeft)
         let width:any = (props.width || defaults.width)
         let height:any = (props.height || defaults.height)
-        let align:any = (props.align || props.alignment|| props.alignself || props.alignSelf)
         if(''+Number(width) === width) width = Number(width)
         if(''+Number(height) === height) height = Number(height)
         if(''+Number(padding) === padding) padding = Number(padding)
@@ -487,18 +486,47 @@ export class ComCommon extends NotCommon{
         if(typeof width === 'number') width = width + 'px'
         if(typeof height === 'number') height = height + 'px'
         if(id) el.id = id;
-        if(align === 'left' || align === 'top') align = 'flex-start'
-        if(align === 'right' || align === 'bottom') align = 'flex-end'
-        if(align === 'middle') align = 'center'
-        if(align === 'stretch' && stretchHeight) {
+
+        let align:any = (props.align || props.alignment|| props.alignself || props.alignSelf)
+        let hAlign:any = (props.hAlign || props.halign || props.horizontalAlignment || props.horizontalalignment)
+        let vAlign:any = (props.vAlign || props.valign || props.verticalAlignment || props.verticalalignment)
+        let textAlign:any = (props.textAlign || props.textalign)
+
+        if(align) {
+            let parts = align.split(/, ?| /)
+            for (let i = 0; i < parts.length; i++) {
+                let p = parts[i].trim()
+                if (p.charAt(p.length - 1) === ',') p = p.substring(0, p.length - 1)
+                switch (p.toLowerCase()) {
+                    case 'top':
+                    case 'middle':
+                    case 'bottom':
+                        vAlign = p
+                        break
+                    case 'left':
+                    case 'right':
+                    case 'center':
+                        hAlign = p
+                        break
+                    case 'stretch':
+                        if (stretchHeight) vAlign = p
+                        if (stretchWidth) hAlign = p
+                        break
+                }
+            }
+        }
+        if(vAlign === 'stretch' && stretchHeight) {
             el.style.height = stretchHeight
         }
-        if(align === 'stretch' && stretchWidth) {
+        if(hAlign === 'stretch' && stretchWidth) {
             el.style.width = stretchWidth
         }
         if(el.parentElement && flexChild) {
             if(el.parentElement.tagName.toLowerCase() !== 'flex-layout') {
-                el.parentElement.style.alignSelf = align
+                let flexAlign = "flex-start"
+                if(vAlign === 'middle') flexAlign = 'center'
+                if(vAlign === 'bottom') flexAlign = 'flex-end'
+                el.parentElement.style.alignSelf =  flexAlign
             }
             el.parentElement.style.width = width;
             el.parentElement.style.height = height;
@@ -515,6 +543,7 @@ export class ComCommon extends NotCommon{
             el.style.width = width;
             el.style.height = height;
         }
+        el.style.textAlign = textAlign
         el.style.padding = padding
         el.style.paddingTop = paddingTop
         el.style.paddingRight = paddingRight
