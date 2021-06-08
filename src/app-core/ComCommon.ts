@@ -521,27 +521,43 @@ export class ComCommon extends NotCommon{
         if(hAlign === 'stretch' && stretchWidth) {
             el.style.width = stretchWidth
         }
-        if(el.parentElement && flexChild) {
-            if(el.parentElement.tagName.toLowerCase() !== 'flex-layout') {
-                let flexAlign = "flex-start"
-                if(vAlign === 'middle') flexAlign = 'center'
-                if(vAlign === 'bottom') flexAlign = 'flex-end'
-                el.parentElement.style.alignSelf =  flexAlign
+
+        if(el.parentElement) {
+
+            // simple-label and other components that have a containing div we can muddle will set isAlignable
+            if(comp.isAlignable && vAlign) {
+                let t = vAlign === 'middle' ? 50 : vAlign === 'bottom' ? 100 : 0
+                // let l = hAlign === 'center' ? 50 : hAlign === 'right' ? 100 : 0
+                if(el.parentElement.parentElement) {
+                    el.parentElement.parentElement.style.position = 'relative' // set the outer container relative
+                    el.parentElement.style.position = 'absolute'    // so we have absolute reference with inner container
+                    el.parentElement.style.top = t + '%'            // do the transform trick for v-align
+                    // el.parentElement.style.left = l + '%'        // horizontal is handled by flex container alignSelf
+                    el.parentElement.style.transform = `translateY(-${t}%)`
+                }
             }
-            el.parentElement.style.width = width;
-            el.parentElement.style.height = height;
+            if(flexChild) {
+                if (el.parentElement.tagName.toLowerCase() !== 'flex-layout') {
+                    let flexAlign = (props.alignself || props.alignSelf || "flex-start")
+                    if(hAlign === 'left') flexAlign = 'flex-start'
+                    if(hAlign === 'center') flexAlign = 'center'
+                    if(hAlign === 'right') flexAlign = 'flex-end'
+                    el.parentElement.style.alignSelf = flexAlign
+                }
+                el.parentElement.style.width = width;
+                el.parentElement.style.height = height;
 
-            let order = props.order
-            let flexGrow = props.flexgrow || props.flexGrow || props.grow
-            let flexShrink = props.flexshrink || props.flexShrink || props.shrink
-            // flex, basis will not be supported unless I find it in {N}
-            if(order) el.parentElement.style.order = order
-            if(flexGrow) el.parentElement.style.flexGrow = flexGrow
-            if(flexShrink) el.parentElement.style.flexShrink = flexShrink
-
-        } else {
-            el.style.width = width;
-            el.style.height = height;
+                let order = props.order
+                let flexGrow = props.flexgrow || props.flexGrow || props.grow
+                let flexShrink = props.flexshrink || props.flexShrink || props.shrink
+                // flex, basis will not be supported unless I find it in {N}
+                if (order) el.parentElement.style.order = order
+                if (flexGrow) el.parentElement.style.flexGrow = flexGrow
+                if (flexShrink) el.parentElement.style.flexShrink = flexShrink
+            } else {
+                el.style.width = width
+                el.style.height = height
+            }
         }
         el.style.textAlign = textAlign
         el.style.padding = padding
@@ -618,12 +634,118 @@ export class ComCommon extends NotCommon{
         }
 
         el.style.color = props.color || defaults.color || undefined
-        el.style.background = props.background || defaults.background || ''
         el.style.backgroundColor = props.backgroundColor  || props.backgroundcolor || defaults.backgroundColor || ''
 
+        let background = props.background || ''
+        if(background) {
+            console.log('background is ', background)
+            // attachment, image, clip, color, origin, position, repeat, size
+            let bgAttachment, bgImage, bgClip, bgColor, bgOrigin, bgPosition, bgRepeat, bgSize
+            const isUrl = (str: string) => {
+                // a superficial test
+                return (str.indexOf('url') === 0 || str.indexOf('://') !== -1)
+            }
+            const isAttachment = (str: string) => {
+                return (str === 'scroll' || str === 'fixed' || str === 'local')
+            }
+            const isBox = (str: string) => {
+                return (str === 'border-box' || str === 'padding-box' || str === 'content-box' || str === 'text'
+                    || str === 'inherit' || str === 'initial' || str === 'unset')
+            }
+            const isPosition = (str: string) => {
+                return (str === 'left' || str === 'right' || str === 'top' || str === 'center' || str === 'bottom' || str.indexOf('%')!==-1 || str.indexOf('/')!==-1)
+            }
+            const isSize = (str:string) => {
+                return (str === 'cover' || str=='contain')
+            }
+            const isRepeat = (str: string) => {
+                return (str === 'repeat'
+                    || str === 'repeat-x' || str === 'repeat-y'
+                    || str === 'no-repeat'
+                    || str === 'space'
+                    || str === 'round')
+            }
+            let bparts = background.split(' ')
+            bgRepeat = ''
+            bgPosition = ''
+            for (let i = 0; i < bparts.length; i++) {
+                let bp = bparts[i]
+                if (isUrl(bp)) {
+                    bgImage = bp
+                } else if (isAttachment(bp)) {
+                    bgAttachment = bp
+                } else if (isPosition(bp)) {
+                    let ps = bp.split('/')
+                    if (bgPosition) bgPosition += ' '
+                    bgPosition += ps[0]
+                    if (ps[1]) bgSize = ps[1]
+                } else if(isSize(bp)) {
+                    bgSize = bp
+                } else if (isRepeat(bp)) {
+                    if (bgRepeat) bgRepeat += ' '
+                    bgRepeat += bp;
+                } else if (isBox(bp)) {
+                    if (!bgOrigin) {
+                        bgOrigin = bp
+                    } else {
+                        bgClip = bp
+                    }
+                } else {
+                    bgColor = bp
+                }
+            }
+            if(bgAttachment) {
+                console.log('background-attachment', bgAttachment)
+                el.style.backgroundAttachment = bgAttachment
+            }
+            if(bgImage) {
+                bgImage = this.baseFromAssets(bgImage)
+                console.log('background-image', bgImage)
+                el.style.backgroundImage = bgImage
+            }
+            if(bgClip) {
+                console.log('background-clip', bgClip)
+                el.style.backgroundClip = bgClip
+            }
+            if(bgColor) {
+                console.log('background-color', bgColor)
+                el.style.backgroundColor = bgColor
+            }
+            if(bgOrigin) {
+                console.log('background-origin', bgOrigin)
+                el.style.backgroundOrigin = bgOrigin
+            }
+            if(bgPosition) {
+                console.log('background-position', bgPosition)
+                el.style.backgroundPosition = bgPosition
+            }
+            if(bgSize) {
+                console.log('background-size', bgSize)
+                el.style.backgroundSize = bgSize
+            }
+            if(bgRepeat) {
+                console.log('background-repeat', bgRepeat)
+                el.style.backgroundRepeat = bgRepeat
+            }
+        }
         let fontSize = props.fontSize || props.fontsize
         if(fontSize) el.style.fontSize = fontSize
 
+    }
+
+    baseFromAssets(url:string) {
+        let isURL = (url.substring(0,3) === 'url')
+        let op = 0
+        let cl = url.length;
+        if(isURL) {
+            op = url.indexOf('(')+1
+            cl = url.lastIndexOf(')')
+        }
+        let p = url.substring(op, cl)
+        if(p.charAt(0) === p.charAt(p.length-1) && p.charAt(0) === '"' || p.charAt(0) === "'") p = p.substring(1, p.length-1)
+        p = './assets/'+p
+        if(isURL) p = 'url("'+p+'")'
+        return p;
     }
     
     setCommonPropsMobile(component:any, defaults:any) {
@@ -633,14 +755,12 @@ export class ComCommon extends NotCommon{
         // Check for the container we are in
         let container = this.getComponentParent(component)
         let orientation = this.getComponentAttribute(container, 'orientation')
-        let alignable = component.constructor.name.toLowerCase() === 'simplelabel' // TODO: DEBUG only
         let isHorizontal =  (orientation === 'horizontal')
 
         // console.log('container', container)
         // console.log('container name', container.constructor.name)
         // console.log('component text', component.get('text'))
         // console.log('orientation', orientation)
-        // console.log('alignable', alignable)
         // console.log('isHorizontal', isHorizontal)
 
 
@@ -676,12 +796,6 @@ export class ComCommon extends NotCommon{
         if(''+Number(marginBottom) === marginBottom) marginBottom = Number(marginBottom)
         if(''+Number(marginLeft) === marginLeft) marginLeft = Number(marginLeft)
 
-
-        if(alignable) {
-            let prop = isHorizontal ? 'verticalAlignment' : 'horizontalAlignment'
-            // console.log('setting '+prop+' to '+align)
-            component.set(prop, align)
-        }
 
         // console.log('setting padding')
         component.set('padding', padding)
