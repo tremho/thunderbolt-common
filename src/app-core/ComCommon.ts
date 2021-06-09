@@ -493,27 +493,9 @@ export class ComCommon extends NotCommon{
         let textAlign:any = (props.textAlign || props.textalign)
 
         if(align) {
-            let parts = align.split(/, ?| /)
-            for (let i = 0; i < parts.length; i++) {
-                let p = parts[i].trim()
-                if (p.charAt(p.length - 1) === ',') p = p.substring(0, p.length - 1)
-                switch (p.toLowerCase()) {
-                    case 'top':
-                    case 'middle':
-                    case 'bottom':
-                        vAlign = p
-                        break
-                    case 'left':
-                    case 'right':
-                    case 'center':
-                        hAlign = p
-                        break
-                    case 'stretch':
-                        if (stretchHeight) vAlign = p
-                        if (stretchWidth) hAlign = p
-                        break
-                }
-            }
+            let ap = alignSplit(align, stretchWidth, stretchHeight)
+            hAlign = ap.hAlign
+            vAlign = ap.vAlign
         }
         if(vAlign === 'stretch' && stretchHeight) {
             el.style.height = stretchHeight
@@ -636,118 +618,21 @@ export class ComCommon extends NotCommon{
         el.style.color = props.color || defaults.color || undefined
         el.style.backgroundColor = props.backgroundColor  || props.backgroundcolor || defaults.backgroundColor || ''
 
-        let background = props.background || ''
-        if(background) {
-            console.log('background is ', background)
-            // attachment, image, clip, color, origin, position, repeat, size
-            let bgAttachment, bgImage, bgClip, bgColor, bgOrigin, bgPosition, bgRepeat, bgSize
-            const isUrl = (str: string) => {
-                // a superficial test
-                return (str.indexOf('url') === 0 || str.indexOf('://') !== -1)
-            }
-            const isAttachment = (str: string) => {
-                return (str === 'scroll' || str === 'fixed' || str === 'local')
-            }
-            const isBox = (str: string) => {
-                return (str === 'border-box' || str === 'padding-box' || str === 'content-box' || str === 'text'
-                    || str === 'inherit' || str === 'initial' || str === 'unset')
-            }
-            const isPosition = (str: string) => {
-                return (str === 'left' || str === 'right' || str === 'top' || str === 'center' || str === 'bottom' || str.indexOf('%')!==-1 || str.indexOf('/')!==-1)
-            }
-            const isSize = (str:string) => {
-                return (str === 'cover' || str=='contain')
-            }
-            const isRepeat = (str: string) => {
-                return (str === 'repeat'
-                    || str === 'repeat-x' || str === 'repeat-y'
-                    || str === 'no-repeat'
-                    || str === 'space'
-                    || str === 'round')
-            }
-            let bparts = background.split(' ')
-            bgRepeat = ''
-            bgPosition = ''
-            for (let i = 0; i < bparts.length; i++) {
-                let bp = bparts[i]
-                if (isUrl(bp)) {
-                    bgImage = bp
-                } else if (isAttachment(bp)) {
-                    bgAttachment = bp
-                } else if (isPosition(bp)) {
-                    let ps = bp.split('/')
-                    if (bgPosition) bgPosition += ' '
-                    bgPosition += ps[0]
-                    if (ps[1]) bgSize = ps[1]
-                } else if(isSize(bp)) {
-                    bgSize = bp
-                } else if (isRepeat(bp)) {
-                    if (bgRepeat) bgRepeat += ' '
-                    bgRepeat += bp;
-                } else if (isBox(bp)) {
-                    if (!bgOrigin) {
-                        bgOrigin = bp
-                    } else {
-                        bgClip = bp
-                    }
-                } else {
-                    bgColor = bp
-                }
-            }
-            if(bgAttachment) {
-                console.log('background-attachment', bgAttachment)
-                el.style.backgroundAttachment = bgAttachment
-            }
-            if(bgImage) {
-                bgImage = this.baseFromAssets(bgImage)
-                console.log('background-image', bgImage)
-                el.style.backgroundImage = bgImage
-            }
-            if(bgClip) {
-                console.log('background-clip', bgClip)
-                el.style.backgroundClip = bgClip
-            }
-            if(bgColor) {
-                console.log('background-color', bgColor)
-                el.style.backgroundColor = bgColor
-            }
-            if(bgOrigin) {
-                console.log('background-origin', bgOrigin)
-                el.style.backgroundOrigin = bgOrigin
-            }
-            if(bgPosition) {
-                console.log('background-position', bgPosition)
-                el.style.backgroundPosition = bgPosition
-            }
-            if(bgSize) {
-                console.log('background-size', bgSize)
-                el.style.backgroundSize = bgSize
-            }
-            if(bgRepeat) {
-                console.log('background-repeat', bgRepeat)
-                el.style.backgroundRepeat = bgRepeat
-            }
-        }
+        let bg = backgroundSettings(props.background || props.backgroundSettings || props.backgroundsettings || '')
+        if(bg.attachment) el.style.backgroundAttachment = bg.attachment
+        if(bg.clip) el.style.backgroundClip = bg.clip
+        if(bg.color) el.style.backgroundColor =  bg.color
+        if(bg.image) el.style.backgroundImage = bg.image
+        if(bg.origin) el.style.backgroundOrigin = bg.origin
+        if(bg.repeat) el.style.backgroundRepeat = bg.repeat
+        if(bg.position) el.style.backgroundPosition = bg.position
+        if(bg.size) el.style.backgroundSize = bg.size
+
         let fontSize = props.fontSize || props.fontsize
         if(fontSize) el.style.fontSize = fontSize
 
     }
 
-    baseFromAssets(url:string) {
-        let isURL = (url.substring(0,3) === 'url')
-        let op = 0
-        let cl = url.length;
-        if(isURL) {
-            op = url.indexOf('(')+1
-            cl = url.lastIndexOf(')')
-        }
-        let p = url.substring(op, cl)
-        if(p.charAt(0) === p.charAt(p.length-1) && p.charAt(0) === '"' || p.charAt(0) === "'") p = p.substring(1, p.length-1)
-        p = './assets/'+p
-        if(isURL) p = 'url("'+p+'")'
-        return p;
-    }
-    
     setCommonPropsMobile(component:any, defaults:any) {
 
         // console.log('setCommonPropsMobile', component)
@@ -810,6 +695,22 @@ export class ComCommon extends NotCommon{
         component.set('marginBottom', marginBottom)
         component.set('marginLeft', marginLeft)
 
+        // let align = component.get('align')
+        let textAlign = component.get('textAlign')
+        // console.log(`align=${align}, textAlign=${textAlign}`)
+        let stetchWidth:string = '', stretchHeight:string = ''
+        if(isHorizontal) stretchHeight = container.get('height')
+        else             stetchWidth = container.get('width')
+        let ap = alignSplit(align, stetchWidth, stretchHeight)
+        let hAlign = ap.hAlign
+        let vAlign = ap.vAlign
+        // console.log(`hAlign=${hAlign}, vAlign=${vAlign}`)
+        component.set('horizontalAlignment', hAlign)
+        let inner = component.textComponent
+        if(inner) inner.textAlign = inner.horizontalAlignment = textAlign
+        component.set('textAlign', textAlign)
+        container.verticalAlignment = vAlign
+
         let color = component.get('color') || defaults.color
         let background = component.get('background') || defaults.background
         let backgroundColor = component.get('backgroundColor') || defaults.backgroundColor
@@ -833,6 +734,16 @@ export class ComCommon extends NotCommon{
                 component.set('backgroundColor', new Color(backgroundColor))
             }
         }
+
+        let bg = backgroundSettings(component.get('backgroundSettings'))
+        if(bg.attachment) component.set('backgroundAttachment', bg.attachment)
+        if(bg.clip) component.set('backgroundClip', bg.clip)
+        if(bg.color) component.set('backgroundColor', bg.color)
+        if(bg.image) component.set('backgroundImage', bg.image)
+        if(bg.origin) component.set('backgroundOrigin', bg.origin)
+        if(bg.repeat) component.set('backgroundRepeat', bg.repeat)
+        if(bg.position) component.set('backgroundPosition', bg.position)
+        if(bg.size) component.set('backgroundSize', bg.size)
 
         let fontSize = component.get('fontSize') || component.get('fontsize') || component.get('font-size') || ''
         if(fontSize) component.set('fontSize', fontSize)
@@ -1029,4 +940,160 @@ export class ComCommon extends NotCommon{
 
 export function newCommon(component:any) {
     return new ComCommon(component)
+}
+
+class AlignParts {
+    public hAlign:string = ''
+    public vAlign:string = ''
+}
+function alignSplit(align:string, stretchWidth:string|undefined, stretchHeight:string|undefined):AlignParts {
+    let ap = new AlignParts()
+    if (align) {
+        let parts = align.split(/, ?| /)
+        for (let i = 0; i < parts.length; i++) {
+            let p = parts[i].trim()
+            if (p.charAt(p.length - 1) === ',') p = p.substring(0, p.length - 1)
+            switch (p.toLowerCase()) {
+                case 'top':
+                case 'middle':
+                case 'bottom':
+                    ap.vAlign = p
+                    break
+                case 'left':
+                case 'right':
+                case 'center':
+                    ap.hAlign = p
+                    break
+                case 'stretch':
+                    if (stretchHeight) ap.vAlign = p
+                    if (stretchWidth) ap.hAlign = p
+                    break
+            }
+        }
+    }
+    return ap
+}
+
+class BackgroundSettings {
+    public attachment:string = ''
+    public image:string = ''
+    public clip:string = ''
+    public color:string = ''
+    public origin: string = ''
+    public position: string = ''
+    public repeat:string = ''
+    public size:string = ''
+}
+function backgroundSettings(settings:string):BackgroundSettings {
+    let bgOut = new BackgroundSettings()
+    if(settings) {
+        console.log('backgroundSettings is ', settings)
+        // attachment, image, clip, color, origin, position, repeat, size
+        let bgAttachment, bgImage, bgClip, bgColor, bgOrigin, bgPosition, bgRepeat, bgSize
+        const isUrl = (str: string) => {
+            // a superficial test
+            return (str.indexOf('url') === 0 || str.indexOf('://') !== -1)
+        }
+        const isAttachment = (str: string) => {
+            return (str === 'scroll' || str === 'fixed' || str === 'local')
+        }
+        const isBox = (str: string) => {
+            return (str === 'border-box' || str === 'padding-box' || str === 'content-box' || str === 'text'
+                || str === 'inherit' || str === 'initial' || str === 'unset')
+        }
+        const isPosition = (str: string) => {
+            return (str === 'left' || str === 'right' || str === 'top' || str === 'center' || str === 'bottom' || str.indexOf('%')!==-1 || str.indexOf('/')!==-1)
+        }
+        const isSize = (str:string) => {
+            return (str === 'cover' || str=='contain')
+        }
+        const isRepeat = (str: string) => {
+            return (str === 'repeat'
+                || str === 'repeat-x' || str === 'repeat-y'
+                || str === 'no-repeat'
+                || str === 'space'
+                || str === 'round')
+        }
+        let bparts = settings.split(' ')
+        bgRepeat = ''
+        bgPosition = ''
+        for (let i = 0; i < bparts.length; i++) {
+            let bp = bparts[i]
+            if (isUrl(bp)) {
+                bgImage = bp
+            } else if (isAttachment(bp)) {
+                bgAttachment = bp
+            } else if (isPosition(bp)) {
+                let ps = bp.split('/')
+                if (bgPosition) bgPosition += ' '
+                bgPosition += ps[0]
+                if (ps[1]) bgSize = ps[1]
+            } else if(isSize(bp)) {
+                bgSize = bp
+            } else if (isRepeat(bp)) {
+                if (bgRepeat) bgRepeat += ' '
+                bgRepeat += bp;
+            } else if (isBox(bp)) {
+                if (!bgOrigin) {
+                    bgOrigin = bp
+                } else {
+                    bgClip = bp
+                }
+            } else {
+                bgColor = bp
+            }
+        }
+        if(bgAttachment) {
+            console.log('background-attachment', bgAttachment)
+            bgOut.attachment = bgAttachment
+        }
+        if(bgImage) {
+            bgImage = baseFromAssets(bgImage)
+            console.log('background-image', bgImage)
+            bgOut.image = bgImage
+        }
+        if(bgClip) {
+            console.log('background-clip', bgClip)
+            bgOut.clip = bgClip
+        }
+        if(bgColor) {
+            console.log('background-color', bgColor)
+            bgOut.color = bgColor
+        }
+        if(bgOrigin) {
+            console.log('background-origin', bgOrigin)
+            bgOut.origin = bgOrigin
+        }
+        if(bgPosition) {
+            console.log('background-position', bgPosition)
+            bgOut.position = bgPosition
+        }
+        if(bgSize) {
+            console.log('background-size', bgSize)
+            bgOut.size = bgSize
+        }
+        if(bgRepeat) {
+            console.log('background-repeat', bgRepeat)
+            bgOut.repeat = bgRepeat
+        }
+    }
+    return bgOut
+}
+
+function baseFromAssets(url:string) {
+    let isURL = (url.substring(0,3) === 'url')
+    let op = 0
+    let cl = url.length;
+    if(isURL) {
+        op = url.indexOf('(')+1
+        cl = url.lastIndexOf(')')
+    }
+    let p = url.substring(op, cl)
+    if(p.charAt(0) === p.charAt(p.length-1) && p.charAt(0) === '"' || p.charAt(0) === "'") p = p.substring(1, p.length-1)
+    p = 'assets/'+p
+    let pfx = './'
+    let app = getTheApp()
+    if(app) pfx = 'file://'+app.Path.appPath+'/app/'
+    if(isURL) p = 'url("'+pfx+p+'")'
+    return p;
 }
