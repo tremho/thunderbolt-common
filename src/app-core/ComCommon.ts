@@ -1091,9 +1091,7 @@ function baseFromAssets(url:string) {
     let p = url.substring(op, cl)
     if(p.charAt(0) === p.charAt(p.length-1) && p.charAt(0) === '"' || p.charAt(0) === "'") p = p.substring(1, p.length-1)
     p = 'assets/'+p
-    let pfx = './'
-    let app = getTheApp()
-    if(app) pfx = 'file://'+app.Path.appPath+'/app/'
+    let pfx = (check.mobile) ? '~/' : './'
     if(isURL) p = 'url("'+pfx+p+'")'
     return p;
 }
