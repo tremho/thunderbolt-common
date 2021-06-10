@@ -428,6 +428,11 @@ export class ComCommon extends NotCommon{
             throw Error('Not Implemented: ComCommon.setCommonProps')
         }
 
+        let classes = (props.className || props.classname || props.class || '').split(' ')
+        classes.forEach((c:string) => {
+            if(c) el.classList.add(c)
+        })
+
         // Check for special handling for alignment (via flex)
         const comp = this.getComponent(el)
         let container = this.getComponentParent(comp)
@@ -618,7 +623,7 @@ export class ComCommon extends NotCommon{
         el.style.color = props.color || defaults.color || undefined
         el.style.backgroundColor = props.backgroundColor  || props.backgroundcolor || defaults.backgroundColor || ''
 
-        let bg = backgroundSettings(props.background || props.backgroundSettings || props.backgroundsettings || '')
+        let bg = backgroundSettings(props.background || props.backgroundSettings || props.backgroundsettings || '', true)
         if(bg.attachment) el.style.backgroundAttachment = bg.attachment
         if(bg.clip) el.style.backgroundClip = bg.clip
         if(bg.color) el.style.backgroundColor =  bg.color
@@ -627,6 +632,22 @@ export class ComCommon extends NotCommon{
         if(bg.repeat) el.style.backgroundRepeat = bg.repeat
         if(bg.position) el.style.backgroundPosition = bg.position
         if(bg.size) el.style.backgroundSize = bg.size
+
+        let bgi = baseFromAssets(props.backgroundImage || props.backgroundimage)
+        if(bgi) el.style.backgroundImage = bgi
+        let bga = props.backgroundAttachment || props.backgroundAttachment
+        if(bga) el.style.backgroundAttachment = bga
+        let bgc = props.backgroundClip || props.backgroundClip
+        if(bgc) el.style.backgroundClip = bgc
+        let bgo = props.backgroundOrigin || props.backgroundOrigin
+        if(bgo) el.style.backgroundOrigin = bgo
+        let bgr = props.backgroundRepeat || props.backgroundRepeat
+        if(bgr) el.style.backgroundRepeat = bgr
+        let bgp = props.backgroundPosition || props.backgroundPosition
+        if(bgp) el.style.backgroundPosition = bgp
+        let bgs = props.backgroundSize || props.backgroundSize
+        if(bgs) el.style.backgroundSize = bgs
+
 
         let fontSize = props.fontSize || props.fontsize
         if(fontSize) el.style.fontSize = fontSize
@@ -735,7 +756,7 @@ export class ComCommon extends NotCommon{
             }
         }
 
-        let bg = backgroundSettings(component.get('backgroundSettings'))
+        let bg = backgroundSettings(component.get('backgroundSettings'), false)
         if(bg.attachment) component.set('backgroundAttachment', bg.attachment)
         if(bg.clip) component.set('backgroundClip', bg.clip)
         if(bg.color) component.set('backgroundColor', bg.color)
@@ -744,6 +765,9 @@ export class ComCommon extends NotCommon{
         if(bg.repeat) component.set('backgroundRepeat', bg.repeat)
         if(bg.position) component.set('backgroundPosition', bg.position)
         if(bg.size) component.set('backgroundSize', bg.size)
+
+        let bgi = baseFromAssets(component.get('backgroundImage'))
+        if(bgi) component.set('backgroundImage',bgi)
 
         let fontSize = component.get('fontSize') || component.get('fontsize') || component.get('font-size') || ''
         if(fontSize) component.set('fontSize', fontSize)
@@ -984,10 +1008,10 @@ class BackgroundSettings {
     public repeat:string = ''
     public size:string = ''
 }
-function backgroundSettings(settings:string):BackgroundSettings {
+function backgroundSettings(settings:string, baseImage:boolean):BackgroundSettings {
     let bgOut = new BackgroundSettings()
     if(settings) {
-        console.log('backgroundSettings is ', settings)
+        // console.log('backgroundSettings is ', settings)
         // attachment, image, clip, color, origin, position, repeat, size
         let bgAttachment, bgImage, bgClip, bgColor, bgOrigin, bgPosition, bgRepeat, bgSize
         const isUrl = (str: string) => {
@@ -1044,43 +1068,44 @@ function backgroundSettings(settings:string):BackgroundSettings {
             }
         }
         if(bgAttachment) {
-            console.log('background-attachment', bgAttachment)
+            // console.log('background-attachment', bgAttachment)
             bgOut.attachment = bgAttachment
         }
         if(bgImage) {
-            bgImage = baseFromAssets(bgImage)
-            console.log('background-image', bgImage)
+            if(baseImage) bgImage = baseFromAssets(bgImage) // will convert with background-image handler below
+            // console.log('background-image', bgImage)
             bgOut.image = bgImage
         }
         if(bgClip) {
-            console.log('background-clip', bgClip)
+            // console.log('background-clip', bgClip)
             bgOut.clip = bgClip
         }
         if(bgColor) {
-            console.log('background-color', bgColor)
+            // console.log('background-color', bgColor)
             bgOut.color = bgColor
         }
         if(bgOrigin) {
-            console.log('background-origin', bgOrigin)
+            // console.log('background-origin', bgOrigin)
             bgOut.origin = bgOrigin
         }
         if(bgPosition) {
-            console.log('background-position', bgPosition)
+            // console.log('background-position', bgPosition)
             bgOut.position = bgPosition
         }
         if(bgSize) {
-            console.log('background-size', bgSize)
+            // console.log('background-size', bgSize)
             bgOut.size = bgSize
         }
         if(bgRepeat) {
-            console.log('background-repeat', bgRepeat)
+            // console.log('background-repeat', bgRepeat)
             bgOut.repeat = bgRepeat
         }
     }
     return bgOut
 }
 
-function baseFromAssets(url:string) {
+function baseFromAssets(url = '') {
+
     let isURL = (url.substring(0,3) === 'url')
     let op = 0
     let cl = url.length;
@@ -1090,8 +1115,13 @@ function baseFromAssets(url:string) {
     }
     let p = url.substring(op, cl)
     if(p.charAt(0) === p.charAt(p.length-1) && p.charAt(0) === '"' || p.charAt(0) === "'") p = p.substring(1, p.length-1)
-    p = 'assets/'+p
-    let pfx = (check.mobile) ? '~/' : './'
-    if(isURL) p = 'url("'+pfx+p+'")'
+    if(p) {
+        if(p.indexOf('://') === -1) { // no protocol
+            p = 'assets/' + p
+            let pfx = (check.mobile) ? '~/' : './'
+            p = pfx + p
+        }
+        if(isURL) p = 'url("'+p+'")'
+    }
     return p;
 }
