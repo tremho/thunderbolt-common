@@ -649,8 +649,37 @@ export class ComCommon extends NotCommon{
         if(bgs) el.style.backgroundSize = bgs
 
 
-        let fontSize = props.fontSize || props.fontsize
+        let fontParts = fontSplit(props.font || '')
+        let lineHeight = props.lineHeight || props.lineHeight || fontParts.lineHeight || ''
+        let fontSize = props.fontSize || props.fontsize || fontParts.size || ''
+        let fsSplit = fontSize.split('/')
+        if(fsSplit[1]) lineHeight = fsSplit[1]
+        fontSize = fsSplit[0]
+        let fontName = (props.fontName || props.fontname || fontParts.name || '').toLowerCase()
+        let fontStyle = props.fontStyle || props.fontstyle || fontParts.style || ''
+        let fontWeight = props.fontWeight || props.fontweight || fontParts.weight || ''
+
+        if(fontName) {
+            el.classList.forEach((cname:string)=> {
+                if(cname.charAt(0) == 'f' && cname.charAt(1) === '-') {
+                        el.classList.remove(cname)
+                }
+            })
+            el.classList.add('f-'+fontName)
+        }
         if(fontSize) el.style.fontSize = fontSize
+        if(lineHeight) el.style.lineHeight = lineHeight
+        if(fontWeight) el.style.fontWeight = fontWeight
+        if(fontStyle) el.style.fontStyle = fontStyle
+
+        let bp = borderSplit(props.border)
+        if(props.border) el.style.border = props.border
+        let borderStyle = props.borderStyle || props.borderstyle || bp.style
+        let borderColor = props.borderColor || props.bordercolor || bp.color
+        let borderWidth = props.borderWidth || props.borderwidth || bp.width
+        if(borderStyle) el.style.borderStyle = borderStyle
+        if(borderColor) el.style.borderColor = borderColor
+        if(borderWidth) el.style.borderWidth = borderWidth
 
     }
 
@@ -769,15 +798,39 @@ export class ComCommon extends NotCommon{
         let bgi = baseFromAssets(component.get('backgroundImage'))
         if(bgi) component.set('backgroundImage',bgi)
 
-        let fontSize = component.get('fontSize') || component.get('fontsize') || component.get('font-size') || ''
+        let fontParts = fontSplit(this.getComponentAttribute(component, 'font') || defaults.font || '')
+        let lineHeight = (this.getComponentAttribute(component, 'lineHeight') || defaults.lineHeight || fontParts.lineHeight || '')
+        let fontSize = (this.getComponentAttribute(component, 'fontSize') || defaults.fontSize || fontParts.size || '')
+        let fsSplit = fontSize.split('/')
+        if(fsSplit[1]) lineHeight = fsSplit[1]
+        fontSize = fsSplit[0]
+        let fontWeight = (this.getComponentAttribute(component, 'fontWeight') || defaults.fontWeight || fontParts.weight || '')
+        let fontStyle = (this.getComponentAttribute(component, 'fontStyle') || defaults.fontStyle || fontParts.style || '')
+        let fontName = (this.getComponentAttribute(component, 'fontName') || defaults.fontName || fontParts.name || '').toLowerCase()
+        if(fontName) {
+            let classes = (component.get('className') || '').split(' ')
+            for(let i=0; i< classes.length; i++) {
+                let cname = classes[i]
+                if(cname.charAt(0) === 'f' && cname.charAt(1) === '-') {
+                    classes = classes.splice(i, 1)
+                    break;
+                }
+            }
+            classes.push('f-'+fontName)
+            component.set('className', classes.join(' '))
+        }
         if(fontSize) component.set('fontSize', fontSize)
+        if(lineHeight) component.set('lineHeight', lineHeight)
+        if(fontWeight) component.set('fontWeight', fontWeight)
+        if(fontStyle) component.set('fontStyle', fontStyle)
 
-        let position = component.get('position')
+
+        let position = (this.getComponentAttribute(component, 'position') || defaults.position || '')
         if(position) {
             container.set('position', position)
         }
 
-        let gridArea = component.get('gridArea') || component.get('gridarea') || component.get('grid-area') || ''
+        let gridArea = (this.getComponentAttribute(component, 'gridArea') || defaults.gridArea || '')
         if(gridArea) {
             if (container.findGridArea) {
                 let relRow = 0, relCol = 0
@@ -802,12 +855,12 @@ export class ComCommon extends NotCommon{
                 console.error('--- Looking for grid area but container is not a grid', container)
             }
         } else {
-            let gcs = component.get('gridColumnStart') || component.get('gridcolumnstart') || component.get('grid-column-start')
+            let gcs = (this.getComponentAttribute(component, 'gridColumnStart') || defaults.gridColumnStart || '')
             if(gcs) {
                 let v = Number(gcs)
                 if(isFinite(v)) component.set('col', v-1)
             }
-            let gce = component.get('gridColumnEnd') || component.get('gridcolumnend') || component.get('grid-column-end')
+            let gce = (this.getComponentAttribute(component, 'gridColumnEnd') || defaults.gridColumnEnd || '')
             if(gce) {
                 let v = Number(gce)
                 if (isFinite(v)) {
@@ -816,12 +869,12 @@ export class ComCommon extends NotCommon{
                     component.set('colSpan', sp)
                 }
             }
-            let grs = component.get('gridRowStart') || component.get('gridrowstart') || component.get('grid-row-start')
+            let grs = (this.getComponentAttribute(component, 'gridRowStart') || defaults.gridRowStart || '')
             if(grs) {
                 let v = Number(grs)
                 if(isFinite(v)) component.set('row', v-1)
             }
-            let gre = component.get('gridRowEnd') || component.get('gridrowend') || component.get('grid-row-end')
+            let gre = (this.getComponentAttribute(component, 'gridRowEnd') || defaults.gridRowEnd || '')
             if(gre) {
                 let v = Number(gre)
                 if (isFinite(v)) {
@@ -831,6 +884,17 @@ export class ComCommon extends NotCommon{
                 }
             }
         }
+
+        let border = (this.getComponentAttribute(component, 'border') || defaults.border || '')
+        let bp = borderSplit(border)
+        let borderStyle = (this.getComponentAttribute(component, 'borderStyle') || defaults.borderStyle || bp.style)
+        let borderColor = (this.getComponentAttribute(component, 'borderColor') || defaults.borderColor || bp.color)
+        let borderWidth = (this.getComponentAttribute(component, 'borderWidth') || defaults.borderWidth || bp.width)
+        if(border) component.set('border', border)
+        if(borderStyle) component.set('borderStyle', borderStyle)
+        if(borderColor) component.set('borderColor', borderColor)
+        if(borderWidth) component.set('borderWidth', borderWidth)
+
 
         // console.log("==========")
     }
@@ -1102,6 +1166,120 @@ function backgroundSettings(settings:string, baseImage:boolean):BackgroundSettin
         }
     }
     return bgOut
+}
+
+class FontParts {
+    name:string = ''
+    style:string = ''
+    weight:string = ''
+    size:string = ''
+    lineHeight:string = ''
+}
+function fontSplit(shorthand = '') {
+
+    const out = new FontParts()
+    const isStyle = (fp: string) => {
+        return (fp === 'normal' || fp === 'italic' || fp === 'oblique')
+    }
+    const isStyleAngle = (fp: string) => {
+        return (fp.indexOf('deg') !== -1 || fp.indexOf('rad') !== -1 || fp.indexOf('turn') !== -1)
+    }
+    const isWeight = (fp: string) => {
+        let n = Number(fp)
+        if (isFinite(n) && n >= 1 && n <= 1000) return true
+        return (fp === 'normal' || fp === 'bold' || fp === 'bolder' || fp === 'lighter')
+    }
+    const isSize = (fp: string) => {
+        if (fp === 'xx-small' || fp === 'x-small') return true
+        if (fp === 'small' || fp === 'medium' || fp === 'large') return true
+        if (fp === 'xxx-large' || fp === 'xx-large' || fp === 'x-large') return true
+        if (fp === 'larger' || fp === 'smaller') return true
+        if (fp.indexOf('/') !== -1) return true; // because it contains line height
+        let i = -1
+        let leadDig = false
+        while (++i < fp.length) {
+            if (fp.charAt(i) >= '0' && fp.charAt(i) <= '9') {
+                leadDig = true
+                break;
+            }
+        }
+        return leadDig
+    }
+
+    if (shorthand) {
+        let parts = shorthand.split(' ')
+
+        for (let i = 0; i < parts.length; i++) {
+            let fp = parts[i]
+            if (isStyle(fp)) {
+                out.style = fp
+            }
+            if (out.style && isStyleAngle(fp)) {
+                out.style += ' ' + fp
+            } else if (isWeight(fp)) {
+                out.weight = fp
+            } else if (isSize(fp)) {
+                let sp = fp.split('/')
+                out.size = sp[0]
+                out.lineHeight = sp[1]
+            } else { // font name
+                out.name = fp
+            }
+        }
+    }
+    return out;
+}
+
+class BorderParts {
+    style:string = ''
+    width:string = ''
+    color:string = ''
+}
+function borderSplit(border = '') {
+    const out = new BorderParts()
+
+    const isStyle = (bp:string) => {
+        return(bp ==='none'
+            || bp === 'hidden'
+            || bp === 'dotted'
+            || bp === 'dashed'
+            || bp === 'solid'
+            || bp === 'groove'
+            || bp === 'ridge'
+            || bp === 'inset'
+            || bp === 'outset'
+        )
+    }
+    const isWidth = (bp:string) => {
+        if(bp === 'thin' || bp === 'medium' || bp === 'thick') return true
+        let i = -1
+        let leadDig = false
+        while (++i < bp.length) {
+            if (bp.charAt(i) >= '0' && bp.charAt(i) <= '9') {
+                leadDig = true
+                break;
+            }
+        }
+        return leadDig
+    }
+
+    if(border) {
+        const parts = border.split(' ')
+        for (let i = 0; i < parts.length; i++) {
+            let bp = parts[i]
+            if(isStyle(bp)) {
+                if(out.style) out.style += ' '
+                out.style += bp
+            }
+            else if(isWidth(bp)) {
+                out.width = bp
+            }
+            else { // is Color
+                out.color = bp
+            }
+        }
+    }
+    return out
 }
 
 function baseFromAssets(url = '') {
