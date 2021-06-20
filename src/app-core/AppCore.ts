@@ -335,6 +335,7 @@ export class AppCore {
             }
         }
     }
+
     public onToolAction(props:any) {
 
         const menuEvent = {
@@ -483,7 +484,7 @@ export class AppCore {
                 throw Error('No exported activity for '+ pageId)
             }
             activity.context = context;
-            // console.log('$$$$ Starting page', pageId)
+            // console.log('$$$$ Starting page', pageId, context)
             this.startPageLogic(pageId, activity, context)
 
         }
@@ -501,6 +502,7 @@ export class AppCore {
             pageId,
             context: reservedContext
         }
+        // console.log('set page bindings to ', bindMe)
         return bindMe
     }
     /**
@@ -537,6 +539,7 @@ export class AppCore {
      * @param value
      */
     public setPageData(pageName:string, item:object | string, value?:any) {
+        // console.log('(in setPageData)')
         let fullPageName, pageId
         if(pageName.substring(pageName.length -5) === '-page') {
             fullPageName = pageName
@@ -548,28 +551,36 @@ export class AppCore {
 
         let data
         try {
+            // console.log('...spd trace 1')
             data = this.model.getAtPath('page-data.' + fullPageName) || {}
         } catch(e) {
+            // console.error('...spd catch 1', e.message)
             const pgs:any = {}
             pgs[pageName] = {}
             const pages = this.model.addSection('page-data', pgs)
         }
+        // console.log('...spd trace 2')
         if(typeof item === 'object') {
+            // console.log('...spd trace 3')
             this.model.setAtPath('page-data.'+fullPageName, item, false, true)
         } else {
+            // console.log('...spd trace 4')
             data[item] = value
             this.model.setAtPath('page-data.'+fullPageName, data, false, true)
         }
 
+        // console.log('...spd trace 5')
         let curActivityId = this.currentActivity && this.currentActivity.activityId
 
         if(!check.mobile) {
             const pageComp = curActivityId && findPageComponent(curActivityId)
             if (pageComp && pageComp.comBinder) {
+                // console.log('...binding...')
                 pageComp.comBinder.applyComponentBindings(pageComp, 'page-data.' + fullPageName, (component: any, name: string, value: any, updateAlways: boolean) => {
                     // Handle the update to the component itself
                     // console.log('updating page')
                     if (check.riot) {
+                        // console.log('...')
                         try {
                             component.bound.data = value
                             component.update()
@@ -586,8 +597,9 @@ export class AppCore {
     }
 
     public updatePage(pageName:string) {
+        // console.log('doing mobile update of page data')
         const data = this.getPageData(pageName)
-        this.model.setAtPath('page-data.' + pageName, data)
+        this.model.setAtPath('page-data.' + pageName, data, true, false)
 
     }
 

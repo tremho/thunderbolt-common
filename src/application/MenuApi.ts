@@ -30,6 +30,7 @@ export class MenuItem {
     public sublabel?:string // sublabel (set by mod, no effect on mac)
     public tooltip?:string // tooltip (set by mod)
     public icon?:string // icon path (set by mod)
+    public iconSize?:number[]  // width and height of icon as an array (1 or 2 elements)
     public accelerator?:string // accelerator to apply
     public children?: MenuItem[] // found only in incoming submenus in parsing and setup
 }

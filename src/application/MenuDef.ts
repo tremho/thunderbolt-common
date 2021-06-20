@@ -118,12 +118,14 @@ function processMenuLine(line:string) {
     let ai = line.indexOf('[')
 
     if(ti !== -1) {
-        let ni
-        if(!ni && hi !== -1) ni = hi
-        if(!ni && ci !== -1) ni = ci
-        if(!ni && li !== -1) ni = li
-        if(!ni && bi !== -1) ni = bi
-        target = line.substring(ti+1,ni)
+        if(di === -1 || ti < di) {
+            let ni
+            if (!ni && hi !== -1) ni = hi
+            if (!ni && ci !== -1) ni = ci
+            if (!ni && li !== -1) ni = li
+            if (!ni && bi !== -1) ni = bi
+            target = line.substring(ti + 1, ni)
+        }
     }
     if(hi !== -1) {
         let xi = ci
@@ -196,7 +198,6 @@ function processMenuLine(line:string) {
         mi.id = id;
         mi.targetCode = target
         applyMods(mi, mods)
-
         if (es !== -1) {
             // pop to previous submenu level
             curMenu = smstack.pop()
@@ -230,7 +231,18 @@ function applyMods(item:MenuItem, mods:string[]) {
         }
         if(m.indexOf('icon') === 0) {
             let e = m.indexOf('=')
-            item.icon = m.substring(e+1).trim()
+            let spec = m.substring(e+1).trim()
+            let at = spec.indexOf('@')
+            if(at === -1) at = spec.length
+            item.icon = spec.substring(0, at)
+            let atSpec = spec.substring(at+1)
+            let wh = atSpec.split('x')
+            if(wh[0]) {
+                item.iconSize = [Number([wh[0]])]
+                if(wh[1]) {
+                    item.iconSize.push(Number(wh[1]))
+                }
+            }
         }
 
         // sublabel has no effect on mac
@@ -317,11 +329,13 @@ function processToolLine(line:string) {
     let ai = line.indexOf('[')
 
     if(ti !== -1) {
-        let ni
-        if(!ni && hi !== -1) ni = hi
-        if(!ni && li !== -1) ni = li
-        if(!ni && bi !== -1) ni = bi
-        target = line.substring(ti+1,ni)
+        if (di === -1 || ti < di) {
+            let ni
+            if (!ni && hi !== -1) ni = hi
+            if (!ni && li !== -1) ni = li
+            if (!ni && bi !== -1) ni = bi
+            target = line.substring(ti + 1, ni)
+        }
     }
     if(hi !== -1) {
         let xi = li
@@ -434,11 +448,13 @@ function processIndicatorLine(line:string) {
     let di = line.indexOf('<')
 
     if(ti !== -1) {
-        let ni
-        if(!ni && hi !== -1) ni = hi
-        if(!ni && li !== -1) ni = li
-        if(!ni && bi !== -1) ni = bi
-        target = line.substring(ti+1,ni)
+        if(di === -1 || ti < di) {
+            let ni
+            if (!ni && hi !== -1) ni = hi
+            if (!ni && li !== -1) ni = li
+            if (!ni && bi !== -1) ni = bi
+            target = line.substring(ti + 1, ni)
+        }
     }
     if(hi !== -1) {
         let xi = li

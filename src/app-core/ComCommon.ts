@@ -121,6 +121,7 @@ export class ComCommon extends NotCommon{
     }
 
     public evalBinding(name:string) {
+        // console.warn('evalBinding', name)
         const segs = name.split('.')
         //@ts-ignore
         const comp = this.riot || this.rootComponent
