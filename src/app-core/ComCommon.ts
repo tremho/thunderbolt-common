@@ -946,7 +946,11 @@ export class ComCommon extends NotCommon{
         if(!check.mobile) {
             const taglc = component.root.tagName.toLowerCase()
             if (taglc.substring(taglc.length - 5) === '-page') {
-                component.bound.data = this.model.getAtPath('page-data.' + taglc)
+                try {
+                    component.bound.data = this.model.getAtPath('page-data.' + taglc)
+                } catch(e) {
+                    // okay to not have bound data
+                }
             }
         }
 

@@ -23,6 +23,7 @@ declare module "thunderbolt-common" {
         public accelerator?:string // accelerator to apply
         public children?: MenuItem[] // found only in incoming submenus in parsing and setup
     }
+
 }
 
 declare module "add-resize-listener"
