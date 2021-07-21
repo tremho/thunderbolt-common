@@ -52,8 +52,15 @@ export class ComBinder {
         const stmts = directive.split(',')
         for(let i=0; i<stmts.length; i++) {
             let {section, prop, alias, updateAlways} = this.deconstructBindStatement(stmts[i])
+            let mpath = section+'.'+prop
+            let locprop = alias || prop
+            component.bound[locprop] = this.model.getAtPath(mpath)
+            if(!component.btrack) component.btrack = {}
+            component.btrack[prop] = true
             this.model.bind(component, section, prop, (comp:any, prop:string, value:any) => {
-                bindFunction(comp, alias || prop, value, updateAlways)
+                if(comp.btrack && comp.btrack[prop]) {
+                    bindFunction(comp, locprop, value, updateAlways)
+                }
             })
         }
     }

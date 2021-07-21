@@ -9,6 +9,11 @@ export default {
       // @ts-ignore
       cm = this.cm = newCommon(this) // this.cm available for control-specific extensions
         // @ts-ignore
+        Object.getOwnPropertyNames(props).forEach(p => {
+            // @ts-ignore
+            this.bound[p] = props[p]
+        })
+        // @ts-ignore
       this.bound.text = props.text || this.root.tagName
       state.action = props.action
         // console.log(this.root.tagName, 'onBeforeMount', props, state, this.bound)
@@ -33,7 +38,12 @@ export default {
       const page = cm.getPageComponent()
       const isReset = page && page.isReset()
       // @ts-ignore
-      this.bound.text = isReset ? props.text : this.bound.text || props.text
+      if(isReset) {
+          Object.getOwnPropertyNames(props).forEach(p => {
+              // @ts-ignore
+              this.bound[p] = props[p]
+          })
+      }
       // console.log(this.root.tagName, 'onBeforeUpdate', props, state, this.bound)
         // @ts-ignore
         if(this.postStdOnBeforeUpdate) this.postStdOnBeforeUpdate(props, state)
