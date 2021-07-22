@@ -71,6 +71,7 @@ export class EventData {
     public sourceComponent:any
     public eventType:string|undefined
     public tag:string|undefined
+    public value?:any
     public platEvent:any
 }
 
@@ -653,19 +654,25 @@ export class AppCore {
      * @param name
      * @param domEvent
      */
-    public callEventHandler(tag:string, platEvent:any) {
+    public callEventHandler(tag:string, platEvent:any, value?:any) {
         const act = this.currentActivity;
         const ed = new EventData()
         ed.app = this
-        ed.platEvent = platEvent
-        ed.sourceComponent = this.getComponent(platEvent.target as HTMLElement)
-        ed.eventType = (platEvent as Event).type
+        let name
+        if(platEvent) {
+            ed.platEvent = platEvent
+            ed.sourceComponent = this.getComponent(platEvent.target as HTMLElement)
+            ed.eventType = (platEvent as Event).type
+        }
+        name = (ed.sourceComponent && ed.sourceComponent.state[tag]) || 'onAnonymousEvent'
         ed.tag = tag
-        let name = ed.sourceComponent.state[tag]
+        ed.value = value
         if(typeof act[name] === 'function') {
             act[name](ed)
         } else {
-            Log.error(`${name} is not a function exposed on current activity ${act.activityId}`)
+            if(name !== 'onAnonymousEvent') {
+                Log.error(`${name} is not a function exposed on current activity ${act.activityId}`)
+            }
         }
     }
 

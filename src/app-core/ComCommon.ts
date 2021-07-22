@@ -510,6 +510,9 @@ export class ComCommon extends NotCommon{
             el.style.width = stretchWidth
         }
 
+        // userSelect property in component will set ('all', 'text', 'inherit', etc)  otherwise, we default to none.
+        el.style.userSelect = comp.userSelect || 'none'
+
         if(el.parentElement) {
 
             // simple-label and other components that have a containing div we can muddle will set isAlignable

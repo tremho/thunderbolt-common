@@ -9,6 +9,14 @@ declare module "thunderbolt-common" {
         static getTheApp():any;
         static setTheApp(app:any, frame?:any);
     }
+    class EventData {
+        public app:AppCore|undefined
+        public sourceComponent:any
+        public eventType:string|undefined
+        public tag:string|undefined
+        public value?:any
+        public platEvent:any
+    }
     class MenuItem {
         public label:string
         public id:string
