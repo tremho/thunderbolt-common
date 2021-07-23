@@ -667,11 +667,11 @@ export class AppCore {
         name = (ed.sourceComponent && ed.sourceComponent.state[tag]) || 'onAnonymousEvent'
         ed.tag = tag
         ed.value = value
-        if(typeof act[name] === 'function') {
+        if(act && typeof act[name] === 'function') {
             act[name](ed)
         } else {
             if(name !== 'onAnonymousEvent') {
-                Log.error(`${name} is not a function exposed on current activity ${act.activityId}`)
+                if(act) Log.error(`${name} is not a function exposed on current activity ${act.activityId}`)
             }
         }
     }

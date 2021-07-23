@@ -27,6 +27,8 @@ export default {
       // @ts-ignore
       let div = this.$(this.innerTag || 'div')
         // @ts-ignore
+      if(!div) div = this.root.firstChild
+        // @ts-ignore
       cm.setCommonProps(div, props, this.tagDefaults)
       cm.bindComponent()
         // @ts-ignore

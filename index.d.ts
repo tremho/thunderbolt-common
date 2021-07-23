@@ -5,9 +5,17 @@ declare module "thunderbolt-common" {
     }
     function registerApp(targetPlatform:object, backApp:TBBackApp) : void
     class ToolExtension {}
+    class AppModel {
+        public addSection(name:string, props:object)
+        public bind( component:any, section:string, prop:string, onChange:any, type?:string)
+        public getAtPath(path:string):any
+        public setAtPath(path:string, value:any, force?:boolean, noAnnounce?:boolean)
+    }
     class AppCore {
         static getTheApp():any;
         static setTheApp(app:any, frame?:any);
+        public model:AppModel;
+        // more to come as needed
     }
     class EventData {
         public app:AppCore|undefined
