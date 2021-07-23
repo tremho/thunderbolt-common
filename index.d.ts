@@ -15,6 +15,7 @@ declare module "thunderbolt-common" {
         static getTheApp():any;
         static setTheApp(app:any, frame?:any);
         public model:AppModel;
+        public findComponent(tagName:string):any;
         // more to come as needed
     }
     class EventData {
