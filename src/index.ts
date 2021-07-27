@@ -1,6 +1,6 @@
 
 /*
-    Thunderbolt Framework
+    Jove Framework
     Main Source file
     Defines all exports of the framework API for use by adopting apps.
 */
@@ -12,7 +12,7 @@ let nscore:any, nativescriptApp:any, registerExtensionModule:any
 // console.log('wiring for mobile app handoff')
 try {
     // console.log('getting ComponentBase...')
-    let {ComponentBase} = require('thunderbolt-mobile')
+    let {ComponentBase} = require('@tremho/jove-mobile')
     // console.log('getting comCommon...')
     let comCommon = require('./app-core/ComCommon')
     // console.log('getting AppCore...')
@@ -55,16 +55,21 @@ export class FrameworkBackContext {
         this.nativescriptApp = nativescriptApp
         this.backApp = backApp
 
+        console.log('Framework back app constructor')
+
         // This method will be called when Electron has finished
         // initialization and is ready to create browser windows.
         // Some APIs can only be used after this event occurs.
         if(electronApp) {
+            console.log('Framework back app has electronApp')
             electronApp.whenReady().then(() => {
+                console.log('Framework back app when Ready', this.backApp)
                 this.backApp.appStart(this).then(() => {
                     this.createWindow()
                 })
 
                 electronApp.on('activate', () => {
+                    console.log('Framework back app Activated')
                     // On macOS it's common to re-create a window in the app when the
                     // dock icon is clicked and there are no other windows open.
                     if (BrowserWindow.getAllWindows().length === 0) this.createWindow()
@@ -164,14 +169,14 @@ export type PageBeginCallback = (context:FrameworkFrontContext, userData:any) =>
 export type PageDoneCallback = (context:FrameworkFrontContext, userData:any) => Promise<void>
 
 /**
- * Signature for a Thunderbolt app registration, back (main) process
+ * Signature for a Jove app registration, back (main) process
  */
 export interface TBBackApp {
     appStart: BackAppStartCallback,
     appExit: BackAppExitCallback
 }
 /**
- * Signature for a Thunderbolt app registration, front (render) process
+ * Signature for a Jove app registration, front (render) process
  */
 export interface TBFrontApp {
     appStart: FrontAppStartCallback,
@@ -179,7 +184,7 @@ export interface TBFrontApp {
 }
 
 /**
- * Signature for a Thunderbolt page
+ * Signature for a Jove page
  */
 export interface TBPage {
     pageBegin: PageBeginCallback,
@@ -187,7 +192,7 @@ export interface TBPage {
 }
 
 /**
- * A Thunderbolt app main startup code calls here to establish the
+ * A Jove app main startup code calls here to establish the
  * functional app core of the application.  The app core instance passed
  * must satisfy the interface requirements for {@link: TBBackApp}
  *

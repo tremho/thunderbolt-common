@@ -1,7 +1,7 @@
 {
-  "name": "thunderbolt-common",
-  "version": "0.5.0",
-  "description": "Common component of the Thunderbolt framework",
+  "name": "@tremho/jove-common",
+  "version": "0.6.0",
+  "description": "Common component of the Jove framework",
   "main": "build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,7 +11,7 @@
     "url": "git+https://github.com/tremho/thunderbolt-common.git"
   },
   "keywords": [
-    "Thunderbolt",
+    "Jove",
     "framework",
     "desktop",
     "mobile",

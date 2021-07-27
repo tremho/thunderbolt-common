@@ -29,8 +29,8 @@ if(check.mobile) {
         nsplatform = require('@nativescript/core/platform')
         let {Screen} = require('@nativescript/core')
         nsscreen = Screen
-        mainApiNS = require('thunderbolt-mobile').mainApi
-        callExtensionApi = require('thunderbolt-mobile').callExtensionApi
+        mainApiNS = require('@tremho/jove-mobile').mainApi
+        callExtensionApi = require('@tremho/jove-mobile').callExtensionApi
         console.log('Successfully loaded all Nativescript Imports')
     } catch (e) {
         console.error('OOPS! -- Shit went sideways', e)
@@ -665,14 +665,15 @@ export class AppCore {
             // and their constructor name (tag) and their classes
             // TODO: this needs to recurse into containers
             console.warn('AppCore.findComponent is not ready for mobile')
-            theFrame.page.content.eachChildView((child:any)=>{
-                if(!comp) {
-                    const cname = child.constructor.name
-                    const classes = child.className
-                    if (cname === tagName) comp = child // preferably
-                    if (classes.indexOf(tagName) === 0) comp = child // alterately
-                }
-            })
+            // also, can't get page from frame this way.
+            // theFrame.page.content.eachChildView((child:any)=>{
+            //     if(!comp) {
+            //         const cname = child.constructor.name
+            //         const classes = child.className
+            //         if (cname === tagName) comp = child // preferably
+            //         if (classes.indexOf(tagName) === 0) comp = child // alterately
+            //     }
+            // })
         }
         return comp
     }

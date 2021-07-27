@@ -978,8 +978,12 @@ export class ComCommon extends NotCommon{
             let directive = directives[i]
             // create a property in the local observable the markup implementation looks at
             let {section, prop, alias} = this.comBinder.deconstructBindStatement(directive)
-            let startValue = (check.mobile && component.get(alias)) || this.model.getAtPath(section + '.' + prop)
             const name = alias || prop;
+            let startValue
+            try {
+                startValue = (check.mobile && component.get(name)) || this.model.getAtPath(section + '.' + prop)
+            } catch(e) {
+            }
             if (check.mobile) {
                 component.bindingContext = component.bound
                 component.bound.set(name, startValue)

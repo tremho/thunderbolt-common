@@ -1,4 +1,4 @@
-declare module "thunderbolt-common" {
+declare module "@tremho/jove-common" {
     interface TBBackApp {}
     class FrameworkBackContext {
         registerExtensionModule(name:string, module:any)

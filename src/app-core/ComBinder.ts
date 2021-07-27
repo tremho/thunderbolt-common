@@ -54,7 +54,12 @@ export class ComBinder {
             let {section, prop, alias, updateAlways} = this.deconstructBindStatement(stmts[i])
             let mpath = section+'.'+prop
             let locprop = alias || prop
-            component.bound[locprop] = this.model.getAtPath(mpath)
+            let v
+            try {
+                v = this.model.getAtPath(mpath)
+            }
+            catch(e) {}
+            component.bound[locprop] = v
             if(!component.btrack) component.btrack = {}
             component.btrack[prop] = true
             this.model.bind(component, section, prop, (comp:any, prop:string, value:any) => {
