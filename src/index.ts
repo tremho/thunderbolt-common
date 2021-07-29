@@ -5,7 +5,10 @@
     Defines all exports of the framework API for use by adopting apps.
 */
 
+import path from "path";
+
 let electronApp:any, BrowserWindow:any, preloadPath:string, AppGateway:any, ipcMain:any
+let makeWindowStatePersist:any
 let nscore:any, nativescriptApp:any, registerExtensionModule:any
 
 
@@ -36,6 +39,8 @@ function injectDesktopDependencies(injected:any) {
         nscore = injected.nscore
         nativescriptApp = injected.nativescriptApp
         registerExtensionModule = injected.registerExtensionModule
+        makeWindowStatePersist = injected.makeWindowStatePersist
+
 }
 
 /**
@@ -47,6 +52,7 @@ export class FrameworkBackContext {
     public nativescriptApp:any
     public backApp: TBBackApp
     public frontApp: TBFrontApp | undefined
+    public windowKeeper: any
 
 
     constructor(backApp: TBBackApp) {
@@ -56,6 +62,12 @@ export class FrameworkBackContext {
         this.backApp = backApp
 
         console.log('Framework back app constructor')
+
+        // make our window keeper
+        const name = (this.backApp.options && this.backApp.options.name) || 'jove-app'
+        this.windowKeeper = makeWindowStatePersist(name)
+        // console.log('window keeper created', this.windowKeeper)
+
 
         // This method will be called when Electron has finished
         // initialization and is ready to create browser windows.
@@ -104,33 +116,46 @@ export class FrameworkBackContext {
 
     createWindow (): void {
         if(this.electronApp) {
-            // Create the browser window.
-            const mainWindow: any = new BrowserWindow({
-                width: 800,
-                height: 600,
-                webPreferences: {
-                    nodeIntegration: false, // we handle all the node stuff back-side
-                    contextIsolation: true, // gateway through window.api
-                    enableRemoteModule: false,
-                    preload: preloadPath
+            // console.log('window keeper before restore', this.windowKeeper)
+            this.windowKeeper.restore().then(() => {
+                // console.log('window keeper after restore', this.windowKeeper)
+                // Create the browser window.
+                const mainWindow = new BrowserWindow({
+                    width: this.windowKeeper.width || (this.backApp.options && this.backApp.options.width) || 800,
+                    height: this.windowKeeper.height || (this.backApp.options && this.backApp.options.height) || 600,
+                    x: this.windowKeeper.x || (this.backApp.options && this.backApp.options.startX) || 0,
+                    y: this.windowKeeper.y || (this.backApp.options && this.backApp.options.startY) || 0,
+                    icon: path.join(__dirname, 'assets/icons/png/64x64.png'),
+                    webPreferences: {
+                        nodeIntegration: false, // we handle all the node stuff back-side
+                        contextIsolation: true, // gateway through window.api
+                        enableRemoteModule: false,
+                        preload: preloadPath
+                    }
+                })
+                // console.log('window keeper before track', this.windowKeeper)
+                this.windowKeeper.track(mainWindow)
+                // console.log('window keeper after track', this.windowKeeper)
+
+                // send window events via ipc
+                mainWindow.on('resize', (e: any) => {
+                    const size = mainWindow.getSize()
+                    // console.log('electron sees resize ', size)
+                    AppGateway.sendMessage('EV', {subject: 'resize', data: size})
+                })
+
+                // and load the index.html of the app.
+                mainWindow.loadFile('./front/index.html')
+
+                // TODO: Make subject to options
+                mainWindow.fullScreen = (this.backApp.options && this.backApp.options.fullScreen) || false
+                // Open the DevTools.
+                if ((this.backApp.options && this.backApp.options.devTools)) {
+                    mainWindow.webContents.openDevTools()
                 }
+
+                this.electronWindow = mainWindow
             })
-
-            // send window events via ipc
-            mainWindow.on('resize', (e: any) => {
-                const size = mainWindow.getSize()
-                // console.log('electron sees resize ', size)
-                AppGateway.sendMessage('EV', {subject: 'resize', data: size})
-            })
-
-            // and load the index.html of the app.
-            mainWindow.loadFile('./front/index.html')
-
-            mainWindow.fullScreen = true;
-            // Open the DevTools.
-            mainWindow.webContents.openDevTools()
-
-            this.electronWindow = mainWindow
         } else {
             throw(Error('not expected to call createWindow from nativescript implementation'))
         }
@@ -174,6 +199,7 @@ export type PageDoneCallback = (context:FrameworkFrontContext, userData:any) => 
 export interface TBBackApp {
     appStart: BackAppStartCallback,
     appExit: BackAppExitCallback
+    options:any
 }
 /**
  * Signature for a Jove app registration, front (render) process
