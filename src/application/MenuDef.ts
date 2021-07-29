@@ -21,7 +21,11 @@ function readMenuDef(app:AppCore, menuPath?:string) {
         if(exists) {
             return app.MainApi.readFileText(menuDef).then((defText:string) => {
                 return processMenuDef(app, defText)
+            }).catch((e:Error) => {
+                console.error('unable to read menu', e.message)
             })
+        } else {
+            console.error('No menu file ', menuPath)
         }
     })
 

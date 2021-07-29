@@ -211,21 +211,7 @@ export class AppCore {
                 })
             })
         }
-        mainApi.getUserAndPathInfo().then((info:any) => {
-            const pathSetters = getRemoteSetters()
-            pathSetters.setCurrentWorkingDirectory(info.cwd)
-            // let jp = this.Path.join(info.cwd, '..')
-            // console.log('$$$$$$$$ userAndPath DB:', jp)
-            if(check.mobile) {
-                pathSetters.setAppPath(this.Path.normalize(this.Path.join(info.cwd, '..')))
-            } else {
-                pathSetters.setAppPath(info.cwd)
-            }
-            pathSetters.setHomeDirectory(info.home)
-            const env = this.model.getAtPath('environment')
-            const plat = env.platform.name === 'win32' ? 'win32' : 'posix'
-            pathSetters.setPlatform(plat)
-        })
+        this.setPathUtilInfo()
 
         if(!check.mobile) {
             // console.log('##### Setting up resize checker -----------')
@@ -284,23 +270,41 @@ export class AppCore {
 
     }
 
-    setupMenu(menuPath:string) {
-        let menuData
-        if(check.mobile) {
-            let menuDataPath = nsfs.path.join(nsfs.knownFolders.currentApp().path, 'assets', menuPath)
-            let file = nsfs.File.fromPath(menuDataPath)
-            menuData = file.readTextSync((err:any) => {
-                console.error('unable to read menu data from '+menuDataPath)
-                menuData = ''
-            })
-        } else {
-            try {
-                menuData = require('Assets/' + (menuPath)).replace('/front', '/front/')
-            } catch(e) {}
+    setPathUtilInfo() {
+        if(mainApi) {
+            if(!this.Path.appPath) {
+                return mainApi.getUserAndPathInfo().then((info: any) => {
+                    const pathSetters = getRemoteSetters()
+                    pathSetters.setCurrentWorkingDirectory(info.cwd)
+                    // let jp = this.Path.join(info.cwd, '..')
+                    // console.log('$$$$$$$$ userAndPath DB:', jp)
+                    if (check.mobile) {
+                        pathSetters.setAppPath(this.Path.normalize(this.Path.join(info.cwd, '..')))
+                    } else {
+                        pathSetters.setAppPath(this.Path.join(info.cwd, 'front'))
+                    }
+                    pathSetters.setHomeDirectory(info.home)
+                    const env = this.model.getAtPath('environment')
+                    const plat = env.platform.name === 'win32' ? 'win32' : 'posix'
+                    pathSetters.setPlatform(plat)
+                })
+            }
         }
+        return Promise.resolve()
+    }
 
-        // console.log('menu data', menuData)
-        return setupMenu(this, menuData)
+
+    setupMenu(menuPath:string) {
+
+        let pathUtils = this.Path
+        if(mainApi) {
+            return this.setPathUtilInfo().then(()=> {
+                let assetPath = pathUtils.join(pathUtils.appPath, 'assets', menuPath)
+                return Promise.resolve(setupMenu(this, assetPath))
+            })
+        }
+        console.error('no menu loaded -- api unavailable')
+        return Promise.resolve() // no menu loaded
     }
 
     public setActiveMenu(menuComp:any) {
