@@ -201,19 +201,55 @@ export class FrameworkBackContext {
     }
 }
 
+/**
+ * Determines our launch path and sets the current working directory there
+ * It then reads the expected to find BuildEnvironment.json file and returns this data
+ */
 function readBuildEnvironment() {
     let be = {}
-    // read BuildEnvironment.json from current directory
-    const beFile = 'BuildEnvironment.json'
+
+    // determine our launchDir based on this path
+    let scriptPath = __dirname
+    // find ourselves in this path
+    let n = scriptPath.indexOf('/node_modules/@tremho/jove-common')
+    let launchDir;
+    if(n !== -1) {
+        launchDir = scriptPath.substring(0,n)
+    }
+    // read BuildEnvironment.json from launchDir
+    if(!launchDir) {
+        // assume we were launched from the current directory
+        launchDir = '.'
+    }
+    console.log('>>>>>>>>>> LaunchDir determined to be ',launchDir)
+    if(launchDir.substring(launchDir.length-5) === '.asar') {
+        launchDir += '.unpacked'
+        console.log('>>>>>>>>>> LaunchDir determined to be ',launchDir)
+
+        process.chdir(launchDir) // so we are in sync from now on
+        console.log('>>>>>>>>>> reset cwd', process.cwd())
+    } else {
+        console.log('>>>>>>>> Not changing cwd', process.cwd())
+    }
+
+
+    const beFile ='BuildEnvironment.json'
     if(fs.existsSync(beFile)) {
         try {
             const text = fs.readFileSync(beFile).toString() || "{}"
             be = JSON.parse(text)
         } catch(e) {
             console.error('Unable to read '+beFile, e)
+            be = {
+                error:"Unable to read "+beFile,
+                errMsg: e.message
+            }
         }
     } else {
         console.error(beFile+' Does not exist')
+        be = {
+            error:"Unable to locate "+beFile,
+        }
     }
     return be
 }
@@ -245,7 +281,7 @@ export type PageDoneCallback = (context:FrameworkFrontContext, userData:any) => 
 export interface TBBackApp {
     appStart: BackAppStartCallback
     appExit: BackAppExitCallback
-    options:any
+    options: any
 }
 /**
  * Signature for a Jove app registration, front (render) process

@@ -172,20 +172,21 @@ export class AppCore {
     }
 
     public setupUIElements(appFront:any) {
-        // console.log('>>> setupUIElements >>>')
+        console.log('>>> setupUIElements >>>')
 
         // set the infomessage log handling
         if(!check.mobile) {
+            console.log('not mobile, clearing component gate')
             this.componentIsReady() // not used in riot, so clear the gate
 
             mainApi.messageInit().then(() => {
-                // console.log('messages wired')
+                console.log('messages wired')
                 this.model.addSection('infoMessage', {messages: []})
                 mainApi.addMessageListener('IM', (data:any) => {
                     writeMessage(data.subject, data.message)
                 })
                 mainApi.addMessageListener('EV', (data:any) => {
-                    // console.log('event info incoming:', data)
+                    console.log('event info incoming:', data)
                     let evName = data.subject;
                     let evData = data.data;
                     if (evName === 'resize') {
@@ -208,7 +209,11 @@ export class AppCore {
                         console.log('===================')
                         console.log('environment', env)
                         console.log('===================')
-                        this.setPathUtilInfo(env)
+                        this.setPathUtilInfo(env).then(() => {
+                            setupMenu(this).then(()=> {
+                                this.modelGateResolver()
+                            })
+                        })
                     }
                     if(evName === 'menuAction') {
                         this.onMenuAction({id:evData})
@@ -232,6 +237,7 @@ export class AppCore {
             // so I don't think there's much more needed
             // and if there is, we should do it when we set the frame
         } else {
+            console.log('platClass set checks early environment', environment)
             let platClass
             if(environment.platform.name === 'darwin') {
                 platClass = 'macos'
@@ -240,6 +246,7 @@ export class AppCore {
             } else {
                 platClass = 'linux'
             }
+            console.log('setting platClass to '+platClass)
             document.body.classList.add(platClass)
         }
 
@@ -264,11 +271,6 @@ export class AppCore {
         this.model.addSection('menu', {})
         if(appFront) {
             Promise.resolve(appFront.appStart(this)).then(() => {
-                this.modelGateResolver()
-            })
-        } else {
-            // default app start
-            setupMenu(this).then(()=> {
                 this.modelGateResolver()
             })
         }
@@ -313,7 +315,8 @@ export class AppCore {
 
         let pathUtils = this.Path
         if(mainApi) {
-            let assetPath = pathUtils.join(pathUtils.assetsPath, menuPath)
+            // in case our paths aren't set up yet in pathUtils, default to expectation
+            let assetPath = pathUtils.join(pathUtils.assetsPath || 'front/assets', menuPath)
             return Promise.resolve(setupMenu(this, assetPath))
         }
         console.error('no menu loaded -- api unavailable')
