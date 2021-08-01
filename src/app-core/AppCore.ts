@@ -201,6 +201,15 @@ export class AppCore {
                         }
                         this.model.setAtPath('environment.screen', env.screen)
                     }
+                    if(evName === 'envInfo') {
+                        let env = this.model.getAtPath('environment')
+                        env = mergeEnvironmentData(env, data)
+                        this.model.setAtPath('environment', env)
+                        console.log('===================')
+                        console.log('environment', env)
+                        console.log('===================')
+                        this.setPathUtilInfo(env)
+                    }
                     if(evName === 'menuAction') {
                         this.onMenuAction({id:evData})
                     }
@@ -211,25 +220,8 @@ export class AppCore {
                 })
             })
         }
-        this.setPathUtilInfo()
-
-        if(!check.mobile) {
-            // console.log('##### Setting up resize checker -----------')
-            const window = {width:0, height:0}
-            // let resizeInterval = setInterval(() => {
-            let resizeChecker = new ResizeSensor(document.body, () =>{
-                const bodSize = document.body.getBoundingClientRect()
-                if (window.width != bodSize.width || window.height !== bodSize.height) {
-                    window.width = bodSize.width
-                    window.height = bodSize.height
-                    // console.log('see a body resize event', window)
-                    this.model.setAtPath('environment.window', window, true)
-                }
-            })
-        }
 
         this.model.addSection('page', {navInfo: {pageId: '', context: {}}})
-
 
         // Set environment items
         // this will allow us to do platform branching and so on
@@ -251,8 +243,22 @@ export class AppCore {
             document.body.classList.add(platClass)
         }
 
-
         this.model.addSection('environment', environment)
+
+        if(!check.mobile) {
+            // console.log('##### Setting up resize checker -----------')
+            const window = {width:0, height:0}
+            // let resizeInterval = setInterval(() => {
+            let resizeChecker = new ResizeSensor(document.body, () =>{
+                const bodSize = document.body.getBoundingClientRect()
+                if (window.width != bodSize.width || window.height !== bodSize.height) {
+                    window.width = bodSize.width
+                    window.height = bodSize.height
+                    // console.log('see a body resize event', window)
+                    this.model.setAtPath('environment.window', window, true)
+                }
+            })
+        }
 
         // Set up app models and menus
         this.model.addSection('menu', {})
@@ -270,22 +276,31 @@ export class AppCore {
 
     }
 
-    setPathUtilInfo() {
+    setPathUtilInfo(env:any) {
         if(mainApi) {
-            if(!this.Path.appPath) {
-                return mainApi.getUserAndPathInfo().then((info: any) => {
+            if(!this.Path.cwd) {
+                let appName = 'jove-app'
+                try {
+                    appName = env.build.app.name
+                } catch(e) {
+                }
+                console.log('getting paths for app', appName)
+                return mainApi.getUserAndPathInfo(appName).then((info: any) => {
+                    console.log(info)
                     const pathSetters = getRemoteSetters()
                     pathSetters.setCurrentWorkingDirectory(info.cwd)
-                    // let jp = this.Path.join(info.cwd, '..')
-                    // console.log('$$$$$$$$ userAndPath DB:', jp)
-                    if (check.mobile) {
-                        pathSetters.setAppPath(this.Path.normalize(this.Path.join(info.cwd, '..')))
-                    } else {
-                        pathSetters.setAppPath(this.Path.join(info.cwd, 'front'))
-                    }
+                    pathSetters.setAssetsDirectory(info.assets)
                     pathSetters.setHomeDirectory(info.home)
-                    const env = this.model.getAtPath('environment')
-                    const plat = env.platform.name === 'win32' ? 'win32' : 'posix'
+                    console.log('mystery test', info)
+                    console.log('sending appDataPath', info.appData)
+                    pathSetters.setAppDataDirectory(info.appData)
+                    console.log('sending documentsPath', info.documents)
+                    pathSetters.setDocumentsDirectory(info.documents)
+                    console.log('sending downloadsPath', info.downloads)
+                    pathSetters.setDownloadsDirectory(info.downloads)
+                    console.log('sending desktopPath', info.desktop)
+                    pathSetters.setDesktopDirectory(info.desktop)
+                    const plat = env.runtime.platform.name === 'win32' ? 'win32' : 'posix'
                     pathSetters.setPlatform(plat)
                 })
             }
@@ -298,10 +313,8 @@ export class AppCore {
 
         let pathUtils = this.Path
         if(mainApi) {
-            return this.setPathUtilInfo().then(()=> {
-                let assetPath = pathUtils.join(pathUtils.appPath, 'assets', menuPath)
-                return Promise.resolve(setupMenu(this, assetPath))
-            })
+            let assetPath = pathUtils.join(pathUtils.assetsPath, menuPath)
+            return Promise.resolve(setupMenu(this, assetPath))
         }
         console.error('no menu loaded -- api unavailable')
         return Promise.resolve() // no menu loaded
@@ -567,7 +580,7 @@ export class AppCore {
         // console.log('...spd trace 2')
         if(typeof item === 'object') {
             // console.log('...spd trace 3')
-            this.model.setAtPath('page-data.'+fullPageName, item, false, true)
+            this.model.setAtPath('page-data.'+fullPageName, item, true, true)
         } else {
             // console.log('...spd trace 4')
             data[item] = value
@@ -807,3 +820,38 @@ function findPageComponent(pageId:string) {
     return pageComp
 }
 
+function mergeEnvironmentData(env:any, data:any) {
+
+    // debug
+    console.log('-------env merge')
+    console.log('env, data ', env, data)
+
+    try {
+        // merges the sometimes differently formatted environment info from
+        // build and startup with initial stuff from EnvCheck load to create
+        // the canonical Environment data.
+        data = data.data || data
+        let build = data.build
+        console.log('build isolated', build)
+        let rfw = Object.assign({},
+            env.runtime && env.runtime.framework,
+            data.runtime && data.runtime.framework)
+        console.log('runtime.framework, isolated', rfw)
+        let platform = data.runtime && data.runtime.platform
+        if(!platform) platform = env.runtime && env.runtime.platform
+        if(!platform) platform = env.platform || {}
+        console.log('runtime platform, isolated', platform)
+        let out: any = {
+            build,
+            runtime: {
+                framework: rfw,
+                platform: platform
+            }
+        }
+        delete out.runtime.window
+        out.window = env.window
+        return out
+    } catch(e) {
+        console.error(e)
+    }
+}

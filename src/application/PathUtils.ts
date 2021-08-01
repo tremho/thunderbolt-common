@@ -10,31 +10,63 @@ export class PathParts {
 let platform = 'posix'
 let currentWorkingDirectory:string
 let homeDirectory:string
-let appPath:string
+let resourcePath:string
+let appDataPath:string
+let documentsPath:string
+let downloadsPath:string
+let desktopPath:string
 
+// system calls here at setup
 function setPlatform(plat:string) {
+    console.log('setting plat to ', plat)
     platform = plat
 }
 
+// system calls here at setup
 function setCurrentWorkingDirectory(cwd:string) {
+    console.log('setting cwd to ', cwd)
     currentWorkingDirectory = cwd
 }
 
+// system calls here at setup
 function setHomeDirectory(userDir:string) {
+    console.log('setting home to ', userDir)
     homeDirectory = userDir
 }
-
-function setAppPath(path:string) {
-    appPath = path
+// system calls here at setup
+function setAssetsDirectory(path:string) {
+    console.log('setting assets to ', path)
+    resourcePath = path
 }
 
+function setAppDataDirectory(path:string) {
+    console.log('setting appData to ', path)
+    appDataPath = path
+}
+function setDocumentsDirectory(path:string) {
+    console.log('setting documents to ', path)
+    documentsPath = path
+}
+function setDownloadsDirectory(path:string) {
+    console.log('setting downloads to ', path)
+    downloadsPath = path
+}
+function setDesktopDirectory(path:string) {
+    console.log('setting desktop to ', path)
+    desktopPath = path
+}
 
+// system calls here at setup to get access to path setters
 export function getRemoteSetters() {
     return {
         setPlatform,
         setCurrentWorkingDirectory,
         setHomeDirectory,
-        setAppPath
+        setAssetsDirectory,
+        setAppDataDirectory,
+        setDocumentsDirectory,
+        setDownloadsDirectory,
+        setDesktopDirectory
     }
 }
 
@@ -257,46 +289,131 @@ const win32 = {
 }
 export class PathUtils {
 
+    /**
+     * Gets the posix version of this API, regardless of the recognized platform
+     */
     get posix():any { return posix }
+    /**
+     * Gets the windows version of this API, regardless of the recognized platform
+     */
     get win32():any { return win32 }
 
+    /**
+     * Returns the path delimiter (as in what separates paths in the path environment variable)
+     */
     get delimiter():string {
         // @ts-ignore
         return this[platform].delimiter
     }
+
+    /**
+     * Returns the path folder separator (e.g. '/' or '\')
+     */
     get sep():string {
         // @ts-ignore
         return this[platform].sep
     }
+
+    /**
+     * Returns which platform we are under
+     */
     get platform():string {
         return platform
     }
+
+    /**
+     * returns the user's home directory
+     */
     get home():string {
         return homeDirectory
     }
+
+    /**
+     * returns the working directory of the executable
+     */
     get cwd():string {
         return currentWorkingDirectory
     }
-    get appPath():string {
-        return appPath
+
+    /**
+     * returns the directory of the assets folder
+     * may be undefined if not found in expected location
+     */
+    get assetsPath():string {
+        return resourcePath
     }
 
+    /**
+     * returns the directory of the application files
+     * may be undefined for Linux, or if not found in expected location
+     */
+    get appDataPath():string {
+        return appDataPath
+    }
+
+    /**
+     * returns the directory reserved  for user documents
+     * may be undefined for Linux, or if not found in expected location
+     */
+    get documentsPath():string {
+        return documentsPath
+    }
+    /**
+     * returns the directory reserved  for user downloads
+     * may be undefined for Linux, or if not found in expected location
+     */
+    get downloadsPath():string {
+        return downloadsPath
+    }
+    /**
+     * returns the directory reserved  for system desktop
+     * may be undefined for Linux, or if not found in expected location
+     */
+    get desktopPath():string {
+        return desktopPath
+    }
+
+
+    /**
+     * Returns the directory of the current path (i.e. no basename)
+     * @param path
+     */
     dirname(path:string) : string {
         // @ts-ignore
         return this[platform].dirname(path)
     }
+
+    /**
+     * Returns the basename of the file referenced in this path (i.e. filename w/o extension)
+     * @param path
+     */
     basename(path:string) :string {
         // @ts-ignore
         return this[platform].basename(path)
     }
+
+    /**
+     * Returns the extension of the file referenced in this path
+     * @param path
+     */
     extension(path:string):string {
         // @ts-ignore
         return this[platform].extension(path)
     }
+
+    /**
+     * Formats a path from a structured set of properties
+     * @param {PathParts} parts
+     */
     format(parts:PathParts):string {
         // @ts-ignore
         return this[platform].format(parts)
     }
+
+    /**
+     * Deconstructs a path into a structured set of properties
+     * @param path
+     */
     parse(path:string):PathParts {
         // @ts-ignore
         return this[platform].parse(path)
@@ -305,18 +422,39 @@ export class PathUtils {
         // @ts-ignore
         return this[platform].isAbsolute()
     }
+
+    /**
+     * Joins path segments with appropriate separator
+     * @param paths
+     */
     join(...paths:string[]): string {
         // @ts-ignore
         return this[platform].join(...paths)
     }
+
+    /**
+     * Normalize a path to remove redundancies
+     * @param path
+     */
     normalize(path:string) : string {
         // @ts-ignore
         return this[platform].normalize(path)
     }
+
+    /**
+     * Construct a relative path from a larger path to subset base
+     * @param from
+     * @param to
+     */
     relative(from:string, to:string) : string {
         // @ts-ignore
         return this[platform].relative(from, to)
     }
+
+    /**
+     * Resolve a relative or absolute path into a fully qualified absolute path
+     * @param paths
+     */
     resolve(...paths:string[]) :string {
         // @ts-ignore
         return this[platform].resolve(...paths)

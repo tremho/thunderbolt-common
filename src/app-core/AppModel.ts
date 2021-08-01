@@ -233,7 +233,7 @@ export class AppModel {
             }
         }
         if(noAnnounce) {
-            Object.defineProperty(propObj, prop, {value})
+            Object.defineProperty(propObj, prop, {value, writable:true})
         } else {
             // @ts-ignore
             propObj[prop] = value;

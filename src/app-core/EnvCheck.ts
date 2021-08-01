@@ -1,20 +1,18 @@
 
-let environment:any;
+
 let nsplatform:any;
 let nsdevice:any;
 let nsscreen:any;
-try {
-    environment = require('Generated/BuildEnvironment.json')
-} catch(e) {
-    console.error('Unable to read BuildEnvironment')
-    environment = {
+
+// default / placeholder
+let environment:any = {
         framework: {
             riot: 'default'
         },
         platform: {
         }
     }
-}
+
 try {
     nsplatform = require('@nativescript/core/platform')
     nsdevice = nsplatform.device
@@ -70,9 +68,6 @@ if (typeof global === 'object') {
 // } else {
 //     console.log('----> No Detection of global object <-----')
 }
-console.log('=======environment======\n', environment)
-console.log('================================\n')
-
 class Check {
     public get riot() {
         return environment.framework.riot !== undefined;
@@ -83,4 +78,3 @@ class Check {
 }
 export const check = new Check()
 export {environment as environment}
-

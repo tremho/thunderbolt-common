@@ -5,7 +5,9 @@
     Defines all exports of the framework API for use by adopting apps.
 */
 
-import path from "path";
+import * as path from "path"
+import * as fs from "fs"
+import * as os from "os"
 
 let electronApp:any, BrowserWindow:any, preloadPath:string, AppGateway:any, ipcMain:any
 let makeWindowStatePersist:any
@@ -51,8 +53,9 @@ export class FrameworkBackContext {
     public electronApp: any
     public nativescriptApp:any
     public backApp: TBBackApp
-    public frontApp: TBFrontApp | undefined
+    // public frontApp: TBFrontApp | undefined
     public windowKeeper: any
+    passedEnvironment:any = {}
 
 
     constructor(backApp: TBBackApp) {
@@ -63,9 +66,27 @@ export class FrameworkBackContext {
 
         console.log('Framework back app constructor')
 
+        const env = {
+            build: readBuildEnvironment(),
+            runtime: {
+                framework: {
+                    node: process.versions.node,
+                    electron: process.versions.electron
+                },
+                platform: {
+                    name: process.platform,
+                    version: os.version()
+                }
+            }
+        }
+        // @ts-ignore
+        let appName = (env.build.app && env.build.app.name) || 'jove-app'
+
+        this.passedEnvironment = env;
+        // console.log('passed Environment=', env)
+
         // make our window keeper
-        const name = (this.backApp.options && this.backApp.options.name) || 'jove-app'
-        this.windowKeeper = makeWindowStatePersist(name)
+        this.windowKeeper = makeWindowStatePersist(appName)
         // console.log('window keeper created', this.windowKeeper)
 
 
@@ -78,6 +99,11 @@ export class FrameworkBackContext {
                 console.log('Framework back app when Ready', this.backApp)
                 this.backApp.appStart(this).then(() => {
                     this.createWindow()
+
+                    setTimeout(()=> {
+                        // console.log('sending EV:envInfo message for env', JSON.stringify(this.passedEnvironment, null, 2))
+                        AppGateway.sendMessage('EV', {subject:'envInfo', data:this.passedEnvironment})
+                    })
                 })
 
                 electronApp.on('activate', () => {
@@ -85,6 +111,7 @@ export class FrameworkBackContext {
                     // On macOS it's common to re-create a window in the app when the
                     // dock icon is clicked and there are no other windows open.
                     if (BrowserWindow.getAllWindows().length === 0) this.createWindow()
+
                 })
             })
 
@@ -161,15 +188,34 @@ export class FrameworkBackContext {
         }
     }
 
+    /* THIS NEVER HAPPENS
     setFrontApp(frontApp:TBFrontApp) {
         this.frontApp = frontApp
+        this.frontApp.passEnvironment(this.passedEnvironment) // chain gets continued in appMain (Desktop/buildPack)
     }
+     */
 
     registerExtensionModule(name:string, module:any) {
         // console.log('TODO: registerExtensionModule(name, module)', registerExtensionModule)
         registerExtensionModule(name, module)
     }
+}
 
+function readBuildEnvironment() {
+    let be = {}
+    // read BuildEnvironment.json from current directory
+    const beFile = 'BuildEnvironment.json'
+    if(fs.existsSync(beFile)) {
+        try {
+            const text = fs.readFileSync(beFile).toString() || "{}"
+            be = JSON.parse(text)
+        } catch(e) {
+            console.error('Unable to read '+beFile, e)
+        }
+    } else {
+        console.error(beFile+' Does not exist')
+    }
+    return be
 }
 
 /**
@@ -197,7 +243,7 @@ export type PageDoneCallback = (context:FrameworkFrontContext, userData:any) => 
  * Signature for a Jove app registration, back (main) process
  */
 export interface TBBackApp {
-    appStart: BackAppStartCallback,
+    appStart: BackAppStartCallback
     appExit: BackAppExitCallback
     options:any
 }
@@ -205,15 +251,17 @@ export interface TBBackApp {
  * Signature for a Jove app registration, front (render) process
  */
 export interface TBFrontApp {
-    appStart: FrontAppStartCallback,
+    appStart: FrontAppStartCallback
     appExit: FrontAppExitCallback
+    passEnvironment(env:any):void
+    getPassedEnvironment():any
 }
 
 /**
  * Signature for a Jove page
  */
 export interface TBPage {
-    pageBegin: PageBeginCallback,
+    pageBegin: PageBeginCallback
     pageDone: PageDoneCallback
 }
 
@@ -237,10 +285,20 @@ export function registerApp(injected:any, backApp:TBBackApp) : void {
     }
     frameworkContext = new FrameworkBackContext(backApp) // the constructor takes it away
 }
+/*
+THIS NEVER HAPPENS
 export function registerFrontApp(frontApp:TBFrontApp) : void {
+
+    let passedEnvironment = {}
+    frontApp.passEnvironment = (env:any)=>{
+        passedEnvironment = env
+    }
+    frontApp.getPassedEnvironment = () => {return passedEnvironment}
+
     // console.log('front app being registered')
-    frameworkContext.setFrontApp(frontApp)
+    // frameworkContext.setFrontApp(frontApp)  // THIS NEVER  HAPPENS
 }
+ */
 export const Log = {
     debug(...a:any) {console.log(...a)},
     log(...a:any) {console.log(...a)},
