@@ -110,7 +110,7 @@ export class FrameworkBackContext {
                     setTimeout(()=> {
                         // console.log('sending EV:envInfo message for env', JSON.stringify(this.passedEnvironment, null, 2))
                         AppGateway.sendMessage('EV', {subject:'envInfo', data:this.passedEnvironment})
-                    })
+                    }, 100)
                 })
 
                 electronApp.on('activate', () => {
@@ -258,6 +258,7 @@ function readBuildEnvironment() {
             error:"Unable to locate "+beFile,
         }
     }
+    console.log('returning build environment data as ', be)
     return be
 }
 

@@ -833,6 +833,7 @@ function mergeEnvironmentData(env:any, data:any, riotVersion?:string) {
     // debug
     console.log('-------env merge')
     console.log('env, data ', env, data)
+    console.log('riot version ', riotVersion)
 
     try {
         // merges the sometimes differently formatted environment info from
