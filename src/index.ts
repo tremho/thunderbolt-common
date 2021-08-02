@@ -228,6 +228,7 @@ function readBuildEnvironment() {
         // assume we were launched from the current directory
         launchDir = '.'
     }
+    launchDir = path.resolve(launchDir)
     console.log('>>>>>>>>>> LaunchDir determined to be ',launchDir)
     if(launchDir.substring(launchDir.length-5) === '.asar') {
         launchDir += '.unpacked'
@@ -236,7 +237,15 @@ function readBuildEnvironment() {
         process.chdir(launchDir) // so we are in sync from now on
         console.log('>>>>>>>>>> reset cwd', process.cwd())
     } else {
-        console.log('>>>>>>>> Not changing cwd', process.cwd())
+        const lookFor = path.join(launchDir, 'resources', 'app.asar.unpacked')
+        if(fs.existsSync(lookFor)) {
+            // this will be a case on Windows
+            launchDir = lookFor
+            console.log('>>>>>>>>>> cwd moving to ',launchDir)
+            process.chdir(launchDir) // so we are in sync from now on
+        } else {
+            console.log('>>>>>>>> Not changing cwd', process.cwd())
+        }
     }
 
 
