@@ -6,12 +6,13 @@ let nsscreen:any;
 
 // default / placeholder
 let environment:any = {
-        framework: {
-            riot: 'default'
-        },
+    runtime: {
+        framework: {},
         platform: {
+            name: 'unknown'
         }
     }
+}
 
 try {
     nsplatform = require('@nativescript/core/platform')
@@ -36,11 +37,10 @@ if (typeof global === 'object') {
         || (typeof nsplatform === 'object') // not the best option, but since the other 'sure things' seem to fail...
        ) {
         if(!lookGlobal.__snapshot) console.log('{N} detected, version ' + lookGlobal.__runtimeVersion)
-        environment.framework.nativeScript = lookGlobal.__runtimeVersion
-        delete environment.framework.riot
-        environment.platform = {
+        environment.runtime.framework.nativeScript = lookGlobal.__runtimeVersion
+        environment.runtime.platform = {
             name: nsplatform ? nsplatform.device.os.toLowerCase() : 'nativescript',
-            version: nsplatform ? nsplatform.device.osVersion : environment.framework.nativeScript,
+            version: nsplatform ? nsplatform.device.osVersion : environment.runtime.framework.nativeScript,
             deviceType: nsplatform && nsplatform.device.deviceType,
             model: nsplatform && nsplatform.device.model,
             language: nsplatform && nsplatform.device.language,
@@ -52,9 +52,9 @@ if (typeof global === 'object') {
         }
     } else {
         if (typeof global.process === 'object') {
-            environment.platform = {
+            environment.runtime.platform = {
                 name: global.process.platform,
-                version: global.process.versions[environment.platform.name],
+                // version: global.process.versions[environment.runtime.platform.name],
                 deviceType: 'computer'
                 // model: '',
                 // language: '',
@@ -62,7 +62,7 @@ if (typeof global === 'object') {
                 // apiVersion: 0,
                 // uuid:
             }
-            console.log('NODE detected on a ' + environment.platform.name + ' system, version '+ environment.platform.version)
+            console.log('NODE detected on a ' + environment.runtime.platform.name + ' system')
         }
     }
 // } else {
@@ -70,11 +70,14 @@ if (typeof global === 'object') {
 }
 class Check {
     public get riot() {
-        return environment.framework.riot !== undefined;
+        return (environment && environment.runtime.framework.riot) !== undefined;
     }
     public get mobile() {
-        return environment.framework.nativeScript !== undefined
+        return (environment && environment.runtime.framework.nativeScript) !== undefined
     }
 }
 export const check = new Check()
-export {environment as environment}
+
+export function setEnvironment(env:any) {
+    environment = env
+}

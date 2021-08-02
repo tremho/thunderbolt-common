@@ -226,10 +226,13 @@ export class AppModel {
         const prop = path.substring(path.lastIndexOf('.')+1)
         if(!force) {
             // @ts-ignore
-            if(typeof propObj[prop] !== typeof value) {
+            if(value !== undefined && propObj[prop] !== undefined) { // allow set to undefined value, or clearing of any value
                 // @ts-ignore
-                const e = TypeError(`Attempt to set model property ${path} to ${typeof value} ${value} when existing type is ${typeof propObj[prop]}`)
-                throw e
+                if (typeof propObj[prop] !== typeof value) {
+                    // @ts-ignore
+                    const e = TypeError(`Attempt to set model property ${path} to ${typeof value} ${value} when existing type is ${typeof propObj[prop]}`)
+                    throw e
+                }
             }
         }
         if(noAnnounce) {

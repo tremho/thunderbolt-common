@@ -1,6 +1,5 @@
 
 import {AppModel} from "../app-core/AppModel";
-import {environment} from "../app-core/EnvCheck";
 import {AppCore} from "../app-core/AppCore";
 
 /*
@@ -139,6 +138,9 @@ export class MenuApi {
      * @param dest names destination menu type: either 'App' or 'Desktop'
      */
     limitTarget(item:MenuItem, dest:string) {
+
+        const environment = this.model.getAtPath('environment')
+
         const target = item.targetCode || ''
         // limit to the target
         let isAppBar = (target.indexOf('A') !== -1) // specifically app bar only
@@ -154,26 +156,27 @@ export class MenuApi {
             included = false
             if(!tc.match(/[mwuai]/)) {
                 included = true; // if it's none of these, all are good
-            }
-            if(tc === 'm') {
-                included = environment.platform.name === 'darwin'
-                break;
-            }
-            if(tc === 'w') {
-                included = environment.platform.name === 'win32'
-                break;
-            }
-            if(tc === 'u') {
-                included = environment.platform.name === 'linux'
-                break;
-            }
-            if(tc === 'a') {
-                included = environment.platform.name === 'android'
-                break;
-            }
-            if(tc === 'i') {
-                included =  environment.platform.name === 'ios'
-                break;
+            } else {
+                if (tc === 'm') {
+                    included = environment.runtime.platform.name === 'darwin'
+                    break;
+                }
+                if (tc === 'w') {
+                    included = environment.runtime.platform.name === 'win32'
+                    break;
+                }
+                if (tc === 'u') {
+                    included = environment.runtime.platform.name === 'linux'
+                    break;
+                }
+                if (tc === 'a') {
+                    included = environment.runtime.platform.name === 'android'
+                    break;
+                }
+                if (tc === 'i') {
+                    included = environment.runtime.platform.name === 'ios'
+                    break;
+                }
             }
         }
         return dest === 'Desktop' ? isMenuBar && included : isAppBar && included

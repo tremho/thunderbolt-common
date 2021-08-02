@@ -1,10 +1,11 @@
 {
   "name": "@tremho/jove-common",
-  "version": "0.6.7-prerelease-9",
+  "version": "0.6.7-prerelease-12",
   "description": "Common component of the Jove framework",
   "main": "build/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tbx run tbTest" : "cd ~/tbd/tbTest && tbx run"
   },
   "repository": {
     "type": "git",

@@ -97,7 +97,14 @@ export class FrameworkBackContext {
             console.log('Framework back app has electronApp')
             electronApp.whenReady().then(() => {
                 console.log('Framework back app when Ready', this.backApp)
-                this.backApp.appStart(this).then(() => {
+                let p = Promise.resolve()
+                try {
+                    p = this.backApp.appStart(this)
+                }
+                catch(e) {
+                    console.log(e)
+                }
+                p.then(() => {
                     this.createWindow()
 
                     setTimeout(()=> {

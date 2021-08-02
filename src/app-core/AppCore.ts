@@ -1,5 +1,5 @@
 
-import {environment, check} from './EnvCheck'
+import {check,setEnvironment} from './EnvCheck'
 import Log from './Log'
 
 import {AppModel} from "./AppModel";
@@ -203,17 +203,31 @@ export class AppCore {
                         this.model.setAtPath('environment.screen', env.screen)
                     }
                     if(evName === 'envInfo') {
-                        let env = this.model.getAtPath('environment')
-                        env = mergeEnvironmentData(env, data)
-                        this.model.setAtPath('environment', env)
-                        console.log('===================')
-                        console.log('environment', env)
-                        console.log('===================')
-                        this.setPathUtilInfo(env).then(() => {
-                            setupMenu(this).then(()=> {
+                        try {
+                            let env = this.model.getAtPath('environment')
+                            // @ts-ignore
+                            env = mergeEnvironmentData(env, data, this._riotVersion)
+                            this.model.setAtPath('environment', env)
+                            console.log('===================')
+                            console.log('environment', env)
+                            console.log('===================')
+                            setEnvironment(env) // for check
+                            this.setPlatformClass(env)
+                            this.setPathUtilInfo(env).then(() => {
+                                // Set up app models and menus
+                                this.model.addSection('menu', {})
+                                if (appFront && appFront.appStart) { // appStart in tbFrontApp will likely create its own menu
+                                    Promise.resolve(appFront.appStart(this)).then(() => {
+                                        this.modelGateResolver()
+                                    })
+                                }
+                                // no front app, or no appStart, so we are just vanilla default
                                 this.modelGateResolver()
                             })
-                        })
+                        } catch(e) {
+                            console.error('problem processing envInfo EV message', e)
+                            throw(e)
+                        }
                     }
                     if(evName === 'menuAction') {
                         this.onMenuAction({id:evData})
@@ -230,27 +244,7 @@ export class AppCore {
 
         // Set environment items
         // this will allow us to do platform branching and so on
-
-        if(check.mobile) {
-            // ns already sets .ns-phone and .ns-tablet, plus .ns-portrait/.ns-landscape
-            // as well as .ns-ios and .ns-android,
-            // so I don't think there's much more needed
-            // and if there is, we should do it when we set the frame
-        } else {
-            console.log('platClass set checks early environment', environment)
-            let platClass
-            if(environment.platform.name === 'darwin') {
-                platClass = 'macos'
-            } else if(environment.platform.name === 'win32') {
-                platClass = 'windows'
-            } else {
-                platClass = 'linux'
-            }
-            console.log('setting platClass to '+platClass)
-            document.body.classList.add(platClass)
-        }
-
-        this.model.addSection('environment', environment)
+        this.model.addSection('environment', {}) // start empty; will get filled in on message.
 
         if(!check.mobile) {
             // console.log('##### Setting up resize checker -----------')
@@ -267,15 +261,27 @@ export class AppCore {
             })
         }
 
-        // Set up app models and menus
-        this.model.addSection('menu', {})
-        if(appFront) {
-            Promise.resolve(appFront.appStart(this)).then(() => {
-                this.modelGateResolver()
-            })
-        }
         return this.waitReady()
 
+    }
+    setPlatformClass(env:any) {
+        if(check.mobile) {
+            // ns already sets .ns-phone and .ns-tablet, plus .ns-portrait/.ns-landscape
+            // as well as .ns-ios and .ns-android,
+            // so I don't think there's much more needed
+            // and if there is, we should do it when we set the frame
+        } else {
+            let platClass
+            if(env.runtime.platform.name === 'darwin') {
+                platClass = 'macos'
+            } else if(env.runtime.platform.name === 'win32') {
+                platClass = 'windows'
+            } else {
+                platClass = 'linux'
+            }
+            console.log('setting platClass to '+platClass)
+            document.body.classList.add(platClass)
+        }
     }
 
     setPathUtilInfo(env:any) {
@@ -312,7 +318,6 @@ export class AppCore {
 
 
     setupMenu(menuPath:string) {
-
         let pathUtils = this.Path
         if(mainApi) {
             // in case our paths aren't set up yet in pathUtils, default to expectation
@@ -823,7 +828,7 @@ function findPageComponent(pageId:string) {
     return pageComp
 }
 
-function mergeEnvironmentData(env:any, data:any) {
+function mergeEnvironmentData(env:any, data:any, riotVersion?:string) {
 
     // debug
     console.log('-------env merge')
@@ -844,6 +849,7 @@ function mergeEnvironmentData(env:any, data:any) {
         if(!platform) platform = env.runtime && env.runtime.platform
         if(!platform) platform = env.platform || {}
         console.log('runtime platform, isolated', platform)
+        if(riotVersion) rfw.riot = riotVersion
         let out: any = {
             build,
             runtime: {

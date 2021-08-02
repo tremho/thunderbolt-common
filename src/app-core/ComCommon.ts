@@ -1,5 +1,5 @@
 
-import {environment, check} from './EnvCheck'
+import {check} from './EnvCheck'
 
 import {ComBinder} from './ComBinder'
 import {AppCore, getTheApp} from "./AppCore";

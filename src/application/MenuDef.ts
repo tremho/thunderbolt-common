@@ -5,7 +5,7 @@
 // (these come from Electron back end for desktop, and directly implemented in {N}, accessible from App-Core Wrapper)
 import {AppCore} from '../app-core/AppCore'
 import {IndicatorItem, MenuItem, ToolItem} from "./MenuApi";
-import {environment, check} from '../app-core/EnvCheck'
+import {check} from '../app-core/EnvCheck'
 
 let appmenu:MenuItem[] = []
 let appTools:ToolItem[] = []
@@ -25,7 +25,8 @@ function readMenuDef(app:AppCore, menuPath?:string) {
                 console.error('unable to read menu', e.message)
             })
         } else {
-            console.error('No menu file ', menuPath)
+            if(!menuPath) console.warn('TODO: need a default menu solution')
+            else console.error('No menu file ', menuPath)
         }
     })
 
