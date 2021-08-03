@@ -28,7 +28,7 @@ try {
 if (typeof global === 'object') {
     // console.log('----> Detected global object <-----')
     const lookGlobal:any = global;
-    // console.log('----> Detected global object <-----', lookGlobal)
+    // console.log('----> Detected global object <-----',   lookGlobal)
 
 
     if (

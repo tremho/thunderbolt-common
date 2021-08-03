@@ -5,32 +5,59 @@
     Defines all exports of the framework API for use by adopting apps.
 */
 
-import * as path from "path"
-import * as fs from "fs"
-import * as os from "os"
 
 let electronApp:any, BrowserWindow:any, preloadPath:string, AppGateway:any, ipcMain:any
 let makeWindowStatePersist:any
 let nscore:any, nativescriptApp:any, registerExtensionModule:any
 
+// This is used here to read under node, using the desktop injection references
+// since we can't include any node stuff here (even if we don't use it) when in Nativescript
+const localNodeFileApi:any = {
 
+    fileExists(file:string):Promise<boolean> {
+        const fs = nodeParts.fs
+        let exists = false
+        if(fs) {
+            exists =  fs.existsSync(file)
+        }
+        return Promise.resolve(exists)
+    },
+    readFileText(file:string):Promise<string> {
+        const fs = nodeParts.fs
+        let text
+        if(fs) {
+            text =  fs.readFileSync(file).toString()
+        }
+        return Promise.resolve(text)
+    }
+}
+
+let isNS = false
+let fileApi:any
 // console.log('wiring for mobile app handoff')
 try {
     // console.log('getting ComponentBase...')
-    let {ComponentBase} = require('@tremho/jove-mobile')
+    let {ComponentBase, mainApi} = require('@tremho/jove-mobile')
     // console.log('getting comCommon...')
     let comCommon = require('./app-core/ComCommon')
     // console.log('getting AppCore...')
     let {AppCore} = require('./app-core/AppCore')
     // console.log('bridging App Getter...')
     ComponentBase.bridgeAppGetter(AppCore.getTheApp, comCommon)
+    isNS = true
+    fileApi = mainApi
 } catch(e) {
-    if(typeof window === 'undefined') {
+    const isBrowser=new Function("try {return this===window;}catch(e){ return false;}");
+    if(!isBrowser()) {
         console.error('app handoff fails because', e.message)
     }
+
+    fileApi = localNodeFileApi
 }
 
+let nodeParts:any
 let frameworkContext:any
+
 
 function injectDesktopDependencies(injected:any) {
         electronApp = injected.electronApp
@@ -42,7 +69,7 @@ function injectDesktopDependencies(injected:any) {
         nativescriptApp = injected.nativescriptApp
         registerExtensionModule = injected.registerExtensionModule
         makeWindowStatePersist = injected.makeWindowStatePersist
-
+        nodeParts = injected.nodeParts
 }
 
 /**
@@ -66,86 +93,103 @@ export class FrameworkBackContext {
 
         console.log('Framework back app constructor')
 
-        const env = {
-            build: readBuildEnvironment(),
-            runtime: {
-                framework: {
-                    node: process.versions.node,
-                    electron: process.versions.electron
-                },
-                platform: {
-                    name: process.platform,
-                    version: os.version()
+        this.gatherEnvInfo()
+
+    }
+
+    gatherEnvInfo() {
+
+        readBuildEnvironment().then((buildEnv:any) => {
+
+            const platName = isNS ? nscore.platform.device.os.toLowerCase() : process.platform
+            const platVersion = isNS ? nscore.platform.device.osVersion : nodeParts.os.version()
+
+            const env = {
+                build: buildEnv,
+                runtime: {
+                    framework: {
+                        node: process.versions.node,
+                        electron: process.versions.electron
+                    },
+                    platform: {
+                        name: platName,
+                        version: platVersion
+                    }
                 }
             }
-        }
-        // @ts-ignore
-        let appName = (env.build.app && env.build.app.name) || 'jove-app'
+            // @ts-ignore
+            let appName = (env.build.app && env.build.app.name) || 'jove-app'
 
-        this.passedEnvironment = env;
-        // console.log('passed Environment=', env)
+            this.passedEnvironment = env;
+            console.log('passed Environment=', env)
 
-        // make our window keeper
-        this.windowKeeper = makeWindowStatePersist(appName)
-        // console.log('window keeper created', this.windowKeeper)
+            // make our window keeper
+            this.windowKeeper = makeWindowStatePersist(appName)
+            // console.log('window keeper created', this.windowKeeper)
 
 
-        // This method will be called when Electron has finished
-        // initialization and is ready to create browser windows.
-        // Some APIs can only be used after this event occurs.
-        if(electronApp) {
-            console.log('Framework back app has electronApp')
-            electronApp.whenReady().then(() => {
-                console.log('Framework back app when Ready', this.backApp)
-                let p = Promise.resolve()
-                try {
-                    p = this.backApp.appStart(this)
-                }
-                catch(e) {
-                    console.log(e)
-                }
-                p.then(() => {
-                    this.createWindow()
+            // This method will be called when Electron has finished
+            // initialization and is ready to create browser windows.
+            // Some APIs can only be used after this event occurs.
+            if(electronApp) {
+                console.log('Framework back app has electronApp')
+                electronApp.whenReady().then(() => {
+                    console.log('Framework back app when Ready', this.backApp)
+                    let p = Promise.resolve()
+                    try {
+                        p = this.backApp.appStart(this)
+                    }
+                    catch(e) {
+                        console.log(e)
+                    }
+                    p.then(() => {
+                        this.createWindow()
+
+                        setTimeout(()=> {
+                            // console.log('sending EV:envInfo message for env', JSON.stringify(this.passedEnvironment, null, 2))
+                            AppGateway.sendMessage('EV', {subject:'envInfo', data:this.passedEnvironment})
+                        }, 100)
+                    })
+
+                    electronApp.on('activate', () => {
+                        console.log('Framework back app Activated')
+                        // On macOS it's common to re-create a window in the app when the
+                        // dock icon is clicked and there are no other windows open.
+                        if (BrowserWindow.getAllWindows().length === 0) this.createWindow()
+
+                    })
+                })
+
+                // Quit when all windows are closed, except on macOS. There, it's common
+                // for applications and their menu bar to stay active until the user quits
+                // explicitly with Cmd + Q.
+                electronApp.on('window-all-closed', () => {
+                    if (process.platform !== 'darwin') {
+                        console.warn('TODO: call appExit from here')
+                        // TODO: Check Electron docs for an explicit quit event and trap there instead
+                        Promise.resolve(this.backApp.appExit(this)).then(() => {
+                            electronApp.quit()
+                        })
+                    }
+                })
+            } else {
+                // nativescript
+                this.backApp.appStart(this).then(() => {
+                    // Potential TODO:
+                    // this.nativescriptApp.on("orientationChanged", (arg:any) => {
+                    //     console.log('application orientation changed', arg)
+                    // })
 
                     setTimeout(()=> {
-                        // console.log('sending EV:envInfo message for env', JSON.stringify(this.passedEnvironment, null, 2))
+                        console.log('sending EV:envInfo message for env', JSON.stringify(this.passedEnvironment, null, 2))
                         AppGateway.sendMessage('EV', {subject:'envInfo', data:this.passedEnvironment})
                     }, 100)
+
+                    this.nativescriptApp.run({moduleName: 'app-root'})
                 })
 
-                electronApp.on('activate', () => {
-                    console.log('Framework back app Activated')
-                    // On macOS it's common to re-create a window in the app when the
-                    // dock icon is clicked and there are no other windows open.
-                    if (BrowserWindow.getAllWindows().length === 0) this.createWindow()
-
-                })
-            })
-
-            // Quit when all windows are closed, except on macOS. There, it's common
-            // for applications and their menu bar to stay active until the user quits
-            // explicitly with Cmd + Q.
-            electronApp.on('window-all-closed', () => {
-                if (process.platform !== 'darwin') {
-                    console.warn('TODO: call appExit from here')
-                    // TODO: Check Electron docs for an explicit quit event and trap there instead
-                    Promise.resolve(this.backApp.appExit(this)).then(() => {
-                        electronApp.quit()
-                    })
-                }
-            })
-        } else {
-            // nativescript
-            this.backApp.appStart(this).then(() => {
-                // Potential TODO:
-                // this.nativescriptApp.on("orientationChanged", (arg:any) => {
-                //     console.log('application orientation changed', arg)
-                // })
-
-                this.nativescriptApp.run({moduleName: 'app-root'})
-            })
-
-        }
+            }
+        })
     }
 
     createWindow (): void {
@@ -159,7 +203,7 @@ export class FrameworkBackContext {
                     height: this.windowKeeper.height || (this.backApp.options && this.backApp.options.height) || 600,
                     x: this.windowKeeper.x || (this.backApp.options && this.backApp.options.startX) || 0,
                     y: this.windowKeeper.y || (this.backApp.options && this.backApp.options.startY) || 0,
-                    icon: path.join(__dirname, 'assets/icons/png/64x64.png'),
+                    icon: __dirname + '/assets/icons/png/64x64.png',
                     webPreferences: {
                         nodeIntegration: false, // we handle all the node stuff back-side
                         contextIsolation: true, // gateway through window.api
@@ -215,45 +259,65 @@ export class FrameworkBackContext {
 function readBuildEnvironment() {
     let be = {}
 
-    // determine our launchDir based on this path
-    let scriptPath = __dirname
-    // find ourselves in this path
-    let n = scriptPath.indexOf('/node_modules/@tremho/jove-common')
-    let launchDir;
-    if(n !== -1) {
-        launchDir = scriptPath.substring(0,n)
-    }
-    // read BuildEnvironment.json from launchDir
-    if(!launchDir) {
-        // assume we were launched from the current directory
-        launchDir = '.'
-    }
-    launchDir = path.resolve(launchDir)
-    console.log('>>>>>>>>>> LaunchDir determined to be ',launchDir)
-    if(launchDir.substring(launchDir.length-5) === '.asar') {
-        launchDir += '.unpacked'
-        console.log('>>>>>>>>>> LaunchDir determined to be ',launchDir)
+    console.log('>>$$$$ in readBuildEnvironment ')
+    if(isNS) console.log(">>>$$$$ Nativescript detected")
 
-        process.chdir(launchDir) // so we are in sync from now on
-        console.log('>>>>>>>>>> reset cwd', process.cwd())
-    } else {
-        const lookFor = path.join(launchDir, 'resources', 'app.asar.unpacked')
-        if(fs.existsSync(lookFor)) {
-            // this will be a case on Windows
-            launchDir = lookFor
-            console.log('>>>>>>>>>> cwd moving to ',launchDir)
+    // determine our launchDir based on this path
+    if(!isNS && nodeParts) { // don't go through this for ns
+        const {fs, os, path} = nodeParts
+        let scriptPath = __dirname
+        // find ourselves in this path
+        let n = scriptPath.indexOf('/node_modules/@tremho/jove-common')
+        let launchDir;
+        if (n !== -1) {
+            launchDir = scriptPath.substring(0, n)
+        }
+        // read BuildEnvironment.json from launchDir
+        if (!launchDir) {
+            // assume we were launched from the current directory
+            launchDir = '.'
+        }
+        launchDir = path.resolve(launchDir)
+        console.log('>>>>>>>>>> LaunchDir determined to be ', launchDir)
+        if (launchDir.substring(launchDir.length - 5) === '.asar') {
+            launchDir += '.unpacked'
+            console.log('>>>>>>>>>> LaunchDir determined to be ', launchDir)
+
             process.chdir(launchDir) // so we are in sync from now on
+            console.log('>>>>>>>>>> reset cwd', process.cwd())
         } else {
-            console.log('>>>>>>>> Not changing cwd', process.cwd())
+            const lookFor = path.join(launchDir, 'resources', 'app.asar.unpacked')
+            if (fs.existsSync(lookFor)) {
+                // this will be a case on Windows
+                launchDir = lookFor
+                console.log('>>>>>>>>>> cwd moving to ', launchDir)
+                process.chdir(launchDir) // so we are in sync from now on
+            } else {
+                console.log('>>>>>>>> Not changing cwd', process.cwd())
+            }
         }
     }
 
 
     const beFile ='BuildEnvironment.json'
-    if(fs.existsSync(beFile)) {
+    let text = ''
+
+    let p = fileApi.fileExists(beFile).then((exists:boolean)=> {
+        console.log(beFile + ' exists? ', exists)
+        fileApi.readFileText(beFile).then((ft:string)=> {
+            text = ft || "{}"
+        })
+    })
+    return p.then(() => {
         try {
-            const text = fs.readFileSync(beFile).toString() || "{}"
-            be = JSON.parse(text)
+            if(text) {
+                be = JSON.parse(text)
+            } else {
+                console.error(beFile+' Does not exist')
+                be = {
+                    error:"Unable to locate "+beFile,
+                }
+            }
         } catch(e) {
             console.error('Unable to read '+beFile, e)
             be = {
@@ -261,15 +325,11 @@ function readBuildEnvironment() {
                 errMsg: e.message
             }
         }
-    } else {
-        console.error(beFile+' Does not exist')
-        be = {
-            error:"Unable to locate "+beFile,
-        }
-    }
-    console.log('returning build environment data as ', be)
-    return be
+        console.log('returning build environment data as ', be)
+        return be
+    })
 }
+
 
 /**
  * The framework front context is an AppCore instance
@@ -364,7 +424,7 @@ export const Log = {
 import {AppCore, EventData} from './app-core/AppCore'
 import {MenuItem, MenuApi} from "./application/MenuApi";
 import {setupMenu} from "./application/MenuDef";
-import {PathUtils} from "./application/PathUtils";
+import {PathParts, PathUtils} from "./application/PathUtils";
 import {ToolExtension} from "./extension/ToolExtension";
 
 export {AppCore as AppCore}
