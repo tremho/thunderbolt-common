@@ -309,9 +309,11 @@ function readBuildEnvironment() {
 
     let p = fileApi.fileExists(beFile).then((exists:boolean)=> {
         console.log(beFile + ' exists? ', exists)
-        fileApi.readFileText(beFile).then((ft:string)=> {
-            text = ft || "{}"
-        })
+        if(exists) {
+            fileApi.readFileText(beFile).then((ft: string) => {
+                text = ft || "{}"
+            })
+        }
     })
     return p.then(() => {
         try {
