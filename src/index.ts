@@ -315,7 +315,9 @@ function readBuildEnvironment() {
             })
         }
     })
+    console.log('>>> Sanity test...')
     return p.then(() => {
+        console.log('>>> Sanity checkpoint #1', text)
         try {
             if(text) {
                 be = JSON.parse(text)
