@@ -349,16 +349,19 @@ function readBuildEnvironment() {
     let p = fileApi.fileExists(beFile).then((exists:boolean)=> {
         console.log(beFile + ' exists? ', exists)
         if(exists) {
-            console.log('reading synchronously using nsfs')
-            text = nsfs.File.fromPath(beFile).readTextSync()
-            console.log("text=",text)
-            // console.log('going into the deep dark file read ', fileApi.readFileText)
-            // return fileApi.readFileText(beFile).then((ft: string) => {
-            //     console.log('successfully read ', ft)
-            //     text = ft || "{}"
-            // }).catch((e:Error) => {
-            //     console.error('Well, that was unexpected', e)
-            // })
+            if(nsfs) {
+                console.log('reading synchronously using nsfs')
+                text = nsfs.File.fromPath(beFile).readTextSync()
+                console.log("text=", text)
+            } else {
+                console.log('going into the deep dark file read ', fileApi.readFileText)
+                return fileApi.readFileText(beFile).then((ft: string) => {
+                    console.log('successfully read ', ft)
+                    text = ft || "{}"
+                }).catch((e: Error) => {
+                    console.error('Well, that was unexpected', e)
+                })
+            }
         }
         return Promise.resolve()
     })
