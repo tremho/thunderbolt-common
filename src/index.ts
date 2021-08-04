@@ -5,6 +5,7 @@
     Defines all exports of the framework API for use by adopting apps.
 */
 
+console.log("%%%%%%%%%%%%%%%%%%%%% top of index.js (common) %%%%%%%%%%%%%%%%%%%%%")
 
 let electronApp:any, BrowserWindow:any, preloadPath:string, AppGateway:any, ipcMain:any
 let makeWindowStatePersist:any
@@ -58,6 +59,8 @@ try {
 let nodeParts:any
 let frameworkContext:any
 
+console.log("%%%%%%%%%%% past basic discovery %%%%%%%%%%%%%%%")
+console.log("isNS = "+isNS)
 
 function injectDesktopDependencies(injected:any) {
         electronApp = injected.electronApp
@@ -70,6 +73,9 @@ function injectDesktopDependencies(injected:any) {
         registerExtensionModule = injected.registerExtensionModule
         makeWindowStatePersist = injected.makeWindowStatePersist
         nodeParts = injected.nodeParts
+
+        console.log('%%%%%% injection happens %%%%%%%%')
+        console.log("nodeParts",nodeParts)
 }
 
 /**
@@ -86,7 +92,6 @@ export class FrameworkBackContext {
 
 
     constructor(backApp: TBBackApp) {
-
         this.electronApp = electronApp
         this.nativescriptApp = nativescriptApp
         this.backApp = backApp
@@ -94,7 +99,6 @@ export class FrameworkBackContext {
         console.log('Framework back app constructor')
 
         this.gatherEnvInfo()
-
     }
 
     gatherEnvInfo() {
@@ -264,6 +268,7 @@ function readBuildEnvironment() {
 
     // determine our launchDir based on this path
     if(!isNS && nodeParts) { // don't go through this for ns
+        console.log('>>>> Doing node stuff')
         const {fs, os, path} = nodeParts
         let scriptPath = __dirname
         // find ourselves in this path
