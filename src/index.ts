@@ -35,6 +35,7 @@ const localNodeFileApi:any = {
 
 let isNS = false
 let fileApi:any
+let nsfs:any
 // console.log('wiring for mobile app handoff')
 try {
     // console.log('getting ComponentBase...')
@@ -45,6 +46,7 @@ try {
     let {AppCore} = require('./app-core/AppCore')
     // console.log('bridging App Getter...')
     ComponentBase.bridgeAppGetter(AppCore.getTheApp, comCommon)
+    nsfs = require('@nativescript/core/file-system')
     isNS = true
     fileApi = mainApi
 } catch(e) {
@@ -103,17 +105,20 @@ export class FrameworkBackContext {
 
     gatherEnvInfo() {
 
+        console.log('$$$$$$$$$ Gathering Environment Info $$$$$$$$$$$$')
         readBuildEnvironment().then((buildEnv:any) => {
 
-            const platName = isNS ? nscore.platform.device.os.toLowerCase() : process.platform
-            const platVersion = isNS ? nscore.platform.device.osVersion : nodeParts.os.version()
+            console.log('$$$$$$$$$$$$$ Back from readBuildEnviroment ', buildEnv)
+
+            const platName = isNS ? 'nativescript' : process.platform
+            const platVersion = isNS ? '8.0.2' : nodeParts.os.version()
+
+            console.log('platName and version (hacked)', platName, platVersion)
 
             const env = {
                 build: buildEnv,
                 runtime: {
                     framework: {
-                        node: process.versions.node,
-                        electron: process.versions.electron
                     },
                     platform: {
                         name: platName,
@@ -121,16 +126,30 @@ export class FrameworkBackContext {
                     }
                 }
             }
+            console.log('filling in env')
+            if(isNS) {
+                // @ts-ignore
+                env.runtime.framework.nativeScript = platVersion
+            } else {
+                // @ts-ignore
+                env.runtime.framework.node = process.versions.node
+                // @ts-ignore
+                env.runtime.framework.electron = process.versions.electron
+            }
+
+            console.log('... env', env)
             // @ts-ignore
             let appName = (env.build.app && env.build.app.name) || 'jove-app'
+            console.log('... appName', appName)
 
             this.passedEnvironment = env;
             console.log('passed Environment=', env)
 
             // make our window keeper
-            this.windowKeeper = makeWindowStatePersist(appName)
-            // console.log('window keeper created', this.windowKeeper)
-
+            if(!isNS) {
+                this.windowKeeper = makeWindowStatePersist(appName)
+                // console.log('window keeper created', this.windowKeeper)
+            }
 
             // This method will be called when Electron has finished
             // initialization and is ready to create browser windows.
@@ -178,16 +197,16 @@ export class FrameworkBackContext {
                 })
             } else {
                 // nativescript
+                console.log('starting nativescript')
                 this.backApp.appStart(this).then(() => {
                     // Potential TODO:
                     // this.nativescriptApp.on("orientationChanged", (arg:any) => {
                     //     console.log('application orientation changed', arg)
                     // })
 
-                    setTimeout(()=> {
-                        console.log('sending EV:envInfo message for env', JSON.stringify(this.passedEnvironment, null, 2))
-                        AppGateway.sendMessage('EV', {subject:'envInfo', data:this.passedEnvironment})
-                    }, 100)
+                    // don't send build environment via EV
+                    console.log('passing environment through application resources for Nativescript')
+                    this.nativescriptApp.setResources({passedEnvironment:this.passedEnvironment})
 
                     this.nativescriptApp.run({moduleName: 'app-root'})
                 })
@@ -303,19 +322,46 @@ function readBuildEnvironment() {
         }
     }
 
+    if(isNS) {
+        console.log('%%%%%%%%%%% More NS sanity investigation %%%%%%%%%%')
+        console.log('(-- incidental test of prepublish --)')
 
-    const beFile ='BuildEnvironment.json'
+        const cwd = nsfs.knownFolders.currentApp().path
+        console.log('ns cwd (app) ', cwd)
+        fileApi.readFolder(cwd).then((details:any[])=> {
+            console.log('contents at app root:')
+            for(let i=0; i<details.length; i++) {
+                const f = details[i]
+                console.log(`${i+1} - ${f.fileName} (${f.size})`)
+            }
+        })
+        console.log('%%%%%%%%%%%%%%%%%%%%%%%%%')
+    }
+
+
+    let beFile ='BuildEnvironment.json'
     let text = ''
+
+    if(isNS) {
+        beFile = nsfs.knownFolders.currentApp().path+'/'+beFile
+    }
 
     let p = fileApi.fileExists(beFile).then((exists:boolean)=> {
         console.log(beFile + ' exists? ', exists)
         if(exists) {
-            fileApi.readFileText(beFile).then((ft: string) => {
-                text = ft || "{}"
-            })
+            console.log('reading synchronously using nsfs')
+            text = nsfs.File.fromPath(beFile).readTextSync()
+            console.log("text=",text)
+            // console.log('going into the deep dark file read ', fileApi.readFileText)
+            // return fileApi.readFileText(beFile).then((ft: string) => {
+            //     console.log('successfully read ', ft)
+            //     text = ft || "{}"
+            // }).catch((e:Error) => {
+            //     console.error('Well, that was unexpected', e)
+            // })
         }
+        return Promise.resolve()
     })
-    console.log('>>> Sanity test... If I don\'t pass this test, I must be crazy!!!' )
     return p.then(() => {
         console.log('>>> Sanity checkpoint #1', text)
         try {
