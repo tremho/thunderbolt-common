@@ -315,7 +315,7 @@ function readBuildEnvironment() {
             })
         }
     })
-    console.log('>>> Sanity test... If I don\'t pass this test, I must be crazy' )
+    console.log('>>> Sanity test... If I don\'t pass this test, I must be crazy!' )
     return p.then(() => {
         console.log('>>> Sanity checkpoint #1', text)
         try {
