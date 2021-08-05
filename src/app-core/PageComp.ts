@@ -26,8 +26,6 @@ export default {
         console.log(this.root.tagName, 'onBeforeUpdate', props, state)
         // @ts-ignore
         this.bound.data = cm.getApp().getPageData(this.root.tagName.toLowerCase())
-
-        cm.componentIsReady() // clear the way on first page load
     },
     onUpdated(props:object|null, state:object|null|undefined) {
         // @ts-ignore
