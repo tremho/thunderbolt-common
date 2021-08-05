@@ -20,6 +20,7 @@ function readMenuDef(app:AppCore, menuPath?:string) {
     return app.MainApi.fileExists(menuDef).then((exists:boolean) => {
         if(exists) {
             return app.MainApi.readFileText(menuDef).then((defText:string) => {
+                console.log('we read menu definition', defText)
                 return processMenuDef(app, defText)
             }).catch((e:Error) => {
                 console.error('unable to read menu', e.message)
@@ -40,6 +41,7 @@ let indicatorName = ''
 
 function processMenuDef(app:AppCore, defText:string|undefined) {
     const lines = defText ? defText.split('\n') : []
+    console.log('processing menu def', lines.length+' lines')
     lines.forEach(ln =>  {
         processDefinition(app, ln)
         if(menuName) {
@@ -297,14 +299,17 @@ function commuteToModel(app:AppCore) {
 
     const model = app.model;
     if(menuName) {
+        console.log('commuting menu to model')
         for (let i = 0; i < appmenu.length; i++) {
             app.MenuApi.addMenuItem(menuName, appmenu[i])
         }
     }
     if(toolbarName) {
+        console.log('commuting toolbar to model')
         app.MenuApi.addToolbarItems(toolbarName, appTools)
     }
     if(indicatorName) {
+        console.log('commuting indicators to model')
         app.MenuApi.addIndicatorItems(indicatorName, appIndicators)
     }
 }

@@ -365,11 +365,12 @@ export class AppCore {
 
 
     setupMenu(menuPath:string) {
-        console.log('%%%%%%%%%%%%%%%%%% setupMenu has been called', new Error().stack)
+        console.log('%%%%%%%%%%%%%%%%%% setupMenu has been called')
         let pathUtils = this.Path
         if(mainApi) {
             // in case our paths aren't set up yet in pathUtils, default to expectation
             let assetPath = pathUtils.join(pathUtils.assetsPath || 'front/assets', menuPath)
+            console.log('>> will set menu from ', assetPath)
             return Promise.resolve(setupMenu(this, assetPath))
         }
         console.error('no menu loaded -- api unavailable')
