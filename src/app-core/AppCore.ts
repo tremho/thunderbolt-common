@@ -160,7 +160,7 @@ export class AppCore {
         return setTheApp(app, frame)
     }
 
-    public waitForModel() {
+    public waitForModel():Promise<unknown> {
         console.log('waiting for model')
         return this.modelGate.then(() => {
             console.log('model gate cleared')
@@ -172,7 +172,7 @@ export class AppCore {
         console.log('component gate cleared')
         componentGateCleared = true
     }
-    public waitReady() {
+    public waitReady():Promise<unknown> {
         console.log('waiting for ready (both)...')
         if(componentGateCleared) return this.modelGate
         return Promise.all([this.componentGate, this.modelGate])

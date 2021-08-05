@@ -1,11 +1,12 @@
 {
   "name": "@tremho/jove-common",
-  "version": "0.6.9-pre-release.29",
+  "version": "0.6.9-pre-release.30",
   "description": "Common component of the Jove framework",
   "main": "build/index.js",
   "scripts": {
     "prepublish": "npm run build",
-    "build": "rm -fr build node_modules && tsc && npm install",
+    "clean": "rm -fr build node_modules && npm install",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "tbx run tbTest": "cd ~/tbd/tbTest && tbx run"
   },
