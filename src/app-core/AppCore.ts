@@ -365,6 +365,7 @@ export class AppCore {
 
 
     setupMenu(menuPath:string) {
+        console.log('%%%%%%%%%%%%%%%%%% setupMenu has been called', new Error().stack)
         let pathUtils = this.Path
         if(mainApi) {
             // in case our paths aren't set up yet in pathUtils, default to expectation
