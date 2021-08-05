@@ -491,76 +491,80 @@ export class AppCore {
 
         if(!pageId) return;
 
-        // set the page in the model.  For Riot, this forces the page to change on update
-        // for mobile, we need to do that through native navigation, but we still want the model to be the same
-        console.log('$$$$$$$$$$ navigate to page '+pageId)
-        const navInfo = this.model.getAtPath('page.navInfo')
-        let prevPageId = navInfo.pageId
-        let prevContext = navInfo.context
-        navInfo.timestamp = Date.now()
-        navInfo.pageId = pageId
-        navInfo.context = context || {}
-        // this switches the page at this point, or at least updates it
-        this.model.setAtPath('page.navInfo', navInfo)
-        if(prevPageId === pageId && prevContext === context) skipHistory = true;
-        // note that this isn't used on the mobile side, but we record it anyway.
-        // this may be useful later if we have any history-related functionality in common.
-        if(!skipHistory) {
-            this.history.push({
-                pageId: prevPageId,
-                context: prevContext
-            })
-        }
-
-        if(check.mobile) {
-            let pageref = '~/pages/' + pageId + '-page'
-
-            // console.log('>>>>> mobile pageref', pageref)
-
-            const navigationEntry = {
-                moduleName: pageref,
-                backstackVisible: !skipHistory
-            };
-            // console.log('>>> the frame', theFrame)
-            // console.log('>>> navigation Entry', navigationEntry)
-
-            reservedContext = context // pass via this variable
-            theFrame && theFrame.navigate(navigationEntry)
-
-            // apparently, we can pass a function instead of a navigationEntry to construct a Page
-            // which might be something to look at later if we want to work from our own common page definition
-            // instead of writing out {N} syntax files.
-            // Function needs to build full page including the layout stack and any event handlers.
-            // not sure what effect this has on back history, since there's nothing passed for that.
-
-            // console.log('------------------')
-            // console.log(' -- Looking at Frame classes')
-            // console.log('className', theFrame.className)
-            // console.log('cssClasses', theFrame.cssClasses)
-            // console.log('------------------')
-
-
-        } else {
-            const pageComponent = findPageComponent(pageId)
-            if(!pageComponent) {
-                throw Error('No page component for '+ pageId)
+        //seems like we should wait for model gate
+        console.log("navigate to page, wait for ready")
+        this.waitReady().then(() => {
+            console.log('continuing with navigate to page')
+            // set the page in the model.  For Riot, this forces the page to change on update
+            // for mobile, we need to do that through native navigation, but we still want the model to be the same
+            console.log('$$$$$$$$$$ navigate to page ' + pageId)
+            const navInfo = this.model.getAtPath('page.navInfo')
+            let prevPageId = navInfo.pageId
+            let prevContext = navInfo.context
+            navInfo.timestamp = Date.now()
+            navInfo.pageId = pageId
+            navInfo.context = context || {}
+            // this switches the page at this point, or at least updates it
+            this.model.setAtPath('page.navInfo', navInfo)
+            if (prevPageId === pageId && prevContext === context) skipHistory = true;
+            // note that this isn't used on the mobile side, but we record it anyway.
+            // this may be useful later if we have any history-related functionality in common.
+            if (!skipHistory) {
+                this.history.push({
+                    pageId: prevPageId,
+                    context: prevContext
+                })
             }
-            // console.log('------------------')
-            // console.log(' -- Looking at body classes')
-            // console.log('className', document.body.className)
-            // console.log('classList', document.body.classList)
-            // console.log('------------------')
 
-            const activity = pageComponent.activity;
-            if(!activity) {
-                throw Error('No exported activity for '+ pageId)
+            if (check.mobile) {
+                let pageref = '~/pages/' + pageId + '-page'
+
+                // console.log('>>>>> mobile pageref', pageref)
+
+                const navigationEntry = {
+                    moduleName: pageref,
+                    backstackVisible: !skipHistory
+                };
+                // console.log('>>> the frame', theFrame)
+                // console.log('>>> navigation Entry', navigationEntry)
+
+                reservedContext = context // pass via this variable
+                theFrame && theFrame.navigate(navigationEntry)
+
+                // apparently, we can pass a function instead of a navigationEntry to construct a Page
+                // which might be something to look at later if we want to work from our own common page definition
+                // instead of writing out {N} syntax files.
+                // Function needs to build full page including the layout stack and any event handlers.
+                // not sure what effect this has on back history, since there's nothing passed for that.
+
+                // console.log('------------------')
+                // console.log(' -- Looking at Frame classes')
+                // console.log('className', theFrame.className)
+                // console.log('cssClasses', theFrame.cssClasses)
+                // console.log('------------------')
+
+
+            } else {
+                const pageComponent = findPageComponent(pageId)
+                if (!pageComponent) {
+                    throw Error('No page component for ' + pageId)
+                }
+                // console.log('------------------')
+                // console.log(' -- Looking at body classes')
+                // console.log('className', document.body.className)
+                // console.log('classList', document.body.classList)
+                // console.log('------------------')
+
+                const activity = pageComponent.activity;
+                if (!activity) {
+                    throw Error('No exported activity for ' + pageId)
+                }
+                activity.context = context;
+                // console.log('$$$$ Starting page', pageId, context)
+                this.startPageLogic(pageId, activity, context)
+
             }
-            activity.context = context;
-            // console.log('$$$$ Starting page', pageId, context)
-            this.startPageLogic(pageId, activity, context)
-
-        }
-
+        })
     }
 
     /**
