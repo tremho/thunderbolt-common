@@ -231,10 +231,11 @@ export class AppCore {
                                         console.log("Clearing model gate")
                                         this.modelGateResolver()
                                     })
+                                } else {
+                                    // no front app, or no appStart, so we are just vanilla default
+                                    console.log("Clearing model gate with no app")
+                                    this.modelGateResolver()
                                 }
-                                // no front app, or no appStart, so we are just vanilla default
-                                console.log("Clearing model gate with no app")
-                                this.modelGateResolver()
                             })
                         } catch(e) {
                             console.error('problem processing envInfo EV message', e)
@@ -284,10 +285,11 @@ export class AppCore {
                         console.log("Clearing model gate")
                         this.modelGateResolver()
                     })
+                } else {
+                    // no front app, or no appStart, so we are just vanilla default
+                    console.log("Clearing model gate with no app")
+                    this.modelGateResolver()
                 }
-                // no front app, or no appStart, so we are just vanilla default
-                console.log("Clearing model gate with no app")
-                this.modelGateResolver()
             })
         }
 
