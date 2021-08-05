@@ -92,7 +92,10 @@ export class ComCommon extends NotCommon{
      * Call to wait for model to be ready before binding
      */
     public waitForModel() {
-        return this.getApp().waitForModel()
+        console.log('waiting for model gate')
+        return this.getApp().waitForModel().then(()=> {
+            console.log("XXXXX Model gate clear XXXX")
+        })
     }
 
     /**

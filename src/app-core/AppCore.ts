@@ -21,14 +21,16 @@ import * as BEF from "./ BackExtensionsFront";
 let nsfs:any
 let nsplatform:any
 let nsscreen:any
+let nsapplication:any
 let Imr:any
 let mainApiNS:any
 if(check.mobile) {
     try {
         nsfs = require('@nativescript/core/file-system')
         nsplatform = require('@nativescript/core/platform')
-        let {Screen} = require('@nativescript/core')
+        let {Application, Screen} = require('@nativescript/core')
         nsscreen = Screen
+        nsapplication = Application
         mainApiNS = require('@tremho/jove-mobile').mainApi
         callExtensionApi = require('@tremho/jove-mobile').callExtensionApi
         console.log('Successfully loaded all Nativescript Imports')
@@ -245,6 +247,32 @@ export class AppCore {
         // Set environment items
         // this will allow us to do platform branching and so on
         this.model.addSection('environment', {}) // start empty; will get filled in on message.
+
+        if(nsapplication) { // i.e. if mobile
+            const res = nsapplication.getResources()
+            const env = res.passedEnvironment
+            console.log('env', env)
+            console.log('was passed by ', res)
+
+            this.model.setAtPath('environment', env)
+            console.log('===================')
+            console.log('environment', env)
+            console.log('===================')
+            setEnvironment(env) // for check
+            this.setPlatformClass(env)
+            this.setPathUtilInfo(env).then(() => {
+                // Set up app models and menus
+                this.model.addSection('menu', {})
+                if (appFront && appFront.appStart) { // appStart in tbFrontApp will likely create its own menu
+                    Promise.resolve(appFront.appStart(this)).then(() => {
+                        this.modelGateResolver()
+                    })
+                }
+                // no front app, or no appStart, so we are just vanilla default
+                this.modelGateResolver()
+            })
+        }
+
 
         if(!check.mobile) {
             // console.log('##### Setting up resize checker -----------')
