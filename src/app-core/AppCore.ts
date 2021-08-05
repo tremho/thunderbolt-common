@@ -161,20 +161,26 @@ export class AppCore {
     }
 
     public waitForModel() {
-        return this.modelGate
+        console.log('waiting for model')
+        return this.modelGate.then(() => {
+            console.log('model gate cleared')
+        })
     }
     public componentIsReady() {
+        console.log('waiting for component')
         this.componentGateResolver()
+        console.log('component gate cleared')
         componentGateCleared = true
     }
     public waitReady() {
-        // console.log('waiting for ready...')
+        console.log('waiting for ready (both)...')
         if(componentGateCleared) return this.modelGate
         return Promise.all([this.componentGate, this.modelGate])
     }
 
     public setupUIElements(appFront:any) {
         console.log('>>> setupUIElements >>>')
+
 
         // set the infomessage log handling
         if(!check.mobile) {
@@ -216,14 +222,18 @@ export class AppCore {
                             setEnvironment(env) // for check
                             this.setPlatformClass(env)
                             this.setPathUtilInfo(env).then(() => {
+                                console.log('Setting up models annd menus')
                                 // Set up app models and menus
                                 this.model.addSection('menu', {})
                                 if (appFront && appFront.appStart) { // appStart in tbFrontApp will likely create its own menu
+                                    console.log('Starting app')
                                     Promise.resolve(appFront.appStart(this)).then(() => {
+                                        console.log("Clearing model gate")
                                         this.modelGateResolver()
                                     })
                                 }
                                 // no front app, or no appStart, so we are just vanilla default
+                                console.log("Clearing model gate with no app")
                                 this.modelGateResolver()
                             })
                         } catch(e) {
@@ -242,15 +252,19 @@ export class AppCore {
             })
         }
 
+        console.log('SetUIElements past first check. now adding page section to model')
+
         this.model.addSection('page', {navInfo: {pageId: '', context: {}}})
 
         // Set environment items
+        console.log('... now adding environment section to model')
         // this will allow us to do platform branching and so on
         this.model.addSection('environment', {}) // start empty; will get filled in on message.
 
+        console.log('testing nsapplication', nsapplication)
         if(nsapplication) { // i.e. if mobile
             const res = nsapplication.getResources()
-            const env = res.passedEnvironment
+            const env = res && res.passedEnvironment
             console.log('env', env)
             console.log('was passed by ', res)
 
@@ -261,14 +275,18 @@ export class AppCore {
             setEnvironment(env) // for check
             this.setPlatformClass(env)
             this.setPathUtilInfo(env).then(() => {
+                console.log('Setting up models annd menus')
                 // Set up app models and menus
                 this.model.addSection('menu', {})
                 if (appFront && appFront.appStart) { // appStart in tbFrontApp will likely create its own menu
+                    console.log('Starting app')
                     Promise.resolve(appFront.appStart(this)).then(() => {
+                        console.log("Clearing model gate")
                         this.modelGateResolver()
                     })
                 }
                 // no front app, or no appStart, so we are just vanilla default
+                console.log("Clearing model gate with no app")
                 this.modelGateResolver()
             })
         }
