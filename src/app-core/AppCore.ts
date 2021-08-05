@@ -345,7 +345,6 @@ export class AppCore {
                     pathSetters.setCurrentWorkingDirectory(info.cwd)
                     pathSetters.setAssetsDirectory(info.assets)
                     pathSetters.setHomeDirectory(info.home)
-                    console.log('mystery test', info)
                     console.log('sending appDataPath', info.appData)
                     pathSetters.setAppDataDirectory(info.appData)
                     console.log('sending documentsPath', info.documents)
