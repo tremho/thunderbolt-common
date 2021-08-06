@@ -17,7 +17,9 @@ let smstack:any[] = []
 // async
 function readMenuDef(app:AppCore, menuPath?:string) {
     const menuDef = menuPath || 'src/application/menudef.txt'
+    console.log('and now we call it menuDef', menuDef)
     return app.MainApi.fileExists(menuDef).then((exists:boolean) => {
+        console.log('promise returns...exists =', exists)
         if(exists) {
             console.log(menuDef+' exists, reading...')
             return app.MainApi.readFileText(menuDef).then((defText:string) => {
@@ -31,6 +33,7 @@ function readMenuDef(app:AppCore, menuPath?:string) {
             else console.error('No menu file ', menuPath)
         }
     })
+    console.log('promise running...')
 
 }
 
@@ -558,6 +561,8 @@ export function setupMenu(app:AppCore, menuData?:string) {
         app.MainApi.resetMenu()
         return readMenuDef(app, menuData)
     } else {
+        console.log('setupMenu - expect to see this log on mobile')
+        console.log('remember, menuData is the path here', menuData)
         // mobile
         return Promise.resolve(processMenuDef(app, menuData))
         // return Promise.resolve()
