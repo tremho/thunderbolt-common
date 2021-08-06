@@ -16,14 +16,9 @@ let smstack:any[] = []
 
 // async
 function readMenuDef(app:AppCore, menuPath?:string) {
-    const menuDef = menuPath || 'src/application/menudef.txt'
-    console.log('and now we call it menuDef', menuDef)
-    return app.MainApi.fileExists(menuDef).then((exists:boolean) => {
-        console.log('promise returns...exists =', exists)
+    return app.MainApi.fileExists(menuPath).then((exists:boolean) => {
         if(exists) {
-            console.log(menuDef+' exists, reading...')
-            return app.MainApi.readFileText(menuDef).then((defText:string) => {
-                console.log('we read menu definition', defText)
+            return app.MainApi.readFileText(menuPath).then((defText:string) => {
                 return processMenuDef(app, defText)
             }).catch((e:Error) => {
                 console.error('unable to read menu', e.message)
@@ -33,8 +28,6 @@ function readMenuDef(app:AppCore, menuPath?:string) {
             else console.error('No menu file ', menuPath)
         }
     })
-    console.log('promise running...')
-
 }
 
 let processing = ''
@@ -58,7 +51,6 @@ function processMenuDef(app:AppCore, defText:string|undefined) {
             processIndicatorLine(ln)
         }
     })
-    console.log('now going to commute results...')
     commuteToModel(app) // pick up last one
 }
 
@@ -559,15 +551,7 @@ export function setupMenu(app:AppCore, menuData?:string) {
     if(app.MainApi && app.MainApi.resetMenu) {
         // a check to see if we are on desktop
         app.MainApi.resetMenu()
-        return readMenuDef(app, menuData)
-    } else {
-        console.log('looks like we used to have all the data here, but now we just have the path', menuData)
-        console.log('so we will run it through readMenuDef just like on desktop')
-        return readMenuDef(app, menuData)
-        // console.log('setupMenu - expect to see this log on mobile')
-        // console.log('remember, menuData is the path here', menuData)
-        // // mobile
-        // return Promise.resolve(processMenuDef(app, menuData))
-        // return Promise.resolve()
     }
+    return readMenuDef(app, menuData)
+
 }
