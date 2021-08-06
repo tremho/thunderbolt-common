@@ -19,6 +19,7 @@ function readMenuDef(app:AppCore, menuPath?:string) {
     const menuDef = menuPath || 'src/application/menudef.txt'
     return app.MainApi.fileExists(menuDef).then((exists:boolean) => {
         if(exists) {
+            console.log(menuDef+' exists, reading...')
             return app.MainApi.readFileText(menuDef).then((defText:string) => {
                 console.log('we read menu definition', defText)
                 return processMenuDef(app, defText)
@@ -54,6 +55,7 @@ function processMenuDef(app:AppCore, defText:string|undefined) {
             processIndicatorLine(ln)
         }
     })
+    console.log('now going to commute results...')
     commuteToModel(app) // pick up last one
 }
 
