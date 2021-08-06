@@ -561,10 +561,13 @@ export function setupMenu(app:AppCore, menuData?:string) {
         app.MainApi.resetMenu()
         return readMenuDef(app, menuData)
     } else {
-        console.log('setupMenu - expect to see this log on mobile')
-        console.log('remember, menuData is the path here', menuData)
-        // mobile
-        return Promise.resolve(processMenuDef(app, menuData))
+        console.log('looks like we used to have all the data here, but now we just have the path', menuData)
+        console.log('so we will run it through readMenuDef just like on desktop')
+        return readMenuDef(app, menuData)
+        // console.log('setupMenu - expect to see this log on mobile')
+        // console.log('remember, menuData is the path here', menuData)
+        // // mobile
+        // return Promise.resolve(processMenuDef(app, menuData))
         // return Promise.resolve()
     }
 }
