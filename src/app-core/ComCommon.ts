@@ -1003,6 +1003,10 @@ export class ComCommon extends NotCommon{
                         } catch (e) {}
                     }
                 } else {
+                    // hook in custom component lifecycle on update for mobile
+                    if(component.preStdOnBeforeUpdate) {
+                        component.preStdOnBeforeUpdate()
+                    }
                     component.bound.set(name, value)
                 }
             })
