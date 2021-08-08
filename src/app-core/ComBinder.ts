@@ -63,7 +63,7 @@ export class ComBinder {
             if(!component.btrack) component.btrack = {}
             component.btrack[prop] = true
             this.model.bind(component, section, prop, (comp:any, prop:string, value:any) => {
-                if(comp.btrack && comp.btrack[prop] || prop.lastIndexOf('-page') === prop.length-5) {
+                if(comp.btrack && comp.btrack[prop]) {
                     bindFunction(comp, locprop, value, updateAlways)
                 }
             })
