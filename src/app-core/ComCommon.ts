@@ -124,7 +124,7 @@ export class ComCommon extends NotCommon{
         // console.warn('evalBinding', name)
         const segs = name.split('.')
         //@ts-ignore
-        const comp = this.riot || this.rootComponent
+        const comp = this.riot || this.rootComponent || this
         let v = comp.bound || {} // per component
         let seg
         while(seg = segs.shift()) {
