@@ -955,12 +955,6 @@ export class ComCommon extends NotCommon{
                     // okay to not have bound data
                 }
             }
-        } else {
-            // bind page data to all page components
-            const navInfo = this.model.getAtPath('page.navInfo')
-            const pageName = navInfo && navInfo.pageId  && navInfo.pageId + '-page'
-            if(pageName) component.bound.data = this.app.getPageData(pageName)
-
         }
 
         let scopeComp = component
