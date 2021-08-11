@@ -599,7 +599,7 @@ export class AppCore {
      * May be necessary on orientation change
      */
     reloadCurrentPage() {
-        // console.log('%%%%%%%%%% in reload current page %%%%%%%%%', this.currentActivity)
+        console.log('%%%%%%%%%% in reload current page %%%%%%%%%', this.currentActivity)
         let activity = this.currentActivity
         if(activity) {
             let context = activity.context
@@ -688,7 +688,7 @@ export class AppCore {
             this.pageUpdates = {}
         }
         let now = Date.now()
-        if(now - this.pageUpdates[pageName] < 1000) {
+        if(this.pageUpdates[pageName] && now - this.pageUpdates[pageName] < 1000) {
             return
         }
         this.pageUpdates[pageName] = now
