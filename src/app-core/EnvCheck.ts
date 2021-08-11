@@ -73,6 +73,13 @@ class Check {
         return (environment && environment.runtime.framework.riot) !== undefined;
     }
     public get mobile() {
+        let rt = false
+        if(environment) {
+            rt = environment.runtime.framework.nativeScript !== undefined
+            if(!rt) {
+                rt = environment.runtime.platform.name === 'NativeScript'
+            }
+        }
         return (environment && environment.runtime.framework.nativeScript) !== undefined
     }
 }
