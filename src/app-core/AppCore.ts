@@ -599,11 +599,14 @@ export class AppCore {
      * May be necessary on orientation change
      */
     reloadCurrentPage() {
-        console.log('%%%%%%%%%% in reload current page %%%%%%%%%', this.currentActivity)
+        // console.log('%%%%%%%%%% in reload current page %%%%%%%%%', this.currentActivity)
         let activity = this.currentActivity
         if(activity) {
+            console.log('>>>>>> Reloading current page ', activity.id)
             let context = activity.context
             this.navigateToPage(activity.id, context, true)
+        } else {
+            console.warn('Unable to reload current page: no currentActivity')
         }
     }
 
@@ -692,10 +695,9 @@ export class AppCore {
             return
         }
         this.pageUpdates[pageName] = now
-        this.navigateToPage(pageName, {}, true)
-        // setTimeout(() => {
-        //     this.reloadCurrentPage()
-        // })
+        // let navinfo = this.model.getAtPath('page.navInfo')
+        // this.navigateToPage(pageName, navinfo.context, true)
+        this.reloadCurrentPage()
     }
 
     /**
