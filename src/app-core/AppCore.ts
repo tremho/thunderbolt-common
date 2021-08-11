@@ -162,19 +162,19 @@ export class AppCore {
     }
 
     public waitForModel():Promise<unknown> {
-        console.log('waiting for model')
+        // console.log('waiting for model')
         return this.modelGate.then(() => {
-            console.log('model gate cleared')
+            // console.log('model gate cleared')
         })
     }
     public componentIsReady() {
-        console.log('waiting for component')
+        // console.log('waiting for component')
         this.componentGateResolver()
-        console.log('component gate cleared')
+        // console.log('component gate cleared')
         componentGateCleared = true
     }
     public waitReady():Promise<unknown> {
-        console.log('waiting for ready (both)...')
+        // console.log('waiting for ready (both)...')
         if(componentGateCleared) return this.modelGate
         return Promise.all([this.componentGate, this.modelGate])
     }
@@ -599,15 +599,8 @@ export class AppCore {
      * May be necessary on orientation change
      */
     reloadCurrentPage() {
-        // console.log('%%%%%%%%%% in reload current page %%%%%%%%%', this.currentActivity)
-        let activity = this.currentActivity
-        if(activity) {
-            console.log('>>>>>> Reloading current page ', activity.id)
-            let context = activity.context
-            this.navigateToPage(activity.id, context, true)
-        } else {
-            console.warn('Unable to reload current page: no currentActivity')
-        }
+        let navinfo = this.model.getAtPath('page.navInfo')
+        this.navigateToPage(navinfo.pageId, navinfo.context, true)
     }
 
     /**
@@ -695,8 +688,6 @@ export class AppCore {
             return
         }
         this.pageUpdates[pageName] = now
-        // let navinfo = this.model.getAtPath('page.navInfo')
-        // this.navigateToPage(pageName, navinfo.context, true)
         this.reloadCurrentPage()
     }
 
