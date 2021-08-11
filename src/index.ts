@@ -110,10 +110,22 @@ export class FrameworkBackContext {
 
             console.log('$$$$$$$$$$$$$ Back from readBuildEnviroment ', buildEnv)
 
-            const platName = isNS ? 'nativescript' : process.platform
-            const platVersion = isNS ? '8.0.2' : nodeParts.os.version()
+            let platName = isNS ? 'NativeScript' : process.platform // nativeScript or win32, or darwin, or linux
+            let platVersion = isNS ? buildEnv.platform.nativeScript || '' : nodeParts.os.version() // version of the operating system, or built NS version
+            let platType = 'computer' // if not NS, otherwise phone or tablet
+            let platMan // manufacturer, if available, or undefined
+            let platHost // ios or android or undefined
+            let platHostVersion // i.e. version of android or ios or undefined
 
-            console.log('platName and version (hacked)', platName, platVersion)
+            if(isNS && nscore) {
+                const device = nscore.Device
+                platType = device.type
+                platHost = device.os
+                platMan = device.manufacturer
+                platHostVersion = device.osVersion
+            }
+
+            // console.log('platName and version (hacked)', platName, platVersion)
 
             const env = {
                 build: buildEnv,
@@ -121,12 +133,16 @@ export class FrameworkBackContext {
                     framework: {
                     },
                     platform: {
-                        name: platName,
-                        version: platVersion
+                        name: platName, // nativescript or darwin, win32, etc
+                        version: platVersion, // version of os
+                        host: platHost, // host OS (if nativescript)
+                        hostVersion: platHostVersion,
+                        type: platType,
+                        manufacturer: platMan
                     }
                 }
             }
-            console.log('filling in env')
+            // console.log('filling in env')
             if(isNS) {
                 // @ts-ignore
                 env.runtime.framework.nativeScript = platVersion
@@ -137,13 +153,13 @@ export class FrameworkBackContext {
                 env.runtime.framework.electron = process.versions.electron
             }
 
-            console.log('... env', env)
+            // console.log('... env', env)
             // @ts-ignore
             let appName = (env.build.app && env.build.app.name) || 'jove-app'
-            console.log('... appName', appName)
+            // console.log('... appName', appName)
 
             this.passedEnvironment = env;
-            console.log('passed Environment=', env)
+            // console.log('passed Environment=', env)
 
             // make our window keeper
             if(!isNS) {
@@ -205,7 +221,7 @@ export class FrameworkBackContext {
                     // })
 
                     // don't send build environment via EV
-                    console.log('passing environment through application resources for Nativescript')
+                    // console.log('passing environment through application resources for Nativescript')
                     this.nativescriptApp.setResources({passedEnvironment:this.passedEnvironment})
 
                     this.nativescriptApp.run({moduleName: 'app-root'})
