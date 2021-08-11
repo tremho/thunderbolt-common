@@ -692,7 +692,7 @@ export class AppCore {
             return
         }
         this.pageUpdates[pageName] = now
-        this.navigateToPage(pageName)
+        this.reloadCurrentPage()
     }
 
     /**
