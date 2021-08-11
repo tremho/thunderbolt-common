@@ -263,19 +263,19 @@ export class AppCore {
         // this will allow us to do platform branching and so on
         this.model.addSection('environment', {}) // start empty; will get filled in on message.
 
-        console.log('testing nsapplication', nsapplication)
+        // console.log('testing nsapplication', nsapplication)
         if(nsapplication) { // i.e. if mobile
             const res = nsapplication.getResources()
             const env = res && res.passedEnvironment
-            console.log('env', env)
-            console.log('was passed by ', res)
+            // console.log('env', env)
+            // console.log('was passed by ', res)
 
             this.model.setAtPath('environment', env)
             console.log('===================')
             console.log('environment', env)
             console.log('===================')
             setEnvironment(env) // for check
-            this.setPlatformClass(env)
+            // this.setPlatformClass(env) // not needed for mobile
             this.setPathUtilInfo(env).then(() => {
                 console.log('Setting up models annd menus')
                 // Set up app models and menus
