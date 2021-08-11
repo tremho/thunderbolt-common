@@ -692,9 +692,10 @@ export class AppCore {
             return
         }
         this.pageUpdates[pageName] = now
-        setTimeout(() => {
-            this.reloadCurrentPage()
-        })
+        this.navigateToPage(pageName, {}, true)
+        // setTimeout(() => {
+        //     this.reloadCurrentPage()
+        // })
     }
 
     /**
