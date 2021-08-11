@@ -911,6 +911,7 @@ function mergeEnvironmentData(env:any, data:any, riotVersion?:string) {
         if(!platform) platform = env.platform || {}
         console.log('runtime platform, isolated', platform)
         if(riotVersion) rfw.riot = riotVersion
+        rfw.nativeScript = build.platform.nativeScript
         let out: any = {
             build,
             runtime: {

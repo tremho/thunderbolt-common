@@ -80,7 +80,7 @@ class Check {
                 rt = environment.runtime.platform.name === 'NativeScript'
             }
         }
-        return (environment && environment.runtime.framework.nativeScript) !== undefined
+        return rt
     }
 }
 export const check = new Check()
