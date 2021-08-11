@@ -114,12 +114,12 @@ export class FrameworkBackContext {
             let platVersion = isNS ? buildEnv.platform.nativeScript || '' : nodeParts.os.version() // version of the operating system, or built NS version
             let platType = 'computer' // if not NS, otherwise phone or tablet
             let platMan // manufacturer, if available, or undefined
-            let platHost // ios or android or undefined
-            let platHostVersion // i.e. version of android or ios or undefined
+            let platHost = isNS ? undefined : platName // if not NS, move from framework to platform section // ios or android or undefined
+            let platHostVersion  = isNS ? undefined: platVersion  // if not NS, move from framework to platform section  // i.e. version of android or ios or undefined
 
             if(isNS && nscore) {
                 const device = nscore.Device
-                platType = device.type
+                platType = device.type || 'Mobile device'
                 platHost = device.os
                 platMan = device.manufacturer
                 platHostVersion = device.osVersion
@@ -131,10 +131,10 @@ export class FrameworkBackContext {
                 build: buildEnv,
                 runtime: {
                     framework: {
-                    },
-                    platform: {
                         name: platName, // nativescript or darwin, win32, etc
                         version: platVersion, // version of os
+                    },
+                    platform: {
                         host: platHost, // host OS (if nativescript)
                         hostVersion: platHostVersion,
                         type: platType,
@@ -143,10 +143,7 @@ export class FrameworkBackContext {
                 }
             }
             // console.log('filling in env')
-            if(isNS) {
-                // @ts-ignore
-                env.runtime.framework.nativeScript = platVersion
-            } else {
+            if(!isNS) {
                 // @ts-ignore
                 env.runtime.framework.node = process.versions.node
                 // @ts-ignore
