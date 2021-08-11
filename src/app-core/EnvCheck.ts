@@ -36,7 +36,7 @@ if (typeof global === 'object') {
         // || (nsplatform.isAndroid || nsplatform.isIos)
         || (typeof nsplatform === 'object') // not the best option, but since the other 'sure things' seem to fail...
        ) {
-        if(!lookGlobal.__snapshot) console.log('{N} detected, version ' + lookGlobal.__runtimeVersion)
+        // if(!lookGlobal.__snapshot) console.log('{N} detected, version ' + lookGlobal.__runtimeVersion)
         environment.runtime.framework.nativeScript = lookGlobal.__runtimeVersion
         environment.runtime.platform = {
             name: nsplatform ? nsplatform.device.os.toLowerCase() : 'nativescript',
@@ -62,7 +62,7 @@ if (typeof global === 'object') {
                 // apiVersion: 0,
                 // uuid:
             }
-            console.log('NODE detected on a ' + environment.runtime.platform.name + ' system')
+            // console.log('NODE detected on a ' + environment.runtime.platform.name + ' system')
         }
     }
 // } else {

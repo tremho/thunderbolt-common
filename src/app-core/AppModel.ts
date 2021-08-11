@@ -87,7 +87,7 @@ function bind(component:any, model:object, section:string, prop:string, onChange
 function announce(section:string, prop:string, value:any, old?:any) {
     // find bindings for section name, prop
     if(section === 'environment' && prop == 'screen') {
-        console.log('bind onChange for environment.screen')
+        // console.log('bind onChange for environment.screen')
     }
     // @ts-ignore
     const bnds = bindings.up[section]

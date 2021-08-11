@@ -5,7 +5,7 @@
     Defines all exports of the framework API for use by adopting apps.
 */
 
-console.log("%%%%%%%%%%%%%%%%%%%%% top of index.js (common) %%%%%%%%%%%%%%%%%%%%%")
+// console.log("%%%%%%%%%%%%%%%%%%%%% top of index.js (common) %%%%%%%%%%%%%%%%%%%%%")
 
 let electronApp:any, BrowserWindow:any, preloadPath:string, AppGateway:any, ipcMain:any
 let makeWindowStatePersist:any
@@ -61,8 +61,8 @@ try {
 let nodeParts:any
 let frameworkContext:any
 
-console.log("%%%%%%%%%%% past basic discovery %%%%%%%%%%%%%%%")
-console.log("isNS = "+isNS)
+// console.log("%%%%%%%%%%% past basic discovery %%%%%%%%%%%%%%%")
+// console.log("isNS = "+isNS)
 
 function injectDesktopDependencies(injected:any) {
         electronApp = injected.electronApp
