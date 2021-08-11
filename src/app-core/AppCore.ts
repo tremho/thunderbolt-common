@@ -674,9 +674,8 @@ export class AppCore {
     public updatePage(pageName:string) {
         // console.log('doing mobile update of page data')
         const data = this.getPageData(pageName)
-        this.model.setAtPath('page-data.' + pageName, {}, true, false)
         this.model.setAtPath('page-data.' + pageName, data, true, false)
-
+        this.navigateToPage(pageName)
     }
 
     /**
