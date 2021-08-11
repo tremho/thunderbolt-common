@@ -276,6 +276,17 @@ export class AppCore {
             console.log('===================')
             setEnvironment(env) // for check
             // this.setPlatformClass(env) // not needed for mobile
+
+            // set up native back button listener
+            if(nsapplication.android) {
+                console.log('>>>> registering ',nsapplication.android.prototype.activityBackPressedEvent)
+                nsapplication.android.on(nsapplication.android.prototype.activityBackPressedEvent, (data:any) => {
+                    console.log('Android back button pressed')
+                    data.cancel = true // prevent further action
+                    this.navigateBack()
+                })
+            }
+
             this.setPathUtilInfo(env).then(() => {
                 console.log('Setting up models annd menus')
                 // Set up app models and menus
