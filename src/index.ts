@@ -112,10 +112,10 @@ export class FrameworkBackContext {
 
             let platName = isNS ? 'NativeScript' : process.platform // nativeScript or win32, or darwin, or linux
             let platVersion = isNS ? buildEnv.platform.nativeScript || '' : nodeParts.os.version() // version of the operating system, or built NS version
-            let platType = 'computer' // if not NS, otherwise phone or tablet
-            let platMan // manufacturer, if available, or undefined
-            let platHost = isNS ? undefined : platName // if not NS, move from framework to platform section // ios or android or undefined
-            let platHostVersion  = isNS ? undefined: platVersion  // if not NS, move from framework to platform section  // i.e. version of android or ios or undefined
+            let platType = 'Computer' // if not NS, otherwise Phone or Tablet (or Mobile device if NS doesn't tell us)
+            let platMan
+            let platHost
+            let platHostVersion
 
             if(isNS && nscore) {
                 const device = nscore.Device
@@ -131,19 +131,24 @@ export class FrameworkBackContext {
                 build: buildEnv,
                 runtime: {
                     framework: {
-                        name: platName, // nativescript or darwin, win32, etc
-                        version: platVersion, // version of os
+                        // nativeScript: 8.0.2  --> filled in here, below
+                        // riot: 5.1.4 --> filled in next phase
                     },
                     platform: {
-                        host: platHost, // host OS (if nativescript)
-                        hostVersion: platHostVersion,
                         type: platType,
-                        manufacturer: platMan
+                        name: platName, // darwin, win32, etc (or NativeScript)
+                        version: platVersion, // version of os (not defined for NS)
+                        host: platHost, // host OS (if nativescript)
+                        hostVersion: platHostVersion, // (if nativescript)
+                        manufacturer: platMan // (if nativescript)
                     }
                 }
             }
             // console.log('filling in env')
-            if(!isNS) {
+            if(isNS) {
+                // @ts-ignore
+                env.runtime.framework.nativeScript = env.build.framework.nativeScript
+            } else {
                 // @ts-ignore
                 env.runtime.framework.node = process.versions.node
                 // @ts-ignore
