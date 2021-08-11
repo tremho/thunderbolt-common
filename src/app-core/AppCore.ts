@@ -292,11 +292,9 @@ export class AppCore {
                     this.modelGateResolver()
                 }
             })
-        }
-
-
-        if(!check.mobile) {
-            // console.log('##### Setting up resize checker -----------')
+        } else {
+            // only for Electron
+            console.log('##### Setting up resize checker -----------')
             const window = {width:0, height:0}
             // let resizeInterval = setInterval(() => {
             let resizeChecker = new ResizeSensor(document.body, () =>{
