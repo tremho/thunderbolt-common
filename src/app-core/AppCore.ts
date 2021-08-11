@@ -494,6 +494,10 @@ export class AppCore {
 
         if(!pageId) return;
 
+        if(pageId.substring(pageId.length -5) === '-page') {
+            pageId = pageId.substring(0, pageId.length-5)
+        }
+
         console.log('continuing with navigate to page')
         // set the page in the model.  For Riot, this forces the page to change on update
         // for mobile, we need to do that through native navigation, but we still want the model to be the same
