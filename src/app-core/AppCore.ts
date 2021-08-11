@@ -279,11 +279,11 @@ export class AppCore {
 
             // set up native back button listener
             if(nsapplication.android) {
-                // nsapplication.android.on(nsapplication.android.prototype.activityBackPressedEvent, (data:any) => {
-                //     console.log('Android back button pressed')
-                //     data.cancel = true // prevent further action
-                //     this.navigateBack()
-                // })
+                nsapplication.android.on("activityBackPressed", (data:any) => {
+                    console.log('Android back button pressed')
+                    data.cancel = true // prevent further action
+                    this.navigateBack()
+                })
             }
 
             this.setPathUtilInfo(env).then(() => {
