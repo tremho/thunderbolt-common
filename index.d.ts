@@ -10,13 +10,13 @@ declare module "@tremho/jove-common" {
         public bind( component:any, section:string, prop:string, onChange:any, type?:string)
         public getAtPath(path:string):any
         public setAtPath(path:string, value:any, force?:boolean, noAnnounce?:boolean)
-        public navigateToPage(pageId:string, context?:object, skipHistory?:boolean)
     }
     class AppCore {
         static getTheApp():any;
         static setTheApp(app:any, frame?:any);
         public model:AppModel;
         public findComponent(tagName:string):any;
+        public navigateToPage(pageId:string, context?:object, skipHistory?:boolean)
         // more to come as needed
     }
     class EventData {
