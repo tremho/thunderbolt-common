@@ -88,6 +88,7 @@ export class FrameworkBackContext {
     public electronApp: any
     public nativescriptApp:any
     public backApp: TBBackApp
+    public title:string
     // public frontApp: TBFrontApp | undefined
     public windowKeeper: any
     passedEnvironment:any = {}
@@ -97,6 +98,7 @@ export class FrameworkBackContext {
         this.electronApp = electronApp
         this.nativescriptApp = nativescriptApp
         this.backApp = backApp
+        this.title = ''
 
         console.log('Framework back app constructor')
 
@@ -158,6 +160,7 @@ export class FrameworkBackContext {
             // console.log('... env', env)
             // @ts-ignore
             let appName = (env.build.app && env.build.app.name) || 'jove-app'
+            this.title = env.build.app.displayName || appName
             // console.log('... appName', appName)
 
             this.passedEnvironment = env;
@@ -245,6 +248,7 @@ export class FrameworkBackContext {
                     x: this.windowKeeper.x || (this.backApp.options && this.backApp.options.startX) || 0,
                     y: this.windowKeeper.y || (this.backApp.options && this.backApp.options.startY) || 0,
                     icon: __dirname + '/assets/icons/png/64x64.png',
+                    title: this.title,
                     webPreferences: {
                         nodeIntegration: false, // we handle all the node stuff back-side
                         contextIsolation: true, // gateway through window.api
