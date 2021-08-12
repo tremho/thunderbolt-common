@@ -14,7 +14,7 @@ import {ToolExtension} from "../extension/ToolExtension";
 
 import {ResizeSensor} from "css-element-queries";
 
-// TODO: make a mobile equivalent
+
 let callExtensionApi: any
 import * as BEF from "./ BackExtensionsFront";
 
@@ -402,7 +402,6 @@ export class AppCore {
         }
 
 
-        // TODO: Handle anything framework global here
 
         // dispatch to current page activity.  include app instance in props
         let handled = false
@@ -415,7 +414,26 @@ export class AppCore {
         if(!handled) {
             const handler = this.menuHandlers[props.id]
             if (handler) {
-                handler(menuEvent)
+                handled = handler(menuEvent)
+            }
+        }
+        // default action for about if not trapped
+        if(!handled) {
+            if(props.id === 'APP_ABOUT') {
+                console.log('Default about box')
+
+                const env = this.model.getAtPath('environment')
+                const appInfo = env.build.app
+
+                const buildDate = new Date(appInfo.buildTime).toLocaleDateString() // TODO use Formatter
+                const options = {
+                    title: `About ${appInfo.displayName}`,
+                    message: `${appInfo.displayName}\nVersion ${appInfo.version}\n\n${appInfo.description}\n`,
+                    detail: `created by ${appInfo.author}\n${buildDate}\n\n${appInfo.copyright}\n`,
+                    buttons: ['O&kay']
+                }
+                this.messageBox(options)
+
             }
         }
     }
@@ -861,6 +879,10 @@ export class AppCore {
     registerToolExtension(name:string, extension:ToolExtension) {
         // @ts-ignore
         extensionTypes[name] = extension
+    }
+
+    messageBox(options:any) {
+        return Promise.resolve(mainApi && mainApi.openDialog(options))
     }
 
 }
