@@ -506,6 +506,7 @@ import {MenuItem, MenuApi} from "./application/MenuApi";
 import {setupMenu} from "./application/MenuDef";
 import {PathParts, PathUtils} from "./application/PathUtils";
 import {ToolExtension} from "./extension/ToolExtension";
+import {ComNormal} from "./app-core/ComNormal";
 
 export {AppCore as AppCore}
 export {MenuItem as MenuItem}
@@ -514,3 +515,4 @@ export {setupMenu as setupMenu}
 export {PathUtils as PathUtils}
 export {ToolExtension as ToolExtension}
 export {EventData as EventData}
+export {ComNormal as ComNormal}

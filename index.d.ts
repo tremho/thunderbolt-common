@@ -42,6 +42,16 @@ declare module "@tremho/jove-common" {
         public accelerator?:string // accelerator to apply
         public children?: MenuItem[] // found only in incoming submenus in parsing and setup
     }
+    class ComNormal {
+        constructor(stdComp:any)
+        get isIOS(): boolean
+        get isAndroid(): boolean
+        get isMobile(): boolean
+        elementFind(tag:string):any
+        elementFindAll(tag:string):any[]
+        listenFor(pseudoEventTag:string, func:(ed:any)=>{})
+        getElementBounds(element:any)
+    }
 
 }
 
