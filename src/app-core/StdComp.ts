@@ -2,6 +2,7 @@ import {newCommon, ComCommon} from './ComCommon'
 import {ComNormal} from './ComNormal'
 let cm:ComCommon;
 export default {
+    tagName: '',
     bound: {},
     cm: ({} as ComCommon),
     com: ({} as ComCommon),
@@ -9,18 +10,20 @@ export default {
     onBeforeMount(props:any, state:any) {
         // @ts-ignore
         if(this.preStdOnBeforeMount) this.preStdOnBeforeMount(props, state)
-      this.bound = new Object()
-      this.comNormal = new ComNormal(this)
-      // @ts-ignore
-      cm = this.cm = this.com = newCommon(this) // this.cm available for control-specific extensions
+        this.bound = new Object()
+        this.comNormal = new ComNormal(this)
+        // @ts-ignore
+        this.tagName = this.root.tagName.toLowerCase()
+        // @ts-ignore
+        cm = this.cm = this.com = newCommon(this) // this.cm available for control-specific extensions
         // @ts-ignore
         Object.getOwnPropertyNames(props).forEach(p => {
             // @ts-ignore
             this.bound[p] = props[p]
         })
         // @ts-ignore
-      this.bound.text = props.text || this.root.tagName
-      state.action = props.action
+        this.bound.text = props.text || this.root.tagName
+        state.action = props.action
         // console.log(this.root.tagName, 'onBeforeMount', props, state, this.bound)
         // @ts-ignore
         if(this.postStdOnBeforeMount) this.postStdOnBeforeMount(props, state)
@@ -82,7 +85,7 @@ export default {
     get isMobile(): boolean { return this.comNormal.isMobile },
     elementFind(tag:string):any { return this.comNormal.elementFind(tag) },
     elementFindAll(tag:string):any[] { return this.comNormal.elementFindAll(tag) },
-    listenFor(pseudoEventTag:string, func:(ed:any)=>{}) { return this.comNormal.listenFor(pseudoEventTag, func) },
+    listenToFor(el:any, pseudoEventTag:string, func:(ed:any)=>{}) { return this.comNormal.listenToFor(el, pseudoEventTag, func) },
     getElementBounds(element:any):any { return this.comNormal.getElementBounds(element) }
 
 }

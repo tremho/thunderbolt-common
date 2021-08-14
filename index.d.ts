@@ -49,7 +49,7 @@ declare module "@tremho/jove-common" {
         get isMobile(): boolean
         elementFind(tag:string):any
         elementFindAll(tag:string):any[]
-        listenFor(pseudoEventTag:string, func:(ed:any)=>{})
+        listenToFor(el:any, pseudoEventTag:string, func:(ed:any)=>{}, remove?:boolean)
         getElementBounds(element:any)
     }
 

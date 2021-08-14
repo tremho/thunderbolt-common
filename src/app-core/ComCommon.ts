@@ -179,7 +179,8 @@ export class ComCommon extends NotCommon{
         if(check.riot) {
             tag = (tag && tag.toUpperCase())
             while (comp) {
-                comp = this.getComponent(comp.root.parentElement)
+                comp = comp.root.parentElement && this.getComponent(comp.root.parentElement)
+                if(!comp) return null
                 if (!tag || comp.root.tagName === tag) {
                     // This looks like a hack, but it's actually needed because
                     // we can have an out-of scope and unmounted cond-sect that is not attached to a parent

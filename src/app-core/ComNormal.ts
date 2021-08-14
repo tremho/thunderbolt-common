@@ -14,6 +14,17 @@ These apis should be called from same-contract methods on the 'Component' for bo
 
  */
 
+import {EventData} from "./AppCore";
+
+const sessionDataMap:any = {}
+function getSessionData(comp:any) {
+    if(!sessionDataMap[comp]) {
+        sessionDataMap[comp] = {}
+    }
+    return sessionDataMap[comp]
+}
+
+
 export class ComNormal {
     stdComp:any
 
@@ -85,7 +96,7 @@ export class ComNormal {
             const childFinder = (parent:any) => {
                 if(parent.eachChildView) {
                     parent.eachChildView((child: any) => {
-                        if (child.tag === tag) found.push(child)
+                        if (child.tagName === tag) found.push(child)
                         if (child.eachChildView) childFinder(child)
                     })
                 }
@@ -93,6 +104,20 @@ export class ComNormal {
             childFinder(this.stdComp)
         }
         return found
+    }
+
+    // use to attach only one listener per event type per component, since we can't remove them
+    registerHandler(comp:any, action:string, func:any) {
+        const session = getSessionData(comp)
+        if(session[action] !== func) {
+            session[action] = func
+            if(this.isMobile) {
+                comp.on(action, func)
+            } else {
+                comp.addEventListener(action, func)
+            }
+        }
+
     }
 
     /**
@@ -120,9 +145,10 @@ export class ComNormal {
      *
      * @param {string} pseudoEventTag  the type of event to trap
      * @param {any} func the callback function called when the qualified event occurs
+     * @param {boolean} [remove] if true, this removes the listener rather than set it.
      *
      */
-    listenFor(pseudoEventTag:string, func:(ed:any)=>{}) {
+    listenToFor(el:any, pseudoEventTag:string, func:(ed:any)=>{}) {
         if(this.isMobile) {
             const mappedEvents = {
                 'down': {action: 'touch', mode: 'down'},
@@ -153,9 +179,10 @@ export class ComNormal {
                 if(h.aka) h = mappedEvents[h.aka]
                 let {action} = h
                 if(action) {
-                    this.stdComp.on(action, (ev:any) => {
+                    const lhndlr = (ev:any) => {
                         console.log('mobile handler for '+action+' triggered')
-                    })
+                    }
+                    this.registerHandler(el, action, lhndlr)
                 }
             }
 
@@ -189,15 +216,18 @@ export class ComNormal {
                 if(h.aka) h = mappedEvents[h.aka]
                 let {action, handler} = h
                 if(action) {
-                    this.stdComp.on(action, (ev: any) => {
-                        console.log('mobile handler for ' + action + ' triggered')
-                    })
+                    const lhndlr = (ev:any) => {
+                        console.log('dom handler for ' + action + ' triggered')
+                    }
+                    this.registerHandler(el, action, lhndlr)
+
                 } else if(handler) {
-                    handler(this.stdComp, h.mode, func)
+                    handler(el, h.mode, func, this)
                 }
             }
         }
     }
+
 
     /**
      * Gets the dimensions of a subcomponent ('element')
@@ -240,104 +270,138 @@ export class ComNormal {
 }
 
 // -- DOM event gesture handling
-const sessionDataMap:any = {}
-function getSessionData(comp:any) {
-    if(!sessionDataMap[comp]) {
-        sessionDataMap[comp] = {}
+function handleSwipe(comp:any, mode:string, cb:any, cn:ComNormal) {
+    const callback = (ev:any) => {
+        const ed = new EventData()
+        ed.tag = 'action'
+        ed.value = mode
+        ed.eventType = 'swipe'
+        ed.app = cn.stdComp.cm.getApp()
+        ed.platEvent = ev
+        ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
+        cb(ed)
     }
-    return sessionDataMap[comp]
-}
-function handleSwipe(comp:any, mode:string, cb:any) {
-    comp.on('mousemove', (ev:MouseEvent) => {
+    const hdlMove = (ev:MouseEvent) => {
         if(ev.buttons) {
             const threshold = 50
             let mx = ev.movementX
             let my = ev.movementY
             if(mode === 'left' && mx < -threshold) {
                 // todo: need a canonical form of callback
-                cb() // yes, we did a swipe
+                callback(ev)
             } else if(mode === 'right' && mx > threshold) {
-                cb() // yes, we did a swipe
+                callback(ev)
             } else if(mode === 'up' && my < -threshold) {
-                cb() // yes, we did a swipe
+                callback(ev)
             } else if(mode === 'down' && my > threshold) {
-                cb() // yes, we did a swipe
+                callback(ev)
             }
         }
-    })
+    }
+    cn.registerHandler(comp,'mousemove', hdlMove)
 }
-function handleLongPress(comp:any, mode:string, cb:any) {
+function handleLongPress(comp:any, mode:string, cb:any, cn:ComNormal) {
     let session:any = getSessionData(comp)
     const longPressInterval = 750
-    comp.on('mousedown', (ev:MouseEvent) => {
+    const hdlDown = (ev:MouseEvent) => {
         clearTimeout(session.timerId)
         session.timerId = setTimeout(() => {
-            cb(); // yes, a long press occurred
+            const ed = new EventData()
+            ed.tag = 'action'
+            ed.value = longPressInterval
+            ed.eventType = 'longpress'
+            ed.app = cn.stdComp.cm.getApp()
+            ed.platEvent = ev
+            ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
+            cb(ed)
         }, longPressInterval)
-    })
-    comp.on('mouseout', () => {
+    }
+    const hdlUp = () => {
         clearTimeout(session.timerId)
-    })
-    comp.on('mouseup', () => {
-        clearTimeout(session.timerId)
-    })
+    }
+    cn.registerHandler(comp, 'mousedown', hdlDown)
+    cn.registerHandler(comp,'mouseup', hdlUp)
+    cn.registerHandler(comp,'mouseout', hdlUp)
+
 }
-function handlePan(comp:any, mode:string, cb:any) {
+function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
     let session:any = getSessionData(comp)
-    comp.on('mousedown', (ev:MouseEvent) => {
+    const hdlDown = (ev:MouseEvent) => {
         session.active = true
         session.startx = ev.screenX
         session.starty = ev.screenY
-    })
-    comp.on('mouseup', (ev:MouseEvent) => {
+    }
+    const hdlUp =  (ev:MouseEvent) => {
         session.active = false
-    })
-    comp.on('mousemove', (ev:MouseEvent) => {
-        if(ev.buttons && session.active) {
-            let mx = ev.movementX
-            let my = ev.movementY
-            let tmx = ev.screenX - session.startx
-            let tmy = ev.screenY - session.starty
-            let ed = {action:'pan', mx, my, tmx, tmy}
-            cb(ed) // todo: canonical return
-        } else {
-            session.active = false
+    }
+    const hdlMove = (ev:MouseEvent) => {
+        if (session.active) {
+            if (ev.buttons) {
+                let mx = ev.movementX
+                let my = ev.movementY
+                let tmx = ev.screenX - session.startx
+                let tmy = ev.screenY - session.starty
+                let clientX = ev.clientX
+                let clientY = ev.clientY
+                let ed = new EventData()
+                ed.app = cn.stdComp.cm.getApp()
+                ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
+                ed.tag = 'action'
+                ed.eventType = 'pan'
+                ed.platEvent = ev
+                ed.value = {mx, my, tmx, tmy, clientX, clientY}
+                cb(ed)
+            } else {
+                session.active = session.started = false
+            }
         }
-    })
+    }
+    cn.registerHandler(comp, 'mousedown', hdlDown)
+    cn.registerHandler(comp, 'mouseup', hdlUp)
+    cn.registerHandler(comp, 'mousemove', hdlMove)
 }
-function handleRotation(comp:any, mode:string, cb:any) {
+function handleRotation(comp:any, mode:string, cb:any, cn:ComNormal) {
     let session:any = getSessionData(comp)
-    comp.on('mousedown', (ev:MouseEvent) => {
+    const hdlDown = (ev:MouseEvent) => {
         if(ev.ctrlKey || ev.metaKey) {
             session.active = true
             session.startx = ev.screenX
             session.starty = ev.screenY
         }
-    })
-    comp.on('mouseup', (ev:MouseEvent) => {
+    }
+    const hdlUp =  (ev:MouseEvent) => {
         session.active = false
-    })
-    comp.on('mousemove', (ev:MouseEvent) => {
+    }
+    const hdlMove = (ev:MouseEvent) => {
         if(ev.buttons && session.active) {
             if(ev.ctrlKey || ev.metaKey) {
                 let x = ev.screenX
                 let y = ev.screenY
                 // compute the angle between startx,y and x,y
                 let angle = 0;
-                let ed = {action: 'rotate', angle}
-                cb(ed) // todo: canonical return
+                let ed = new EventData()
+                ed.app = cn.stdComp.cm.getApp()
+                ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
+                ed.tag = 'action'
+                ed.eventType = 'rotate'
+                ed.platEvent = ev
+                ed.value = angle
+                cb(ed)
             }
         } else {
             session.active = false
         }
-    })
+    }
+    cn.registerHandler(comp, 'mousedown', hdlDown)
+    cn.registerHandler(comp, 'mouseup', hdlUp)
+    cn.registerHandler(comp, 'mousemove', hdlMove)
 }
-function handlePinch(comp:any, mode:string, cb:any) {
+function handlePinch(comp:any, mode:string, cb:any, cn:ComNormal) {
     let session:any = getSessionData(comp)
     const dist = (x1:number,y1:number, x2:number,y2:number) => {
         return Math.sqrt(Math.pow((x2-x1),2)+Math.pow((y2-y1),2));
     }
-    comp.on('mousedown', (ev:MouseEvent) => {
+    const hdlDown = (ev:MouseEvent) => {
         if(ev.altKey) {
             session.active = true
             // get center of component
@@ -347,11 +411,11 @@ function handlePinch(comp:any, mode:string, cb:any) {
             // compute starting distance
             session.startDist = dist(session.cx, session.cy, ev.clientX, ev.clientY)
         }
-    })
-    comp.on('mouseup', (ev:MouseEvent) => {
+    }
+    const hdlUp =  (ev:MouseEvent) => {
         session.active = false
-    })
-    comp.on('mousemove', (ev:MouseEvent) => {
+    }
+    const hdlMove = (ev:MouseEvent) => {
         if(ev.buttons && session.active) {
             if(ev.altKey) {
                 let x = ev.clientX
@@ -360,11 +424,20 @@ function handlePinch(comp:any, mode:string, cb:any) {
                 let newDist = dist(session.cx, session.cy, x, y)
                 // scale is ratio of this distance to original distance
                 let scale = newDist / session.startDist
-                let ed = {action: 'pinch', scale}
-                cb(ed) // todo: canonical return
+                let ed = new EventData()
+                ed.app = cn.stdComp.cm.getApp()
+                ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
+                ed.tag = 'action'
+                ed.eventType = 'pinch'
+                ed.platEvent = ev
+                ed.value = scale
+                cb(ed)
             }
         } else {
             session.active = false
         }
-    })
+    }
+    cn.registerHandler(comp, 'mousedown', hdlDown)
+    cn.registerHandler(comp, 'mouseup', hdlUp)
+    cn.registerHandler(comp, 'mousemove', hdlMove)
 }

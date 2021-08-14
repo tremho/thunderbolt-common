@@ -722,7 +722,12 @@ export class AppCore {
      * @param pageName
      */
     public getPageData(pageName:string) {
-        return  this.model.getAtPath('page-data.' + pageName)
+        try {
+            return this.model.getAtPath('page-data.' + pageName)
+        } catch(e) {
+            console.warn('no page data for '+pageName)
+            return {}
+        }
     }
 
 
@@ -799,15 +804,20 @@ export class AppCore {
      */
     public callEventHandler(tag:string, platEvent:any, value?:any) {
         const act = this.currentActivity;
-        const ed = new EventData()
-        ed.app = this
-        let name
-        if(platEvent) {
-            ed.platEvent = platEvent
-            ed.sourceComponent = this.getComponent(platEvent.target as HTMLElement)
-            ed.eventType = (platEvent as Event).type
+        let ed
+        // platEvent might be a Dom Event or it could be EventData
+        if(platEvent.target) { // looks like Dom event
+            ed = new EventData()
+            ed.app = this
+            if (platEvent) {
+                ed.platEvent = platEvent
+                ed.sourceComponent = this.getComponent(platEvent.target as HTMLElement)
+                ed.eventType = (platEvent as Event).type
+            }
+        } else {
+            ed = (platEvent as EventData)
         }
-        name = (ed.sourceComponent && ed.sourceComponent.state[tag]) || 'onAnonymousEvent'
+        let name = (ed.sourceComponent && ed.sourceComponent.state[tag]) || 'onAnonymousEvent'
         ed.tag = tag
         ed.value = value
         if(act && typeof act[name] === 'function') {
