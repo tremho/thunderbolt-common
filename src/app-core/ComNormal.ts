@@ -277,7 +277,57 @@ export class ComNormal {
         return cbounds
     }
 
-    // TODO: style adjust APIs
+    /**
+     * Set a style property to the given value and units
+     * This should replace statements like `el.style.width = '12px'` with `setStyleProp(el, 'width', 12, 'px'
+     * Can also set non-numeric props, like `setStyle(bgEl, 'backgroundSize', 'contain')`
+     *
+     * @param {*}  el Element or View to set prop for
+     * @param {string} prop Name of property to set
+     * @param {number|string} value Value to set for this property
+     * @param {string} unit CSS unit type (e.g. px, %, em, in, etc)
+     */
+    setStyleProp(el:any, prop:string, value:number|string, unit?:string) {
+        if(this.isMobile) {
+            const emSize = 15; // consistent with CLI definition
+
+            // Same translation used at CLI (migrateScss)
+            let v = Number(value)
+            if (unit === 'px') unit = ''
+            else if (unit === 'em' || unit === 'rem') {
+                v *= emSize
+                unit = ''
+            } else if (unit === 'in') {
+                v *= 96 // pixels per inch per CSS
+                unit = ''
+            } else if (unit === 'pt') {
+                v *= 96 / 72 // one point is 1/72 inch
+                unit = ''
+            } else if (unit === 'pc') {
+                // pica is 12 points
+                v *= 12 * 96 / 72
+                unit = ''
+            } else if (unit === 'cm') {
+                // cm to inch to pixel
+                v *= 0.39370079 * 96
+                unit = ''
+            } else if (unit === 'mm') {
+                // mm to inch to pixel
+                v *= 0.039370079 * 96
+                unit = ''
+            }
+            if(!unit) unit = ''
+            let sv
+            if(isFinite(v)) {
+                sv = v+unit
+            } else {
+                sv = value
+            }
+            el.set(prop, sv)
+        } else {
+            el.style[prop] = value+(unit || '')
+        }
+    }
 }
 
 // -- DOM event gesture handling

@@ -51,6 +51,7 @@ declare module "@tremho/jove-common" {
         elementFindAll(tag:string):any[]
         listenToFor(el:any, pseudoEventTag:string, func:(ed:any)=>{}, remove?:boolean)
         getElementBounds(element:any)
+        setStyleProp(el:any, prop:string, value:number|string, unit?:string)
     }
 
 }
