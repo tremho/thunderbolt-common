@@ -306,6 +306,7 @@ function readBuildEnvironment() {
 
     console.log('>>$$$$ in readBuildEnvironment ')
     if(isNS) console.log(">>>$$$$ Nativescript detected")
+    else console.log(">>>$$$$ NOT running under Nativescript")
 
     // determine our launchDir based on this path
     if(!isNS && nodeParts) { // don't go through this for ns
