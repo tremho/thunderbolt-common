@@ -175,7 +175,7 @@ export class ComNormal {
                 'swipeup' : {action: 'swipe', mode: 'up'},
                 'swipedown' : {action: 'swipe', mode: 'down'},
                 'longpress' : {action: 'longpress'},
-                'pan' : {action: 'pan'},
+                'pan' : {action: 'pan', handler:mobilePanHandler},
                 'drag': {aka: 'pan'},
                 'rotation': {action: 'rotation'},
                 'rotate': {aka: 'rotation'},
@@ -186,12 +186,15 @@ export class ComNormal {
             if(h) {
                 // @ts-ignore
                 if(h.aka) h = mappedEvents[h.aka]
-                let {action} = h
+                let {action, handler} = h
                 if(action) {
                     const lhndlr = (ev:any) => {
                         console.log('mobile handler for '+action+' triggered')
+                        mobileHandler(ev, func, this)
                     }
                     this.registerHandler(el, action, lhndlr)
+                } else if(handler) {
+                    handler(el, h.mode, func, this)
                 }
             }
 
@@ -501,4 +504,74 @@ function handlePinch(comp:any, mode:string, cb:any, cn:ComNormal) {
     cn.registerHandler(comp, 'mousedown', hdlDown)
     cn.registerHandler(comp, 'mouseup', hdlUp)
     cn.registerHandler(comp, 'mousemove', hdlMove)
+}
+// -- mobile handler
+function mobileHandler(ev:any, cb:any, cn:ComNormal) {
+    const ed = new EventData()
+    ed.tag = 'action'
+    ed.app = cn.stdComp.cm.getApp()
+    ed.eventType = ev.type.toString()
+    ed.platEvent = ev
+    ed.sourceComponent = ev.view
+
+    if(ed.eventType === 'touch' || ed.eventType === 'tap') {
+        ed.value = {
+            clientX: ev.getX(),
+            clientY: ev.getY(),
+            buttons: ev.getPointerCount()
+        }
+    }
+    else if(ed.eventType === 'swipe') {
+        ed.value = ev.direction.toString()
+    } else if(ed.eventType === 'pan') {
+        ed.value = {
+            mx: ev.deltaX,
+            my: ev.deltaY
+            // can't do clientX, clientY because we only get the amount of movement since last time.
+            // we would need a multi-event handler like the DOM handler has to get clientX,Y and tmx,tmy
+            // using a reference point on first touch.
+        }
+
+    } else if(ed.eventType === 'rotation') {
+        ed.value = ev.rotation
+    } else if(ed.eventType === 'pinch') {
+        ed.value = ev.scale
+    }
+}
+
+// we have to do a multi-event trap to make pan work the way we want
+// this is basically the same as the DOM version
+function mobilePanHandler(comp:any, mode:string, cb:any, cn:ComNormal) {
+    let session:any = getSessionData(comp)
+    const hdlDown = (ev:any) => {
+        session.active = true
+        session.startx = ev.getX()
+        session.starty = ev.getY()
+        session.x = ev.getX()
+        session.y = ev.getY()
+    }
+    const hdlUp =  () => {
+        session.active = false
+    }
+    const hdlTouch = (ev:any) => {
+        if(ev.action === 'down') return hdlDown(ev)
+        else return hdlUp()
+    }
+    const hdlMove = (ev:any) => {
+        if (session.active) {
+            let mx = ev.deltaX
+            let my = ev.deltaY
+            session.x += mx
+            session.y += my
+            let clientX = session.x
+            let clientY = session.y
+            let tmx = clientX - session.startx
+            let tmy = clientY - session.starty
+            let ed = new EventData()
+            ed.value = {mx, my, tmx, tmy, clientX, clientY}
+            cb(ed)
+        }
+    }
+    comp.stdComp.on('touch', hdlTouch)
+    comp.stdComp.on('pan', hdlMove)
 }
