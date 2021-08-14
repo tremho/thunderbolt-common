@@ -175,7 +175,7 @@ export class ComNormal {
                 'swipeup' : {action: 'swipe', mode: 'up'},
                 'swipedown' : {action: 'swipe', mode: 'down'},
                 'longpress' : {action: 'longpress'},
-                'pan' : {action: 'pan', handler:mobilePanHandler},
+                'pan' : {handler: mobilePanHandler}, // this one is special. needs multi-event trapping, unlike others.
                 'drag': {aka: 'pan'},
                 'rotation': {action: 'rotation'},
                 'rotate': {aka: 'rotation'},
