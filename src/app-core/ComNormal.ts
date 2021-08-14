@@ -94,8 +94,9 @@ export class ComNormal {
         const found:any[] = []
         if(this.isMobile) {
             const childFinder = (parent:any) => {
-                if(parent.eachChildView) {
-                    parent.eachChildView((child: any) => {
+                if(parent.eachChild) {
+                    parent.eachChild((child: any) => {
+                        console.log('child', child)
                         if (child.tagName === tag) found.push(child)
                         if (child.eachChildView) childFinder(child)
                     })
