@@ -572,6 +572,6 @@ function mobilePanHandler(comp:any, mode:string, cb:any, cn:ComNormal) {
             cb(ed)
         }
     }
-    comp.stdComp.on('touch', hdlTouch)
-    comp.stdComp.on('pan', hdlMove)
+    cn.registerHandler(comp, 'touch', hdlTouch)
+    cn.registerHandler(comp, 'pan', hdlMove)
 }
