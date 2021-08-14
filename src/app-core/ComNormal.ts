@@ -276,6 +276,8 @@ export class ComNormal {
         }
         return cbounds
     }
+
+    // TODO: style adjust APIs
 }
 
 // -- DOM event gesture handling

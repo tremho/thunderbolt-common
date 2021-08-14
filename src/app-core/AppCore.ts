@@ -809,7 +809,12 @@ export class AppCore {
         } else {
             ed = (platEvent as EventData)
         }
-        let name = (ed.sourceComponent && ed.sourceComponent.state[tag]) || 'onAnonymousEvent'
+        let name
+        if(check.mobile) {
+            name = (ed.sourceComponent && ed.sourceComponent.get(tag)) || 'onAnonymousEvent'
+        } else {
+            name = (ed.sourceComponent && ed.sourceComponent.state[tag]) || 'onAnonymousEvent'
+        }
         ed.tag = tag
         ed.value = value
         if(act && typeof act[name] === 'function') {
