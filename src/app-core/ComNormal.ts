@@ -42,8 +42,7 @@ export class ComNormal {
      * @returns true if we're running on an iOS device
      */
     get isIOS(): boolean {
-        if (this.stdComp.component && this.stdComp.component.ios) return true
-        return false
+        return (this.stdComp.component && this.stdComp.component.ios)
     }
 
     /**
@@ -51,8 +50,7 @@ export class ComNormal {
      * @returns true if we're running on an Android device
      */
     get isAndroid(): boolean {
-        if (this.stdComp.component && this.stdComp.component.android) return true
-        return false
+        return (this.stdComp.component && this.stdComp.component.android)
     }
 
     /**
@@ -66,7 +64,7 @@ export class ComNormal {
     /**
      * Finds the first child component (aka 'element') of the given tag within the scope of this component
      * @param {string} tag Tag name to find (e.g. 'div')
-     * @returns {any} the Element or View found, or undefined if none found
+     * @returns {*} the Element or View found, or undefined if none found
      */
     elementFind(tag:string):any {
         if(this.isMobile) {
@@ -79,7 +77,7 @@ export class ComNormal {
     /**
      * Returns an array of all child components, possibly nested, of teh given tag found within the scope of this component
      * @param {string} tag Tag name to find (e.g. 'div')
-     * @returns {any[]} an array of the Elements or Views found, or undefined if none found
+     * @returns {*[]} an array of the Elements or Views found, or undefined if none found
      */
     elementFindAll(tag:string):any[] {
         if(this.isMobile) {
@@ -102,7 +100,11 @@ export class ComNormal {
                     const child = parent.getChildAt(i)
                     console.log('child', child)
                     const kname = child.className
-                    if((name && kname.indexOf(name) === 0) || (className && kname.indexOf(className) > 0)) {
+                    let hit = false
+                    hit = hit || (child.tagName === name)
+                    hit = hit || !!(kname && kname.indexOf(name) === 0)
+                    hit = hit || !!(kname && className && kname.indexOf(className) > 0)
+                    if(hit) {
                         found.push(child)
                     }
                     if (child.getChildrenCount && child.getChildrenCount()) childFinder(child)
@@ -150,9 +152,9 @@ export class ComNormal {
      *  specifying 'click' is the same as saying 'press'.  The aliases are not recommended. Use the pseudo strings
      *  instead.
      *
+     * @param {*} el the Element or View to attach listener to
      * @param {string} pseudoEventTag  the type of event to trap
-     * @param {any} func the callback function called when the qualified event occurs
-     * @param {boolean} [remove] if true, this removes the listener rather than set it.
+     * @param {*} func the callback function called when the qualified event occurs
      *
      */
     listenToFor(el:any, pseudoEventTag:string, func:(ed:any)=>{}) {
@@ -239,7 +241,7 @@ export class ComNormal {
     /**
      * Gets the dimensions of a subcomponent ('element')
      *
-     * @param {any} element  the Element or View to be measured
+     * @param {*} element  the Element or View to be measured
      * @returns {Bounds} {x, y, width, height, left, top, right, bottom, cx, cy} where the first 4 properties are
      * r/w and the others read-only. cx/cy refer to element center.
      */
@@ -338,7 +340,7 @@ function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
         session.startx = ev.screenX
         session.starty = ev.screenY
     }
-    const hdlUp =  (ev:MouseEvent) => {
+    const hdlUp =  () => {
         session.active = false
     }
     const hdlMove = (ev:MouseEvent) => {
@@ -376,7 +378,7 @@ function handleRotation(comp:any, mode:string, cb:any, cn:ComNormal) {
             session.starty = ev.screenY
         }
     }
-    const hdlUp =  (ev:MouseEvent) => {
+    const hdlUp =  () => {
         session.active = false
     }
     const hdlMove = (ev:MouseEvent) => {
@@ -419,7 +421,7 @@ function handlePinch(comp:any, mode:string, cb:any, cn:ComNormal) {
             session.startDist = dist(session.cx, session.cy, ev.clientX, ev.clientY)
         }
     }
-    const hdlUp =  (ev:MouseEvent) => {
+    const hdlUp =  () => {
         session.active = false
     }
     const hdlMove = (ev:MouseEvent) => {
