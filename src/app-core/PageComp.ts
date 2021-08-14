@@ -1,8 +1,8 @@
 
-import {newCommon} from './ComCommon'
-let cm:any;
+import {ComCommon, newCommon} from './ComCommon'
 
 export default {
+    cm: ({} as ComCommon),
     onBeforeMount(props:object|null, state:object|null|undefined) {
         // @ts-ignore
         console.log(this.root.tagName, 'onBeforeMount', props, state)
@@ -10,7 +10,7 @@ export default {
         // Object.defineProperty(this,'props', {
         //     value: addBind
         // })
-        cm = newCommon(this)
+        this.cm = newCommon(this)
         // @ts-ignore
         this.comBinder = cm.getComBinder()
         this.reset()
@@ -49,7 +49,7 @@ export default {
             this._isReset = true;
             // @ts-ignore
             this.bound = new Object()
-            cm.bindComponent()
+            this.cm.bindComponent()
         } catch(e) {
             console.error('failed in reset ', e)
         }

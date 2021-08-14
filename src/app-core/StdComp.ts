@@ -1,6 +1,5 @@
 import {newCommon, ComCommon} from './ComCommon'
 import {ComNormal} from './ComNormal'
-let cm:ComCommon;
 export default {
     tagName: '',
     bound: {},
@@ -15,7 +14,7 @@ export default {
         // @ts-ignore
         this.tagName = this.root.tagName.toLowerCase()
         // @ts-ignore
-        cm = this.cm = this.com = newCommon(this) // this.cm available for control-specific extensions
+        this.cm = this.com = newCommon(this) // this.cm and this.com are the same
         // @ts-ignore
         Object.getOwnPropertyNames(props).forEach(p => {
             // @ts-ignore
