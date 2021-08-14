@@ -14,6 +14,7 @@ import {ToolExtension} from "../extension/ToolExtension";
 
 import {ResizeSensor} from "css-element-queries";
 
+import {EventData} from "./EventData";
 
 let callExtensionApi: any
 import * as BEF from "./ BackExtensionsFront";
@@ -67,15 +68,6 @@ function writeMessage(subject:string, message:string) {
 }
 const gwindow:any = typeof window !== 'undefined' ? window : {}
 const mainApi = check.mobile ? mainApiNS : gwindow.api;
-
-export class EventData {
-    public app:AppCore|undefined
-    public sourceComponent:any
-    public eventType:string|undefined
-    public tag:string|undefined
-    public value?:any
-    public platEvent:any
-}
 
 export class HistoryRecord {
     public pageId: string = ''

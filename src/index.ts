@@ -502,7 +502,8 @@ export const Log = {
     exception(...a:any) {console.error(...a)}
 }
 
-import {AppCore, EventData} from './app-core/AppCore'
+import {AppCore} from './app-core/AppCore'
+import {EventData} from './app-core/EventData'
 import {MenuItem, MenuApi} from "./application/MenuApi";
 import {setupMenu} from "./application/MenuDef";
 import {PathParts, PathUtils} from "./application/PathUtils";

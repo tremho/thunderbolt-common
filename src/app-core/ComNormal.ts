@@ -14,7 +14,7 @@ These apis should be called from same-contract methods on the 'Component' for bo
 
  */
 
-import {EventData} from "./AppCore";
+import {EventData} from "./EventData";
 
 const sessionDataMap:any = {}
 function getSessionData(comp:any) {
