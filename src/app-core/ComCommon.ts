@@ -232,6 +232,9 @@ export class ComCommon extends NotCommon{
     /**
      * returns the component that is the child of the given component of the given tag,
      * optionally the given ordinal occurrence.
+     *
+     * Not for mobile.  See also ComNormal elementFind
+     *
      * @param {*} comp - component that has the child we seek
      * @param {string} tag - tag name of child, or other selector string (e.g. '#child-id')
      * @param ordinal - optional  ordinal (starting with 1) to choose if there are multiple children with this tag

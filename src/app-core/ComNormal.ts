@@ -92,14 +92,20 @@ export class ComNormal {
     // Local function for mobile to find children
     private mobileFind(tag:string):any[] {
         const found:any[] = []
+        const parts = tag.split('.')
+        const name = parts[0]
+        const className = parts[1]
         if(this.isMobile) {
             const childFinder = (parent:any) => {
-                if(parent.eachChild) {
-                    parent.eachChild((child: any) => {
-                        console.log('child', child)
-                        if (child.tagName === tag) found.push(child)
-                        if (child.eachChildView) childFinder(child)
-                    })
+                let count = (parent.getChildrenCount && parent.getChildrenCount()) || 0
+                for(let i=0; i<count; i++) {
+                    const child = parent.getChildAt(i)
+                    console.log('child', child)
+                    const kname = child.className
+                    if((name && kname.indexOf(name) === 0) || (className && kname.indexOf(className) > 0)) {
+                        found.push(child)
+                    }
+                    if (child.getChildrenCount && child.getChildrenCount()) childFinder(child)
                 }
             }
             childFinder(this.stdComp)
