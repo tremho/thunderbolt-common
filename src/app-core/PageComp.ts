@@ -12,7 +12,7 @@ export default {
         // })
         this.cm = newCommon(this)
         // @ts-ignore
-        this.comBinder = cm.getComBinder()
+        this.comBinder = this.cm.getComBinder()
         this.reset()
         // @ts-ignore
         this._isReset = false;
@@ -25,7 +25,7 @@ export default {
         // @ts-ignore
         console.log(this.root.tagName, 'onBeforeUpdate', props, state)
         // @ts-ignore
-        this.bound.data = cm.getApp().getPageData(this.root.tagName.toLowerCase())
+        this.bound.data = this.cm.getApp().getPageData(this.root.tagName.toLowerCase())
     },
     onUpdated(props:object|null, state:object|null|undefined) {
         // @ts-ignore
