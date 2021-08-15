@@ -403,9 +403,9 @@ function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
         let clientX = ev.clientX
         let clientY = ev.clientY
         if(type === 'start') {
+            tmx = session.x
+            tmy = session.y
             session.startx = session.starty = 0;
-            tmx = clientX
-            tmy = clientY
         }
         ed.app = cn.stdComp.cm.getApp()
         ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
@@ -417,8 +417,9 @@ function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
     }
     const hdlDown = (ev:MouseEvent) => {
         session.active = true
-        session.startx = session.x = ev.clientX
-        session.starty = session.y = ev.clientY
+        let {offX, offY} = computeDOMOffsets(ev.currentTarget as HTMLElement)
+        session.startx = session.x = ev.clientX - offX
+        session.starty = session.y = ev.clientY - offY
         callback(ev, 'start');
     }
     const hdlUp =  () => {
@@ -591,4 +592,21 @@ function mobilePanHandler(comp:any, mode:string, cb:any, cn:ComNormal) {
     }
     cn.registerHandler(comp, 'touch', hdlTouch)
     cn.registerHandler(comp, 'pan', hdlMove)
+}
+
+/**
+ * Use to get the anchor point of a DOM element
+ * so we can consistently keep values relative
+ * @param el
+ */
+function computeDOMOffsets(el:HTMLElement | null) {
+    let offX = 0;
+    let offY = 0;
+    let curEl:HTMLElement | null = el
+    while(curEl) {
+        offX += curEl.offsetLeft
+        offY += curEl.offsetTop
+        curEl = (curEl.offsetParent as HTMLElement)
+    }
+    return {offX, offY}
 }
