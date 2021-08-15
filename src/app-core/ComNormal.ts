@@ -392,10 +392,34 @@ function handleLongPress(comp:any, mode:string, cb:any, cn:ComNormal) {
 }
 function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
     let session:any = getSessionData(comp)
+    const callback = (ev:MouseEvent, type:string) => {
+        let ed = new EventData()
+        let mx = ev.movementX || 0
+        let my = ev.movementY || 0
+        session.x += mx;
+        session.y += my;
+        let tmx = session.x - session.startx
+        let tmy = session.y - session.starty
+        let clientX = ev.clientX
+        let clientY = ev.clientY
+        if(type === 'start') {
+            session.startx = session.starty = 0;
+            tmx = clientX
+            tmy = clientY
+        }
+        ed.app = cn.stdComp.cm.getApp()
+        ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
+        ed.tag = 'action'
+        ed.eventType = 'pan'
+        ed.platEvent = ev
+        ed.value = {type, mx, my, tmx, tmy, clientX, clientY}
+        cb(ed)
+    }
     const hdlDown = (ev:MouseEvent) => {
         session.active = true
-        session.startx = ev.screenX
-        session.starty = ev.screenY
+        session.startx = session.x = ev.clientX
+        session.starty = session.y = ev.clientY
+        callback(ev, 'start');
     }
     const hdlUp =  () => {
         session.active = false
@@ -403,20 +427,7 @@ function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
     const hdlMove = (ev:MouseEvent) => {
         if (session.active) {
             if (ev.buttons) {
-                let mx = ev.movementX
-                let my = ev.movementY
-                let tmx = ev.screenX - session.startx
-                let tmy = ev.screenY - session.starty
-                let clientX = ev.clientX
-                let clientY = ev.clientY
-                let ed = new EventData()
-                ed.app = cn.stdComp.cm.getApp()
-                ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
-                ed.tag = 'action'
-                ed.eventType = 'pan'
-                ed.platEvent = ev
-                ed.value = {mx, my, tmx, tmy, clientX, clientY}
-                cb(ed)
+                callback(ev, 'drag')
             } else {
                 session.active = session.started = false
             }
@@ -431,8 +442,8 @@ function handleRotation(comp:any, mode:string, cb:any, cn:ComNormal) {
     const hdlDown = (ev:MouseEvent) => {
         if(ev.ctrlKey || ev.metaKey) {
             session.active = true
-            session.startx = ev.screenX
-            session.starty = ev.screenY
+            session.startx = session.x = ev.clientX
+            session.starty = session.y = ev.clientY
         }
     }
     const hdlUp =  () => {
@@ -441,8 +452,10 @@ function handleRotation(comp:any, mode:string, cb:any, cn:ComNormal) {
     const hdlMove = (ev:MouseEvent) => {
         if(ev.buttons && session.active) {
             if(ev.ctrlKey || ev.metaKey) {
-                let x = ev.screenX
-                let y = ev.screenY
+                let x = ev.clientX
+                let y = ev.clientY
+                session.x = x;
+                session.y = y;
                 // compute the angle between startx,y and x,y
                 let angle = 0;
                 let ed = new EventData()
