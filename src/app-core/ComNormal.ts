@@ -105,7 +105,7 @@ export class ComNormal {
                         hit = hit || (child.tagName === name)
                         hit = hit || !!(kname && kname.indexOf(name) === 0)
                     }
-                    hit = hit || !!(kname && className && kname.indexOf(className) > 0)
+                    hit = hit || !!(kname && className && kname.indexOf(className) !== -1)
                     if(hit) {
                         found.push(child)
                     }
