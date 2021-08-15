@@ -101,8 +101,10 @@ export class ComNormal {
                     console.log('child', child)
                     const kname = child.className
                     let hit = false
-                    hit = hit || (child.tagName === name)
-                    hit = hit || !!(kname && kname.indexOf(name) === 0)
+                    if(name) {
+                        hit = hit || (child.tagName === name)
+                        hit = hit || !!(kname && kname.indexOf(name) === 0)
+                    }
                     hit = hit || !!(kname && className && kname.indexOf(className) > 0)
                     if(hit) {
                         found.push(child)
