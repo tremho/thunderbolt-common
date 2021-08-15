@@ -547,24 +547,26 @@ function mobilePanHandler(comp:any, mode:string, cb:any, cn:ComNormal) {
     let session:any = getSessionData(comp)
     const hdlDown = (ev:any) => {
         session.active = true
-        session.startx = ev.getX()
-        session.starty = ev.getY()
-        session.x = ev.getX()
-        session.y = ev.getY()
+        session.startx = session.x = ev.getX()
+        session.starty = session.y = ev.getY()
     }
     const hdlUp =  () => {
         session.active = false
     }
     const hdlTouch = (ev:any) => {
         if(ev.action === 'down') return hdlDown(ev)
-        else return hdlUp()
+        else if(ev.action === 'up') return hdlUp()
+        else {
+            session.x = ev.getX()
+            session.y = ev.getY()
+        }
     }
     const hdlMove = (ev:any) => {
         if (session.active) {
             let mx = ev.deltaX
             let my = ev.deltaY
-            session.x += mx
-            session.y += my
+            // session.x += mx
+            // session.y += my
             let clientX = session.x
             let clientY = session.y
             let tmx = clientX - session.startx
