@@ -231,7 +231,7 @@ export class ComNormal {
                 let {action, handler} = h
                 if(action) {
                     const lhndlr = (ev:any) => {
-                        console.log('dom handler for ' + action + ' triggered')
+                        console.log('dom handler for ' + action + ' triggered', ev)
                     }
                     this.registerHandler(el, action, lhndlr)
 
@@ -558,40 +558,54 @@ function mobileHandler(ev:any, cb:any, cn:ComNormal) {
 // we have to do a multi-event trap to make pan work the way we want
 // this is basically the same as the DOM version
 function mobilePanHandler(comp:any, mode:string, cb:any, cn:ComNormal) {
-    let session:any = getSessionData(comp)
-    const hdlDown = (ev:any) => {
-        session.active = true
-        session.startx = session.x = ev.getX()
-        session.starty = session.y = ev.getY()
-    }
-    const hdlUp =  () => {
-        session.active = false
-    }
-    const hdlTouch = (ev:any) => {
-        if(ev.action === 'down') return hdlDown(ev)
-        else if(ev.action === 'up') return hdlUp()
-        else {
-            session.x = ev.getX()
-            session.y = ev.getY()
+    let session = getSessionData(comp);
+    const callback = (ev:any, type:string) => {
+        let ed = new EventData();
+        let mx = ev.deltaX - session.x
+        let my = ev.deltaY - session.y
+        let tmx = session.x - session.startx;
+        let tmy = session.y - session.starty;
+        let clientX = session.x
+        let clientY = session.y;
+        if (type === 'start') {
+            mx = 0;
+            my = 0;
+            session.x = clientX = tmx = ev.getX();
+            session.y = clientY = tmy = ev.getY()
+            session.startx = session.starty = 0;
         }
-    }
+        ed.app = cn.stdComp.cm.getApp();
+        ed.sourceComponent = cn.stdComp.cm.getComponent(comp);
+        ed.tag = 'action';
+        ed.eventType = 'pan';
+        ed.platEvent = ev;
+        ed.value = { type, mx, my, tmx, tmy, clientX, clientY };
+        cb(ed);
+    };
+    const hdlDown = (ev:any) => {
+        session.active = true;
+        callback(ev, 'start')
+    };
+    const hdlUp = () => {
+        session.active = false;
+    };
+    const hdlTouch = (ev:any) => {
+        if (ev.action === 'down')
+            return hdlDown(ev);
+        else if (ev.action === 'up')
+            return hdlUp();
+        else {
+            session.x = ev.getX();
+            session.y = ev.getY();
+        }
+    };
     const hdlMove = (ev:any) => {
         if (session.active) {
-            let mx = ev.deltaX
-            let my = ev.deltaY
-            // session.x += mx
-            // session.y += my
-            let clientX = session.x
-            let clientY = session.y
-            let tmx = clientX - session.startx
-            let tmy = clientY - session.starty
-            let ed = new EventData()
-            ed.value = {mx, my, tmx, tmy, clientX, clientY}
-            cb(ed)
+            callback(ev, 'drag')
         }
-    }
-    cn.registerHandler(comp, 'touch', hdlTouch)
-    cn.registerHandler(comp, 'pan', hdlMove)
+    };
+    cn.registerHandler(comp, 'touch', hdlTouch);
+    cn.registerHandler(comp, 'pan', hdlMove);
 }
 
 /**
