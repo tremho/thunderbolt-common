@@ -117,6 +117,20 @@ export class ComNormal {
         return found
     }
 
+    /**
+     * Get a value of a property set in the component markup
+     * @param propName
+     */
+    getProp(propName:string) {
+        if(this.isMobile) {
+            const comp = this.stdComp.component
+            return comp.get(propName)
+        } else {
+            const props = this.stdComp.component.bound || {}
+            return props[propName]
+        }
+    }
+
     // use to attach only one listener per event type per component, since we can't remove them
     registerHandler(comp:any, action:string, func:any) {
         const session = getSessionData(comp)
