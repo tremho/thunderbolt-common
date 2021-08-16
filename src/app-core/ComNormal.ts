@@ -126,7 +126,7 @@ export class ComNormal {
             const comp = this.stdComp.component
             return comp.get(propName)
         } else {
-            const props = this.stdComp.component.bound || {}
+            const props = this.stdComp.bound || {}
             return props[propName]
         }
     }
