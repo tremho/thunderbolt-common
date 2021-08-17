@@ -112,6 +112,8 @@ export class ComNormal {
                     if (child.getChildrenCount && child.getChildrenCount()) childFinder(child)
                 }
             }
+            console.log('for reference, component is ', this.stdComp.component)
+            console.log('starting find at ', this.stdComp)
             childFinder(this.stdComp)
         }
         return found
