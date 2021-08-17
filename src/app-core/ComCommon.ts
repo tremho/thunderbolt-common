@@ -899,10 +899,11 @@ export class ComCommon extends NotCommon{
         let bp = borderSplit(border)
         let borderStyle = (this.getComponentAttribute(component, 'borderStyle') || defaults.borderStyle || bp.style)
         let borderColor = (this.getComponentAttribute(component, 'borderColor') || defaults.borderColor || bp.color)
+        if(borderColor === 'undefined') borderColor = undefined
         let borderWidth = (this.getComponentAttribute(component, 'borderWidth') || defaults.borderWidth || bp.width)
         if(border) component.set('border', border)
         if(borderStyle) component.set('borderStyle', borderStyle)
-        if(borderColor) component.set('borderColor', new Color(borderColor))
+        if(borderColor) component.set('borderColor', borderColor)
         if(borderWidth) component.set('borderWidth', borderWidth)
 
 
