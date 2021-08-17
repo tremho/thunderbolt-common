@@ -311,6 +311,7 @@ export class ComCommon extends NotCommon{
             if(!component) component = this.rootComponent
             const view = (component as any) // view
             let attVal = (view && view.get(attName)) || ''
+            if(typeof attVal === 'object') attVal = attVal.value
             return ''+attVal
         }
     }
