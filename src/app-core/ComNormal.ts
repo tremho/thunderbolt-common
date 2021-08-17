@@ -95,10 +95,9 @@ export class ComNormal {
         const className = parts[1]
         if(this.isMobile) {
             const childFinder = (parent:any) => {
-                let count = (parent._subViews && parent._subViews.length) || 0
+                let count = (parent.getChildrenCount && parent.getChildrenCount()) || 0
                 for(let i=0; i<count; i++) {
-                    const child = parent._subView[i]
-                    console.log('child', child)
+                    const child = parent.getChildAt(i)
                     const kname = child.className
                     let hit = false
                     if(name) {
@@ -107,9 +106,10 @@ export class ComNormal {
                     }
                     hit = hit || !!(kname && className && kname.indexOf(className) !== -1)
                     if(hit) {
+                        console.log('found ', child)
                         found.push(child)
                     }
-                    if (child._subViews && child._subViews.length) childFinder(child)
+                    if (child.getChildrenCount && child.getChildrenCount()) childFinder(child)
                 }
             }
             childFinder(this.stdComp)
