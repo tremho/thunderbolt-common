@@ -902,7 +902,7 @@ export class ComCommon extends NotCommon{
         let borderWidth = (this.getComponentAttribute(component, 'borderWidth') || defaults.borderWidth || bp.width)
         if(border) component.set('border', border)
         if(borderStyle) component.set('borderStyle', borderStyle)
-        if(borderColor) component.set('borderColor', borderColor)
+        if(borderColor) component.set('borderColor', new Color(borderColor))
         if(borderWidth) component.set('borderWidth', borderWidth)
 
 
