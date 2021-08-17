@@ -310,9 +310,8 @@ export class ComCommon extends NotCommon{
             // @ts-ignore
             if(!component) component = this.rootComponent
             const view = (component as any) // view
-            let attVal = view && view.get(attName)
-            if(typeof attVal !== 'string') return ''
-            return attVal
+            let attVal = (view && view.get(attName)) || ''
+            return ''+attVal
         }
     }
 
@@ -739,6 +738,8 @@ export class ComCommon extends NotCommon{
         if(''+Number(marginBottom) === marginBottom) marginBottom = Number(marginBottom)
         if(''+Number(marginLeft) === marginLeft) marginLeft = Number(marginLeft)
 
+        component.set('width', width)
+        component.set('height', height)
 
         // console.log('setting padding')
         component.set('padding', padding)
