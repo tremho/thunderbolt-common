@@ -774,7 +774,7 @@ export class AppCore {
             comp = this.getComponent(el)
         } else {
             // for nativescript:
-            const comNormal = new ComNormal(theFrame.topmost().currentPage)
+            const comNormal = new ComNormal(theFrame.currentPage)
             const candidates = comNormal.elementFindAll(tagName)
             for(let cand of candidates) {
                 if(!prop || cand.get(prop) === propValue) {
