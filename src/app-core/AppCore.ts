@@ -18,6 +18,7 @@ import {EventData} from "./EventData";
 
 let callExtensionApi: any
 import * as BEF from "./ BackExtensionsFront";
+import {ComNormal} from "./ComNormal";
 
 let nsfs:any
 let nsplatform:any
@@ -759,6 +760,7 @@ export class AppCore {
     }
 
     public findComponent(tagName:string, prop:string, propValue:string):any {
+
         let comp:any = null
         if(check.riot) {
             // find it using the DOM
@@ -771,19 +773,15 @@ export class AppCore {
             const el:HTMLElement|null = document.body.querySelector(selector)
             comp = this.getComponent(el)
         } else {
-            // for nativescript we need to look at all the children on the page
-            // and their constructor name (tag) and their classes
-            // TODO: this needs to recurse into containers
-            console.warn('AppCore.findComponent is not ready for mobile')
-            // also, can't get page from frame this way.
-            // theFrame.page.content.eachChildView((child:any)=>{
-            //     if(!comp) {
-            //         const cname = child.constructor.name
-            //         const classes = child.className
-            //         if (cname === tagName) comp = child // preferably
-            //         if (classes.indexOf(tagName) === 0) comp = child // alterately
-            //     }
-            // })
+            // for nativescript:
+            const comNormal = new ComNormal(theFrame.topmost().currentPage)
+            const candidates = comNormal.elementFindAll(tagName)
+            for(let cand of candidates) {
+                if(!prop || cand.get(prop) === propValue) {
+                    comp = cand
+                    break
+                }
+            }
         }
         return comp
     }
