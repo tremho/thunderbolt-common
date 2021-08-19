@@ -91,7 +91,7 @@ export class ComNormal {
     private mobileFind(tag:string):any[] {
         const found:any[] = []
         const parts = tag.split('.')
-        const name = parts[0]
+        const name = camelCase(parts[0])
         const className = parts[1]
         if(this.isMobile) {
             const childFinder = (parent:any) => {
@@ -99,7 +99,7 @@ export class ComNormal {
                 for(let i=0; i<count; i++) {
                     const child = parent.getChildAt(i)
                     const kname = child.className
-                    let hit = false
+                    let hit = (kname === name)
                     if(name) {
                         hit = hit || (child.tagName === name)
                         hit = hit || !!(kname && kname.indexOf(name) === 0)
@@ -639,4 +639,17 @@ function computeDOMOffsets(el:HTMLElement | null) {
         curEl = (curEl.offsetParent as HTMLElement)
     }
     return {offX, offY}
+}
+
+
+function pascalCase(name:string) {
+    let out = ''
+    name.split('-').forEach(p => {
+        out += p.charAt(0).toUpperCase()+p.substring(1).toLowerCase()
+    })
+    return out
+}
+function camelCase(name:string) {
+    let pc = pascalCase(name)
+    return pc.charAt(0).toLowerCase()+pc.substring(1)
 }
