@@ -808,7 +808,7 @@ export class AppCore {
         } else {
             ed = (platEvent as EventData)
         }
-        let name
+        let name:string
         if(check.mobile) {
             name = (ed.sourceComponent && ed.sourceComponent.get(tag)) || 'onAnonymousEvent'
         } else {
@@ -820,7 +820,7 @@ export class AppCore {
             act[name](ed)
         } else {
             if(name !== 'onAnonymousEvent') {
-                if(act) Log.error(`${name} is not a function exposed on current activity ${act.activityId}`)
+                if(act) console.error(`${name} is not a function exposed on current activity ${act.activityId}`)
             }
         }
     }
@@ -865,7 +865,7 @@ export class AppCore {
     }
 
     // extensions
-    callExtension(moduleName:string, functionName:string, ...args:any) {
+    callExtension(moduleName:string, functionName:string, ...args:any[]) {
         return callExtensionApi(moduleName, functionName, args)
     }
 
