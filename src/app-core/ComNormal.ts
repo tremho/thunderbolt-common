@@ -108,14 +108,14 @@ export class ComNormal {
                     }
                     hit = hit || !!(kname && className && kname.indexOf(className) !== -1)
                     if(hit) {
-                        console.log('found ', child)
+                        // console.log('found ', child)
                         found.push(child)
                     }
                     if (child.getChildrenCount && child.getChildrenCount()) childFinder(child)
                 }
             }
-            console.log('for reference, component is ', this.stdComp.component)
-            console.log('starting find at ', this.stdComp)
+            // console.log('for reference, component is ', this.stdComp.component)
+            // console.log('starting find at ', this.stdComp)
             childFinder(this.stdComp)
         }
         return found
@@ -209,7 +209,7 @@ export class ComNormal {
                 let {action, handler} = h
                 if(action) {
                     const lhndlr = (ev:any) => {
-                        console.log('mobile handler for '+action+' triggered')
+                        // console.log('mobile handler for '+action+' triggered')
                         mobileHandler(ev, func, this)
                     }
                     this.registerHandler(el, action, lhndlr)
@@ -249,7 +249,7 @@ export class ComNormal {
                 let {action, handler} = h
                 if(action) {
                     const lhndlr = (ev:any) => {
-                        console.log('dom handler for ' + action + ' triggered', ev)
+                        // console.log('dom handler for ' + action + ' triggered', ev)
                     }
                     this.registerHandler(el, action, lhndlr)
 
