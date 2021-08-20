@@ -91,7 +91,7 @@ export class ComNormal {
     private mobileFind(tag:string):any[] {
         const found:any[] = []
         const parts = tag.split('.')
-        const name = camelCase(parts[0])
+        const name = pascalCase(parts[0]) // to match primary class name as assigned by ComponentBase
         const className = parts[1]
         if(this.isMobile) {
             const childFinder = (parent:any) => {
