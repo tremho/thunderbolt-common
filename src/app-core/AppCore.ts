@@ -775,6 +775,7 @@ export class AppCore {
         } else {
             // for nativescript:
             const top = theFrame.currentPage.content;
+            top.component = top // make it look like a StdComp
             const comNormal = new ComNormal(top)
             const candidates = comNormal.elementFindAll(tagName)
             for(let cand of candidates) {
