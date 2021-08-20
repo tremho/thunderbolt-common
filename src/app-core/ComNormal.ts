@@ -91,7 +91,7 @@ export class ComNormal {
     private mobileFind(tag:string):any[] {
         const found:any[] = []
         const parts = tag.split('.')
-        const name = pascalCase(parts[0]) // to match primary class name as assigned by ComponentBase
+        let name = pascalCase(parts[0]) // to match primary class name as assigned by ComponentBase
         const className = parts[1]
         if(this.isMobile) {
             const childFinder = (parent:any) => {
@@ -99,10 +99,11 @@ export class ComNormal {
                 for(let i=0; i<count; i++) {
                     const child = parent.getChildAt(i)
                     const kname = child.className
-                    let hit = (kname === name)
+                    let hit = (kname === name) // pascal case compare
                     if(name) {
-                        hit = hit || (child.tagName === name)
-                        hit = hit || !!(kname && kname.indexOf(name) === 0)
+                        name = name.toLowerCase() // we'll do ci compares now
+                        hit = hit || (child.tagName.toLowerCase() === name)
+                        hit = hit || !!(kname && kname.toLowerCase().indexOf(name) === 0)
                     }
                     hit = hit || !!(kname && className && kname.indexOf(className) !== -1)
                     if(hit) {
