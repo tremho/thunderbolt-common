@@ -102,7 +102,8 @@ export class ComNormal {
                     let hit = (kname === name) // pascal case compare
                     if(name) {
                         name = name.toLowerCase() // we'll do ci compares now
-                        hit = hit || (child.tagName.toLowerCase() === name)
+                        let tn = (child.tagName || '').toLowerCase()
+                        hit = hit || (tn === name)
                         hit = hit || !!(kname && kname.toLowerCase().indexOf(name) === 0)
                     }
                     hit = hit || !!(kname && className && kname.indexOf(className) !== -1)
