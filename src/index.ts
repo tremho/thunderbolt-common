@@ -78,7 +78,11 @@ export class FrameworkBackContext {
 
     beginStartup() {
         try {
-            this.startupPromises.push(Promise.resolve(startupTasks.readBuildEnvironment()))
+            console.log('about to call readBuildEnvironment')
+            const rt = startupTasks.readBuildEnvironment()
+            console.log('did so, and return was', rt)
+            console.log('pushing as promise and continuing')
+            this.startupPromises.push(Promise.resolve(rt))
             if (electronApp) {
                 this.startupPromises.push(electronApp.whenReady)
                 electronApp.on('activate', () => {
