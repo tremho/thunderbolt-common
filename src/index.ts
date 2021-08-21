@@ -15,7 +15,7 @@ let startupTasks:any
 let frameworkContext:any
 
 // bridged in injection for mobile
-import {ComCommon} from "./app-core/ComCommon";
+let comCommon = require('./app-core/ComCommon')
 import {getTheApp} from "./app-core/AppCore";
 
 // console.log("%%%%%%%%%%% past basic discovery %%%%%%%%%%%%%%%")
@@ -35,7 +35,7 @@ function injectDependencies(injected:any) {
 
         const ComponentBase = injected.ComponentBase
         if(ComponentBase) {
-            ComponentBase.bridgeAppGetter(getTheApp, ComCommon)
+            ComponentBase.bridgeAppGetter(getTheApp, comCommon)
 
         }
 
