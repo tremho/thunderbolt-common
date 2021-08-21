@@ -65,14 +65,16 @@ export class FrameworkBackContext {
             } catch(e) {
                 console.error('Error passing environment ', e)
             }
-            try {
-                Promise.resolve(this.backApp && this.backApp.appStart(this)).then(() => {
+            Promise.resolve(this.backApp && this.backApp.appStart(this)).then(() => {
+                try {
                     if (electronApp) this.createWindow()
                     if (nativescriptApp) nativescriptApp.run()
-                })
-            } catch(e) {
-                console.error('Startup Error in final run handoff')
-            }
+                } catch(e) {
+                    console.error('Startup Error in final run handoff', e)
+                }
+            }).catch((e:Error) => {
+                console.error('appStart exception: ', e)
+            })
         })
     }
 
