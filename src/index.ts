@@ -7,6 +7,8 @@
 
 // console.log("%%%%%%%%%%%%%%%%%%%%% top of index.js (common) %%%%%%%%%%%%%%%%%%%%%")
 
+import {readBuildEnvironment} from "../../thunderbolt-desktop/src/StartupTasks";
+
 let electronApp:any, BrowserWindow:any, preloadPath:string, AppGateway:any, ipcMain:any
 let makeWindowStatePersist:any
 let nscore:any, nativescriptApp:any, registerExtensionModule:any
@@ -76,6 +78,10 @@ export class FrameworkBackContext {
 
     beginStartup() {
         try {
+            if(typeof startupTasks.readBuildEnvironment !== 'function') {
+                throw Error('readBuildEnvironment is NOT A FUNCTION.  WTF?')
+            }
+
             this.startupPromises.push(Promise.resolve(startupTasks.readBuildEnvironment))
             if (electronApp) {
                 this.startupPromises.push(electronApp.whenReady)
