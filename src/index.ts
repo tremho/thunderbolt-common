@@ -75,17 +75,14 @@ export class FrameworkBackContext {
             } catch(e) {
                 console.error('Error passing environment ', e)
             }
-            Promise.resolve(this.backApp && this.backApp.appStart(this)).then(() => {
-                try {
-                    if (electronApp) this.createWindow()
-                    if (nativescriptApp) nativescriptApp.run({moduleName: 'app-root'})
+            try {
+                this.backApp && this.backApp.appStart(this)
+                if (electronApp) this.createWindow()
+                if (nativescriptApp) nativescriptApp.run({moduleName: 'app-root'})
 
-                } catch(e) {
-                    console.error('Startup Error in final run handoff', e)
-                }
-            }).catch((e:Error) => {
-                console.error('appStart exception: ', e)
-            })
+            } catch(e) {
+                console.error('Startup Error in final run handoff', e)
+            }
         })
     }
 
@@ -185,9 +182,9 @@ export class FrameworkBackContext {
 type FrameworkFrontContext = any // treat as any here. But in reality it will be AppCore from the front process
 
 /** Callback for __appStart__ lifecycle */
-export type BackAppStartCallback = (context:FrameworkBackContext) => Promise<void>
+export type BackAppStartCallback = (context:FrameworkBackContext) => void
 /** Callback for __appExit__ lifecycle */
-export type BackAppExitCallback = (context:FrameworkBackContext) => Promise<void>
+export type BackAppExitCallback = (context:FrameworkBackContext) => void
 
 /** Callback for __appStart__ lifecycle */
 export type FrontAppStartCallback = (context:FrameworkFrontContext) => Promise<void>
