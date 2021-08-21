@@ -78,11 +78,7 @@ export class FrameworkBackContext {
 
     beginStartup() {
         try {
-            console.log('about to call readBuildEnvironment')
-            const rt = startupTasks.readBuildEnvironment()
-            console.log('did so, and return was', rt)
-            console.log('pushing as promise and continuing')
-            this.startupPromises.push(Promise.resolve(rt))
+            this.startupPromises.push(Promise.resolve(startupTasks.readBuildEnvironment()))
             if (electronApp) {
                 console.log('electron app. Pushing whenReady')
                 this.startupPromises.push(electronApp.whenReady)
@@ -164,7 +160,7 @@ export class FrameworkBackContext {
      * @param module
      */
     registerExtensionModule(name:string, module:any) {
-        // console.log('TODO: registerExtensionModule(name, module)', registerExtensionModule)
+        console.log('registering: registerExtensionModule(name, module)', registerExtensionModule)
         registerExtensionModule(name, module)
     }
 }
