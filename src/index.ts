@@ -58,37 +58,48 @@ export class FrameworkBackContext {
         this.beginStartup()
 
         Promise.all(this.startupPromises).then(() => {
-            const {appName, title} = startupTasks.passEnvironmentAndGetTitles()
-            this.appName = appName
-            this.title = title
-            if(electronApp) this.createWindow()
-            if(nativescriptApp) nativescriptApp.run()
+            try {
+                const {appName, title} = startupTasks.passEnvironmentAndGetTitles()
+                this.appName = appName
+                this.title = title
+            } catch(e) {
+                console.error('Error passing environment ', e)
+            }
+            try {
+                if (electronApp) this.createWindow()
+                if (nativescriptApp) nativescriptApp.run()
+            } catch(e) {
+                console.error('Startup Error in final run handoff')
+            }
         })
     }
 
     beginStartup() {
-        this.startupPromises.push(Promise.resolve(startupTasks.readBuildEnvironment))
-        if(electronApp) {
-            this.startupPromises.push(electronApp.whenReady)
-            electronApp.on('activate', () => {
-                console.log('Framework back app Activated')
-                // On macOS it's common to re-create a window in the app when the
-                // dock icon is clicked and there are no other windows open.
-                if (BrowserWindow.getAllWindows().length === 0) this.createWindow()
-            })
-            // Quit when all windows are closed, except on macOS. There, it's common
-            // for applications and their menu bar to stay active until the user quits
-            // explicitly with Cmd + Q.
-            electronApp.on('window-all-closed', () => {
-                if (process.platform !== 'darwin') {
-                    console.warn('TODO: call appExit from here')
-                    // TODO: Check Electron docs for an explicit quit event and trap there instead
-                    Promise.resolve(this.backApp.appExit(this)).then(() => {
-                        electronApp.quit()
-                    })
-                }
-            })
-
+        try {
+            this.startupPromises.push(Promise.resolve(startupTasks.readBuildEnvironment))
+            if (electronApp) {
+                this.startupPromises.push(electronApp.whenReady)
+                electronApp.on('activate', () => {
+                    console.log('Framework back app Activated')
+                    // On macOS it's common to re-create a window in the app when the
+                    // dock icon is clicked and there are no other windows open.
+                    if (BrowserWindow.getAllWindows().length === 0) this.createWindow()
+                })
+                // Quit when all windows are closed, except on macOS. There, it's common
+                // for applications and their menu bar to stay active until the user quits
+                // explicitly with Cmd + Q.
+                electronApp.on('window-all-closed', () => {
+                    if (process.platform !== 'darwin') {
+                        console.warn('TODO: call appExit from here')
+                        // TODO: Check Electron docs for an explicit quit event and trap there instead
+                        Promise.resolve(this.backApp.appExit(this)).then(() => {
+                            electronApp.quit()
+                        })
+                    }
+                })
+            }
+        } catch(e) {
+            console.error('Error in beginStartup', e)
         }
     }
 
