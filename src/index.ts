@@ -78,11 +78,7 @@ export class FrameworkBackContext {
 
     beginStartup() {
         try {
-            if(typeof startupTasks.readBuildEnvironment !== 'function') {
-                throw Error('readBuildEnvironment is NOT A FUNCTION.  WTF?')
-            }
-
-            this.startupPromises.push(Promise.resolve(startupTasks.readBuildEnvironment))
+            this.startupPromises.push(Promise.resolve(startupTasks.readBuildEnvironment()))
             if (electronApp) {
                 this.startupPromises.push(electronApp.whenReady)
                 electronApp.on('activate', () => {
