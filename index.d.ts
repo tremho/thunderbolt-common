@@ -17,7 +17,7 @@ declare module "@tremho/jove-common" {
         public model:AppModel;
         public findComponent(tagName:string):any;
         public navigateToPage(pageId:string, context?:object, skipHistory?:boolean)
-        public callExtension(moduleName:string, functionName:string, ...args:any)
+        public callExtension(moduleName:string, functionName:string, ...args:any[])
         // more to come as needed
     }
     class EventData {

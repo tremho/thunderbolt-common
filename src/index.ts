@@ -7,8 +7,6 @@
 
 // console.log("%%%%%%%%%%%%%%%%%%%%% top of index.js (common) %%%%%%%%%%%%%%%%%%%%%")
 
-import {readBuildEnvironment} from "../../thunderbolt-desktop/src/StartupTasks";
-
 let electronApp:any, BrowserWindow:any, preloadPath:string, AppGateway:any, ipcMain:any
 let makeWindowStatePersist:any
 let nscore:any, nativescriptApp:any, registerExtensionModule:any
@@ -68,8 +66,10 @@ export class FrameworkBackContext {
                 console.error('Error passing environment ', e)
             }
             try {
-                if (electronApp) this.createWindow()
-                if (nativescriptApp) nativescriptApp.run()
+                Promise.resolve(this.backApp && this.backApp.appStart(this)).then(() => {
+                    if (electronApp) this.createWindow()
+                    if (nativescriptApp) nativescriptApp.run()
+                })
             } catch(e) {
                 console.error('Startup Error in final run handoff')
             }
@@ -84,7 +84,9 @@ export class FrameworkBackContext {
             console.log('pushing as promise and continuing')
             this.startupPromises.push(Promise.resolve(rt))
             if (electronApp) {
+                console.log('electron app. Pushing whenReady')
                 this.startupPromises.push(electronApp.whenReady)
+                console.log('adding electron state event listeners')
                 electronApp.on('activate', () => {
                     console.log('Framework back app Activated')
                     // On macOS it's common to re-create a window in the app when the
@@ -224,15 +226,19 @@ export interface TBPage {
  */
 export function registerApp(injected:any, backApp:TBBackApp) : void {
 
+    console.log('>>>>> Start of Framework: Register App')
+
+    // console.log('injections incoming:', injected)
+
     injectDependencies(injected) // bring in our target
 
     if(injected.electronApp) {
         new AppGateway(ipcMain)  // wire up front and back
         console.log('Launching Electron App\n')
     } else {
-
         console.log('Launching Nativescript App\n')
     }
+    console.log('Completing launch through FrameworkBackContext constructor')
     frameworkContext = new FrameworkBackContext(backApp) // the constructor takes it away
 }
 
