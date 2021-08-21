@@ -14,6 +14,10 @@ let startupTasks:any
 
 let frameworkContext:any
 
+// bridged in injection for mobile
+import {ComCommon} from "./app-core/ComCommon";
+import {getTheApp} from "./app-core/AppCore";
+
 // console.log("%%%%%%%%%%% past basic discovery %%%%%%%%%%%%%%%")
 // console.log("isNS = "+isNS)
 
@@ -28,6 +32,12 @@ function injectDependencies(injected:any) {
         registerExtensionModule = injected.registerExtensionModule
         makeWindowStatePersist = injected.makeWindowStatePersist
         startupTasks = injected.startupTasks
+
+        const ComponentBase = injected.ComponentBase
+        if(ComponentBase) {
+            ComponentBase.bridgeAppGetter(getTheApp, ComCommon)
+
+        }
 
         console.log('%%%%%% injection happens %%%%%%%%')
 }
@@ -68,7 +78,8 @@ export class FrameworkBackContext {
             Promise.resolve(this.backApp && this.backApp.appStart(this)).then(() => {
                 try {
                     if (electronApp) this.createWindow()
-                    if (nativescriptApp) nativescriptApp.run()
+                    if (nativescriptApp) nativescriptApp.run({moduleName: 'app-root'})
+
                 } catch(e) {
                     console.error('Startup Error in final run handoff', e)
                 }
