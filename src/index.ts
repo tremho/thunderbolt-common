@@ -226,9 +226,10 @@ export class FrameworkBackContext {
                     // })
 
                     // don't send build environment via EV
-                    // console.log('passing environment through application resources for Nativescript')
+                    console.log('passing environment through application resources for Nativescript')
                     this.nativescriptApp.setResources({passedEnvironment:this.passedEnvironment})
 
+                    console.log('ns app run')
                     this.nativescriptApp.run({moduleName: 'app-root'})
                 })
 
