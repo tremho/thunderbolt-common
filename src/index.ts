@@ -78,7 +78,10 @@ export class FrameworkBackContext {
             try {
                 this.backApp && this.backApp.appStart(this)
                 if (electronApp) this.createWindow()
-                if (nativescriptApp) nativescriptApp.run({moduleName: 'app-root'})
+                if (nativescriptApp) {
+                    nativescriptAppEvents()
+                    nativescriptApp.run({moduleName: 'app-root'})
+                }
 
             } catch(e) {
                 console.error('Startup Error in final run handoff', e)
@@ -273,3 +276,43 @@ export {PathUtils as PathUtils}
 export {ToolExtension as ToolExtension}
 export {EventData as EventData}
 export {ComNormal as ComNormal}
+
+function nativescriptAppEvents() {
+
+    // App Launch
+    nativescriptApp.on(nativescriptApp.launchEvent, (args: any) => {
+        console.log("Root View: ", args.root);
+        console.log("The application was launched!");
+    })
+    // App suspend
+    nativescriptApp.on(nativescriptApp.suspendEvent, (args: any) => {
+        console.warn("The application was suspended!");
+    })
+    // App resumed
+    nativescriptApp.on(nativescriptApp.resumeEvent, (args: any) => {
+        console.warn("The application was resumed!");
+    })
+    // Exit event
+    nativescriptApp.on(nativescriptApp.exitEvent, (args: any) => {
+        console.error("The application has exited!");
+    })
+    // Displayed
+    nativescriptApp.on(nativescriptApp.displayedEvent, (args: any) => {
+        console.log("The application is displayed!");
+    })
+    // Low memory even
+    nativescriptApp.on(nativescriptApp.lowMemoryEvent, (args: any) => {
+        console.warn('Low Memory Event occurs from object', args.object)
+    })
+    // Orientation Change event
+    nativescriptApp.on(nativescriptApp.orientationChangedEvent, (args: any) => {
+        console.log("Orientation Change: ", args.newValue);
+    })
+    // Uncaught Error
+    nativescriptApp.on(nativescriptApp.uncaughtErrorEvent, (args: any) => {
+        console.error("Uncaught Error Event", args.error)
+    })
+
+
+
+}
