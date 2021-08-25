@@ -413,22 +413,25 @@ export class AppCore {
         // default action for about if not trapped
         if(!handled) {
             if(props.id === 'APP_ABOUT') {
-                console.log('Default about box')
-
-                const env = this.model.getAtPath('environment')
-                const appInfo = env.build.app
-
-                const buildDate = new Date(appInfo.buildTime).toLocaleDateString() // TODO use Formatter
-                const options = {
-                    title: `About ${appInfo.displayName}`,
-                    message: `${appInfo.displayName}\nVersion ${appInfo.version}\n\n${appInfo.description}\n`,
-                    detail: `created by ${appInfo.author}\n${buildDate}\n\n${appInfo.copyright}\n`,
-                    buttons: ['O&kay']
-                }
-                this.messageBox(options)
-
+                this.defaultAboutBox()
             }
         }
+    }
+
+    public defaultAboutBox() {
+        console.log('Default about box')
+
+        const env = this.model.getAtPath('environment')
+        const appInfo = env.build.app
+
+        const buildDate = new Date(appInfo.buildTime).toLocaleDateString() // TODO use Formatter
+        const options = {
+            title: `About ${appInfo.displayName}`,
+            message: `${appInfo.displayName}\nVersion ${appInfo.version}\n\n${appInfo.description}\n`,
+            detail: `created by ${appInfo.author}\n${buildDate}\n\n${appInfo.copyright}\n`,
+            buttons: ['O&kay']
+        }
+        this.messageBox(options)
     }
 
     public onToolAction(props:any) {
