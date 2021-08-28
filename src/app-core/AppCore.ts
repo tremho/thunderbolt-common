@@ -431,7 +431,7 @@ export class AppCore {
             detail: `created by ${appInfo.author}\n${buildDate}\n\n${appInfo.copyright}\n`,
             buttons: ['O&kay']
         }
-        this.messageBox(options)
+        return this.messageBox(options)
     }
 
     public onToolAction(props:any) {
