@@ -413,7 +413,7 @@ export class AppCore {
         // default action for about if not trapped
         if(!handled) {
             if(props.id === 'APP_ABOUT') {
-                this.defaultAboutBox()
+                return this.defaultAboutBox()
             }
         }
     }
@@ -564,11 +564,11 @@ export class AppCore {
             // Function needs to build full page including the layout stack and any event handlers.
             // not sure what effect this has on back history, since there's nothing passed for that.
 
-            // console.log('------------------')
-            // console.log(' -- Looking at Frame classes')
-            // console.log('className', theFrame.className)
-            // console.log('cssClasses', theFrame.cssClasses)
-            // console.log('------------------')
+            console.log('------------------')
+            console.log(' -- Looking at Frame classes')
+            console.log('className', theFrame.className)
+            console.log('cssClasses', theFrame.cssClasses)
+            console.log('------------------')
 
 
         } else {
@@ -576,11 +576,11 @@ export class AppCore {
             if (!pageComponent) {
                 throw Error('No page component for ' + pageId)
             }
-            // console.log('------------------')
-            // console.log(' -- Looking at body classes')
-            // console.log('className', document.body.className)
-            // console.log('classList', document.body.classList)
-            // console.log('------------------')
+            console.log('------------------')
+            console.log(' -- Looking at body classes')
+            console.log('className', document.body.className)
+            console.log('classList', document.body.classList)
+            console.log('------------------')
 
             const activity = pageComponent.activity;
             if (!activity) {
