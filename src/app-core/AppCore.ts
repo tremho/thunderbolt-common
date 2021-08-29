@@ -36,7 +36,7 @@ if(check.mobile) {
         mainApiNS = require('@tremho/jove-mobile').mainApi
         callExtensionApi = require('@tremho/jove-mobile').callExtensionApi
         console.log('Successfully loaded all Nativescript Imports')
-    } catch (e) {
+    } catch (e:any) {
         console.error('OOPS! -- Shit went sideways', e)
     }
 } else {
@@ -52,7 +52,7 @@ if(!check.mobile) {
         InfoMessageRecorder = Imr.InfoMessageRecorder
         riot = require('riot')
         ComBinder = require('./ComBinder').ComBinder
-    } catch(e) {}
+    } catch(e:any) {}
 }
 
 // tool Extensions are mapped into this
@@ -231,7 +231,7 @@ export class AppCore {
                                     this.modelGateResolver()
                                 }
                             })
-                        } catch(e) {
+                        } catch(e:any) {
                             console.error('problem processing envInfo EV message', e)
                             throw(e)
                         }
@@ -340,7 +340,7 @@ export class AppCore {
                 let appName = 'jove-app'
                 try {
                     appName = env.build.app.name
-                } catch(e) {
+                } catch(e:any) {
                 }
                 console.log('getting paths for app', appName)
                 return mainApi.getUserAndPathInfo(appName).then((info: any) => {
@@ -651,7 +651,7 @@ export class AppCore {
         try {
             // console.log('...spd trace 1')
             data = this.model.getAtPath('page-data.' + fullPageName) || {}
-        } catch(e) {
+        } catch(e:any) {
             // console.error('...spd catch 1', e.message)
             const pgs:any = {}
             pgs[pageName] = {}
@@ -682,7 +682,7 @@ export class AppCore {
                         try {
                             component.bound.data = value
                             component.update()
-                        } catch (e) {
+                        } catch (e:any) {
                         }
                     } else {
                         component.bound.set(name, value)
@@ -720,7 +720,7 @@ export class AppCore {
     public getPageData(pageName:string) {
         try {
             return this.model.getAtPath('page-data.' + pageName)
-        } catch(e) {
+        } catch(e:any) {
             console.warn('no page data for '+pageName)
             return {}
         }
@@ -846,7 +846,7 @@ export class AppCore {
 
             // @ts-ignore
             return el[syms[0]]
-        } catch(e) {
+        } catch(e:any) {
             Log.warn(e.message || e)
             return null;
         }
@@ -914,7 +914,7 @@ function getComponent(el:HTMLElement|null) {
 
         // @ts-ignore
         return el[syms[0]]
-    } catch(e) {
+    } catch(e:any) {
         console.warn(e.message || e)
         return null;
     }
@@ -964,7 +964,7 @@ function mergeEnvironmentData(env:any, data:any, riotVersion?:string) {
         delete out.runtime.window
         out.window = env.window
         return out
-    } catch(e) {
+    } catch(e:any) {
         console.error(e)
     }
 }
