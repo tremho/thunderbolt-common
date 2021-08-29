@@ -132,7 +132,7 @@ export class FrameworkBackContext {
                     height: this.windowKeeper.height || (this.backApp.options && this.backApp.options.height) || 600,
                     x: this.windowKeeper.x || (this.backApp.options && this.backApp.options.startX) || 0,
                     y: this.windowKeeper.y || (this.backApp.options && this.backApp.options.startY) || 0,
-                    icon: __dirname + '/assets/icons/png/64x64.png',
+                    icon: __dirname + '/assets/icon.png',
                     title: this.title,
                     webPreferences: {
                         nodeIntegration: false, // we handle all the node stuff back-side
