@@ -242,6 +242,7 @@ export function registerApp(injected:any, backApp:TBBackApp) : void {
     injectDependencies(injected) // bring in our target
 
     if(injected.electronApp) {
+        console.log('Constructing gateway...')
         new AppGateway(ipcMain)  // wire up front and back
         console.log('Launching Electron App\n')
     } else {
