@@ -1,12 +1,13 @@
 {
   "name": "@tremho/jove-common",
-  "version": "0.6.9-pre-release.137",
+  "version": "0.6.9-pre-release.138",
   "description": "Common component of the Jove framework",
   "main": "build/index.js",
   "scripts": {
     "prepublish": "npm run build",
     "clean": "rm -fr build node_modules && npm install",
     "build": "tsc",
+    "typings": "tsc -d src/app-core/AppCore.ts --declarationDir typings --target ES2015 --module commonjs",
     "test": "echo \"Error: no test specified\" && exit 1",
     "tbx run tbTest": "cd ~/tbd/tbTest && tbx run"
   },

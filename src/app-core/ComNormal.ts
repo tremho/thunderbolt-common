@@ -14,6 +14,20 @@ These apis should be called from same-contract methods on the 'Component' for bo
 
  */
 
+class Bounds {
+    x:number = 0
+    y:number = 0
+    width:number = 0
+    height:number = 0
+
+    get left() { return this.x }
+    get top () { return this.y }
+    get right() { return this.x + this.width }
+    get bottom() { return this.y + this.height }
+    get cx() { return this.x + this.width/2 }
+    get cy() { return this.y + this.height/2 }
+}
+
 import {EventData} from "./EventData";
 
 const sessionDataMap:any = {}
@@ -269,19 +283,6 @@ export class ComNormal {
      * r/w and the others read-only. cx/cy refer to element center.
      */
     getElementBounds(element:any) {
-        class Bounds {
-            x:number = 0
-            y:number = 0
-            width:number = 0
-            height:number = 0
-
-            get left() { return this.x }
-            get top () { return this.y }
-            get right() { return this.x + this.width }
-            get bottom() { return this.y + this.height }
-            get cx() { return this.x + this.width/2 }
-            get cy() { return this.y + this.height/2 }
-        }
         const cbounds = new Bounds()
         if(this.isMobile) {
             const loc = element.getLocationInWindow()

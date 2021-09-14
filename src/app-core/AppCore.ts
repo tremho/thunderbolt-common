@@ -97,21 +97,21 @@ let reservedContext:any // mobile only, used for hand off of context between spl
  *  mostly handled by action modules.
  */
 export class AppCore {
-    private appModel:AppModel = new AppModel()
-    private rootPath:string = ''
-    private menuApi:MenuApi;
-    private activeMenu:any
-    private currentActivity:any = null
-    private history:HistoryRecord[] = []
-    private _pathUtils: PathUtils|undefined
-    private menuHandlers:any = {}
-    private pageMount:any // used only with riot
+     appModel:AppModel = new AppModel()
+     rootPath:string = ''
+     menuApi:MenuApi;
+     activeMenu:any
+     currentActivity:any = null
+     history:HistoryRecord[] = []
+     _pathUtils: PathUtils|undefined
+     menuHandlers:any = {}
+     pageMount:any // used only with riot
     // the gate items below are used only in the mobile version
-    private componentGate:Promise<void>
-    private modelGate:Promise<void>
-    private componentGateResolver:any
-    private modelGateResolver:any
-    private pageUpdates:any = {}
+     componentGate:Promise<void>
+     modelGate:Promise<void>
+     componentGateResolver:any
+     modelGateResolver:any
+     pageUpdates:any = {}
 
     constructor() {
         this.menuApi = new MenuApi(this)

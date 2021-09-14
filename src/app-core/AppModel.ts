@@ -47,6 +47,11 @@ class Binding {
 
 }
 
+class KModelPathError extends Error {
+    constructor(message:string) {
+        super(message);
+    }
+}
 /**
  * Extends Error to define a bad access path to the model was encountered
  *
@@ -54,12 +59,7 @@ class Binding {
  * @constructor
  */
 export function ModelPathError (message:string) {
-    class ModelPathError extends Error {
-        constructor(message:string) {
-            super(message);
-        }
-    }
-    return new ModelPathError(message)
+    return new KModelPathError(message)
 }
 
 // private implementation for the `bind` method of AppModel.  See docs there.
