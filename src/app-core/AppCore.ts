@@ -762,7 +762,7 @@ export class AppCore {
         }
     }
 
-    public findComponent(tagName:string, prop:string, propValue:string):any {
+    public findComponent(tagName:string, prop?:string, propValue?:string):any {
 
         let comp:any = null
         if(check.riot) {
