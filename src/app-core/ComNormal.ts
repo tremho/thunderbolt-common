@@ -262,10 +262,10 @@ export class ComNormal {
                 if(h.aka) h = mappedEvents[h.aka]
                 let {action, handler} = h
                 if(action) {
-                    const lhndlr = (ev:any) => {
-                        // console.log('dom handler for ' + action + ' triggered', ev)
-                    }
-                    this.registerHandler(el, action, lhndlr)
+                    // const lhndlr = (ev:any) => {
+                    //     // console.log('dom handler for ' + action + ' triggered', ev)
+                    // }
+                    this.registerHandler(el, action, func)
 
                 } else if(handler) {
                     handler(el, h.mode, func, this)
