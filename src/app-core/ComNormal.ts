@@ -352,6 +352,48 @@ export class ComNormal {
             el.style[prop] = value+(unit || '')
         }
     }
+
+    addClass(className:string|string[]) {
+        if(!Array.isArray(className)) {
+            className = [className]
+        }
+        if(this.isMobile) {
+            let classes = (this.stdComp.component.get('className') || '').split(' ')
+            for(let i=0; i< classes.length; i++) {
+                className.push(classes[i])
+            }
+            classes = []
+            for(let name of className) {
+                classes.push(name)
+            }
+            this.stdComp.component.className = classes.join(' ')
+        } else {
+             const el = this.stdComp.riot.root
+            for(let name of className) {
+                el.classList.add(name)
+            }
+        }
+    }
+    removeClass(className:string|string[]) {
+        if(!Array.isArray(className)) {
+            className = [className]
+        }
+        if(this.isMobile) {
+            let classes = (this.stdComp.component.get('className') || '').split(' ')
+            for(let i=0; i< classes.length; i++) {
+                if(className.indexOf(classes[i]) === -1) {
+                    className.push(classes[i])
+                }
+            }
+            this.stdComp.component.className = classes.join(' ')
+        } else {
+            const el = this.stdComp.riot.root
+            for(let name of className) {
+                el.classList.add(name)
+            }
+        }
+    }
+
 }
 
 // -- DOM event gesture handling

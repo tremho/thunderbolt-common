@@ -87,6 +87,8 @@ export default {
     elementFindAll(tag:string):any[] { return this.comNormal.elementFindAll(tag) },
     listenToFor(el:any, pseudoEventTag:string, func:(ed:any)=>{}) { return this.comNormal.listenToFor(el, pseudoEventTag, func) },
     getElementBounds(element:any):any { return this.comNormal.getElementBounds(element) },
-    setStyleProp(el:any, prop:string, value:number|string, unit?:string) { return this.comNormal.setStyleProp(el, prop, value, unit)}
+    setStyleProp(el:any, prop:string, value:number|string, unit?:string) { return this.comNormal.setStyleProp(el, prop, value, unit)},
+    addClass(className:string|string[]) { return this.comNormal.addClass(className)},
+    removeClass(className:string|string[]) {return this.comNormal.removeClass(className)}
 
 }
