@@ -165,7 +165,7 @@ declare module "@tremho/jove-common" {
          */
         startPageLogic(id: string, activity: any, context?: object): void;
         navigateBack(): void;
-        findComponent(tagName: string, prop: string, propValue: string): any;
+        findComponent(tagName: string, prop?: string, propValue?: string): any;
         /**
          * Dispatch an event to the current activity by name
          *
