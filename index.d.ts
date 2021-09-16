@@ -185,7 +185,7 @@ declare module "@tremho/jove-common" {
         messageBox(options: any): Promise<any>;
     }
     class EventData {
-        public app:AppCore|undefined
+        public app:AppCore
         public sourceComponent:any
         public eventType:string|undefined
         public tag:string|undefined
