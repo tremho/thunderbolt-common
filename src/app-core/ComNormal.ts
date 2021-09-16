@@ -591,16 +591,18 @@ function mobileHandler(ev:any, cb:any, cn:ComNormal) {
     ed.platEvent = ev
     ed.sourceComponent = ev.view
 
-    if(ed.eventType === 'touch' || ed.eventType === 'tap') {
+    // note: consider recoding as a switch statement for better readability.
+
+    if(ev.type === 7 /*'touch'*/ || ev.type === 0 /*'tap'*/ || ev.type === 1 /*dtap*/ || ev.type === 6 /*longpress*/) {
         ed.value = {
             clientX: ev.getX(),
             clientY: ev.getY(),
             buttons: ev.getPointerCount()
         }
     }
-    else if(ed.eventType === 'swipe') {
+    else if(ev.type === 4 /*'swipe'*/) {
         ed.value = ev.direction.toString()
-    } else if(ed.eventType === 'pan') {
+    } else if(ev.type === 3 /*'pan'*/) {
         ed.value = {
             mx: ev.deltaX,
             my: ev.deltaY
@@ -609,9 +611,9 @@ function mobileHandler(ev:any, cb:any, cn:ComNormal) {
             // using a reference point on first touch.
         }
 
-    } else if(ed.eventType === 'rotation') {
+    } else if(ev.type === 5 /*'rotation'*/) {
         ed.value = ev.rotation
-    } else if(ed.eventType === 'pinch') {
+    } else if(ev.type === 2 /*'pinch'*/) {
         ed.value = ev.scale
     }
 }
