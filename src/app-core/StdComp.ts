@@ -89,6 +89,7 @@ export default {
     getElementBounds(element:any):any { return this.comNormal.getElementBounds(element) },
     setStyleProp(el:any, prop:string, value:number|string, unit?:string) { return this.comNormal.setStyleProp(el, prop, value, unit)},
     addClass(className:string|string[]) { return this.comNormal.addClass(className)},
-    removeClass(className:string|string[]) {return this.comNormal.removeClass(className)}
+    removeClass(className:string|string[]) {return this.comNormal.removeClass(className)},
+    getDIPScale() { return 1 }
 
 }

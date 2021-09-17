@@ -393,7 +393,6 @@ export class ComNormal {
             }
         }
     }
-
 }
 
 // -- DOM event gesture handling
@@ -592,30 +591,35 @@ function mobileHandler(ev:any, cb:any, cn:ComNormal) {
     ed.sourceComponent = ev.view
 
     // note: consider recoding as a switch statement for better readability.
+    try {
+        if (ev.type === 7 /*'touch'*/ || ev.type === 0 /*'tap'*/ || ev.type === 1 /*dtap*/ || ev.type === 6 /*longpress*/) {
+            ed.value = {
+                clientX: ev.getX(),
+                clientY: ev.getY(),
+                buttons: 1 // ev.getPointerCount() -- crash
+            }
+        } else if (ev.type === 4 /*'swipe'*/) {
+            ed.value = ev.direction.toString()
+        } else if (ev.type === 3 /*'pan'*/) {
+            ed.value = {
+                mx: ev.deltaX,
+                my: ev.deltaY
+                // can't do clientX, clientY because we only get the amount of movement since last time.
+                // we would need a multi-event handler like the DOM handler has to get clientX,Y and tmx,tmy
+                // using a reference point on first touch.
+            }
 
-    if(ev.type === 7 /*'touch'*/ || ev.type === 0 /*'tap'*/ || ev.type === 1 /*dtap*/ || ev.type === 6 /*longpress*/) {
-        ed.value = {
-            clientX: ev.getX(),
-            clientY: ev.getY(),
-            buttons: ev.getPointerCount()
+        } else if (ev.type === 5 /*'rotation'*/) {
+            ed.value = ev.rotation
+        } else if (ev.type === 2 /*'pinch'*/) {
+            ed.value = ev.scale
         }
+    } catch(e) {
+        console.log(e)
     }
-    else if(ev.type === 4 /*'swipe'*/) {
-        ed.value = ev.direction.toString()
-    } else if(ev.type === 3 /*'pan'*/) {
-        ed.value = {
-            mx: ev.deltaX,
-            my: ev.deltaY
-            // can't do clientX, clientY because we only get the amount of movement since last time.
-            // we would need a multi-event handler like the DOM handler has to get clientX,Y and tmx,tmy
-            // using a reference point on first touch.
-        }
 
-    } else if(ev.type === 5 /*'rotation'*/) {
-        ed.value = ev.rotation
-    } else if(ev.type === 2 /*'pinch'*/) {
-        ed.value = ev.scale
-    }
+    cb(ed)
+
 }
 
 // we have to do a multi-event trap to make pan work the way we want
