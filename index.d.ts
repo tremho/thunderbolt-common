@@ -1,7 +1,16 @@
 import {PathUtils} from "./typings";
 import {StringParser} from "./typings/general/StringParser";
 import {HistoryRecord} from "./typings/app-core/AppCore";
-
+import {
+    ToolExtension,
+    MenuApi,
+    MenuItem,
+    IndicatorItem,
+    ToolItem,
+    AppModel,
+    EventData,
+    ComNormal
+} from "./typings";
 
 declare module "@tremho/jove-common" {
     interface TBBackApp {}
@@ -9,64 +18,6 @@ declare module "@tremho/jove-common" {
         registerExtensionModule(name:string, module:any)
     }
     function registerApp(targetPlatform:object, backApp:TBBackApp) : void
-    class ToolExtension {}
-    class AppModel {
-        private model;
-        /**
-         * Creates a new section in the model.
-         * Initial properties for this section are supplied by the `props` parameter.
-         * Additional properties may be set to this section using the `setAtPath` method, with `force` = true.
-         *
-         * @param {string} name Name for the new section
-         * @param {object} props Initial values to apply to this section.
-         */
-        addSection(name: string, props: object): void;
-        /**
-         * The `bind` method is called from the component layer.
-         * The 'type' may be 'read' (upward from model to component) or
-         * 'write' (downward from component to model) or the default, ('readwrite') which registers in both directions.
-         *
-         * THe onChange function takes the form: `(comp:any, prop:string, value:any, oldValue:any):void`
-         *
-         * @param {*} component The component to bind to
-         * @param {string} section Section name where this binding is recorded
-         * @param {string} prop Property in the section to bind to
-         * @param {function} onChange Function to call on update of this value.
-         * @param {string} [type] 'read', 'write', or 'readwrite' as the default.
-         */
-        bind(component: any, section: string, prop: string, onChange: any, type?: string): void;
-        /**
-         * Return proxy section at the given path
-         *
-         * @param {string} path The path to extract the section from
-         * @return {Section} The section named
-         *
-         * @throws {ModelPathError} if the section path does not exist
-         * @private
-         */
-        private accessSection;
-        /**
-         * Return the value stored in the model at the given section.property path
-         * @param {string} path The section.property name location of the value to retrieve
-         * @return {any} the value at that location
-         *
-         * @throws {ModelPathError} if the section path does not exist
-         */
-        getAtPath(path: string): any;
-        /**
-         * Sets the value in the model at the given path and communicates the change to any of its bound components.
-         *
-         * @param {string} path dot-form path of section and property of the model value to retrieve ('sect.prop')
-         * @param {any} value Value to set at this path location
-         * @param {boolean} [force] optional. If true, forces the value to be set even if the types do not match, or if
-         * the property for this section previously did not exist. Necessary if setting a new property on a section
-         * (note the section must exist first)
-         *
-         * @throws {ModelPathError} if the section path does not exist
-         * @throws {TypeError} if `force` is not true, and new value changes the type, or if the property does not exist.
-         */
-        setAtPath(path: string, value: any, force?: boolean, noAnnounce?: boolean): void;
-    }
     class AppCore {
         appModel: AppModel;
         rootPath: string;
@@ -184,40 +135,6 @@ declare module "@tremho/jove-common" {
         registerToolExtension(name: string, extension: ToolExtension): void;
         messageBox(options: any): Promise<any>;
     }
-    class EventData {
-        public app:AppCore
-        public sourceComponent:any
-        public eventType:string|undefined
-        public tag:string|undefined
-        public value?:any
-        public platEvent:any
-    }
-    class MenuItem {
-        public label:string
-        public id:string
-        public role?:string // parsed and used for desktop (per Electron)
-        public type?:string // submenu, separator, checkbox, radio; set to model
-        public targetCode?:string // used to apply to different platforms
-        public disabled?:boolean // true if menu listing should be shown as disabled; no action
-        public checked?:boolean // true if box or radio type is in checked state
-        public sublabel?:string // sublabel (set by mod, no effect on mac)
-        public tooltip?:string // tooltip (set by mod)
-        public icon?:string // icon path (set by mod)
-        public accelerator?:string // accelerator to apply
-        public children?: MenuItem[] // found only in incoming submenus in parsing and setup
-    }
-    class ComNormal {
-        constructor(stdComp:any)
-        get isIOS(): boolean
-        get isAndroid(): boolean
-        get isMobile(): boolean
-        elementFind(tag:string):any
-        elementFindAll(tag:string):any[]
-        listenToFor(el:any, pseudoEventTag:string, func:(ed:any)=>{}, remove?:boolean)
-        getElementBounds(element:any)
-        setStyleProp(el:any, prop:string, value:number|string, unit?:string)
-    }
-
 }
 
 declare module "add-resize-listener"
