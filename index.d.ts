@@ -12,6 +12,14 @@ import {
     ComNormal
 } from "./typings";
 
+export { ToolExtension as ToolExtension }
+export { MenuItem  as MenuItem }
+export { IndicatorItem as IndicatorItem }
+export { ToolItem as ToolItem }
+export { AppModel as AppModel }
+export { EventData as EventData }
+export { ComNormal as ComNormal }
+
 declare module "@tremho/jove-common" {
     interface TBBackApp {}
     class FrameworkBackContext {
