@@ -174,7 +174,7 @@ export class FrameworkBackContext {
      */
     registerExtensionModule(name:string, module:any) {
         console.log('registering: registerExtensionModule(name, module)', registerExtensionModule)
-        registerExtensionModule(name, module)
+        registerExtensionModule(this, name, module)
     }
 }
 
