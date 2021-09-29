@@ -9,7 +9,11 @@ import {
     ToolItem,
     AppModel,
     EventData,
-    ComNormal
+    ComNormal,
+    FrameworkBackContext,
+    TBFrontApp,
+    FrontAppStartCallback,
+    FrontAppExitCallback
 } from "./typings";
 
 export { ToolExtension as ToolExtension }
@@ -19,6 +23,10 @@ export { ToolItem as ToolItem }
 export { AppModel as AppModel }
 export { EventData as EventData }
 export { ComNormal as ComNormal }
+export {FrameworkBackContext as FrameworkBackContext}
+export {TBFrontApp as TBFrontApp}
+export {FrontAppStartCallback as FrontAppStartCallback}
+export {FrontAppExitCallback as FrontAppExitCallback}
 
 declare module "@tremho/jove-common" {
     interface TBBackApp {}
