@@ -67,7 +67,9 @@ export class FrameworkBackContext {
 
         this.beginStartup()
 
+        console.log(">> waiting on startup Promises")
         Promise.all(this.startupPromises).then(() => {
+            console.log(">> Startup Promises resolve")
             try {
                 const {appName, title} = startupTasks.passEnvironmentAndGetTitles()
                 this.appName = appName
@@ -91,6 +93,7 @@ export class FrameworkBackContext {
 
     beginStartup() {
         try {
+            console.log(">> in common beginStartup()")
             this.startupPromises.push(Promise.resolve(startupTasks.readBuildEnvironment()))
             if (electronApp) {
                 console.log('electron app. Pushing whenReady')
