@@ -35,6 +35,7 @@ if(check.mobile) {
         nsapplication = Application
         mainApiNS = require('@tremho/jove-mobile').mainApi
         callExtensionApi = require('@tremho/jove-mobile').callExtensionApi
+        console.log('>> mainApiNS, callExtensionApi', mainApiNS, callExtensionApi)
         console.log('Successfully loaded all Nativescript Imports')
     } catch (e:any) {
         console.error('OOPS! -- Shit went sideways', e)
