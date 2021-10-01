@@ -35,7 +35,8 @@ if(check.mobile) {
         nsapplication = Application
         const joveMobile = require('@tremho/jove-mobile')
         console.log('we have joveMobile', joveMobile)
-        mainApiNS = joveMobile.mainApi
+        console.log('getMainApi function is ', typeof joveMobile.getMainApi)
+        mainApiNS = joveMobile.getMainApi()
         callExtensionApi = joveMobile.callExtensionApi
         console.log('>> mainApiNS, callExtensionApi', mainApiNS, callExtensionApi)
         console.log('Successfully loaded all Nativescript Imports')
