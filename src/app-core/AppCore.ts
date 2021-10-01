@@ -37,6 +37,7 @@ if(check.mobile) {
         callExtensionApi = require('@tremho/jove-mobile').callExtensionApi
         console.log('>> mainApiNS, callExtensionApi', mainApiNS, callExtensionApi)
         console.log('Successfully loaded all Nativescript Imports')
+        console.log('we have an NS mainApi of ', mainApiNS)
     } catch (e:any) {
         console.error('OOPS! -- Shit went sideways', e)
     }
@@ -70,6 +71,8 @@ function writeMessage(subject:string, message:string) {
 }
 const gwindow:any = typeof window !== 'undefined' ? window : {}
 const mainApi = check.mobile ? mainApiNS : gwindow.api;
+
+console.log(">>>> our mainApi is thus", mainApi)
 
 export class HistoryRecord {
     public pageId: string = ''
