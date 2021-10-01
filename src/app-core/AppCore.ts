@@ -33,8 +33,10 @@ if(check.mobile) {
         let {Application, Screen} = require('@nativescript/core')
         nsscreen = Screen
         nsapplication = Application
-        mainApiNS = require('@tremho/jove-mobile').mainApi
-        callExtensionApi = require('@tremho/jove-mobile').callExtensionApi
+        const joveMobile = require('@tremho/jove-mobile')
+        console.log('we have joveMobile', joveMobile)
+        mainApiNS = joveMobile.mainApi
+        callExtensionApi = joveMobile.callExtensionApi
         console.log('>> mainApiNS, callExtensionApi', mainApiNS, callExtensionApi)
         console.log('Successfully loaded all Nativescript Imports')
         console.log('we have an NS mainApi of ', mainApiNS)
