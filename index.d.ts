@@ -30,9 +30,6 @@ export {FrontAppExitCallback as FrontAppExitCallback}
 
 declare module "@tremho/jove-common" {
     interface TBBackApp {}
-    class FrameworkBackContext {
-        registerExtensionModule(name:string, module:any)
-    }
     function registerApp(targetPlatform:object, backApp:TBBackApp) : void
     class AppCore {
         appModel: AppModel;
