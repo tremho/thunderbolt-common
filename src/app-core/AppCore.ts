@@ -19,11 +19,14 @@ import {EventData} from "./EventData";
 import * as BEF from "./ BackExtensionsFront";
 import {ComNormal} from "./ComNormal";
 
+const gwindow:any = typeof window !== 'undefined' ? window : {}
+let mainApi = check.mobile ? null : gwindow.api;
+
 const mobileInjections:any = {}
 export function setMobileInjections(mbi:any) {
     mobileInjections.nscore = mbi.nscore
     mobileInjections.nsapplication = mbi.nsapplication
-    mobileInjections.mainApi = mbi.mainApi
+    mainApi = mobileInjections.mainApi = mbi.mainApi
     mobileInjections.callExtensionApi = mbi.callExtensionApi
 
     console.log("<><><><><><><><>")
@@ -65,10 +68,6 @@ if(getInfoMessageRecorder) {
 function writeMessage(subject:string, message:string) {
     imrSingleton.write(subject, message)
 }
-const gwindow:any = typeof window !== 'undefined' ? window : {}
-const mainApi = check.mobile ? mobileInjections.mainApi : gwindow.api;
-
-console.log(">>>> our mainApi is thus", mainApi)
 
 export class HistoryRecord {
     public pageId: string = ''
