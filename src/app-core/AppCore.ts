@@ -699,7 +699,6 @@ export class AppCore {
         const data = this.getPageData(pageName)
         this.model.setAtPath('page-data.' + pageName, data, true, false)
 
-        /*
         // This seems to work in terms of forcing the update, but of course, since the page updates itself when it loads
         // we end up in an infinite loop
         // so we need to see if this page has already been updated recently, and not do it a second time
@@ -712,7 +711,6 @@ export class AppCore {
         }
         this.pageUpdates[pageName] = now
         this.reloadCurrentPage()
-         */
     }
 
     /**
