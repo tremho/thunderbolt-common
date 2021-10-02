@@ -16,35 +16,28 @@ import {ResizeSensor} from "css-element-queries";
 
 import {EventData} from "./EventData";
 
-let callExtensionApi: any
 import * as BEF from "./ BackExtensionsFront";
 import {ComNormal} from "./ComNormal";
 
-let nsfs:any
-let nsplatform:any
-let nsscreen:any
-let nsapplication:any
-let Imr:any
-let mainApiNS:any
-if(check.mobile) {
-    try {
-        nsfs = require('@nativescript/core/file-system')
-        nsplatform = require('@nativescript/core/platform')
-        let {Application, Screen} = require('@nativescript/core')
-        nsscreen = Screen
-        nsapplication = Application
-        const joveMobile = require('@tremho/jove-mobile')
-        console.log('we have joveMobile', joveMobile)
-        console.log('getMainApi function is ', typeof joveMobile.getMainApi)
-        mainApiNS = joveMobile.getMainApi()
-        callExtensionApi = joveMobile.callExtensionApi
-        console.log('>> mainApiNS, callExtensionApi', mainApiNS, callExtensionApi)
-        console.log('Successfully loaded all Nativescript Imports')
-        console.log('we have an NS mainApi of ', mainApiNS)
-    } catch (e:any) {
-        console.error('OOPS! -- Shit went sideways', e)
-    }
-} else {
+const mobileInjections:any = {}
+export function setMobileInjections(mbi:any) {
+    mobileInjections.nscore = mbi.nscore
+    mobileInjections.nsapplication = mbi.nsapplication
+    mobileInjections.mainApi = mbi.mainApi
+    mobileInjections.callExtensionApi = mbi.callExtensionApi
+
+    console.log("<><><><><><><><>")
+    console.log('mobile injections')
+    Object.getOwnPropertyNames(mobileInjections).forEach(p => {
+        console.log('  '+p+': '+ typeof mobileInjections[p])
+    })
+    console.log("<><><><><><><><>")
+}
+
+let Imr:any;
+let callExtensionApi:any;
+
+if(!check.mobile) {
     Imr = require('./InfoMessageRecorder')
     callExtensionApi = BEF.callExtensionApi
 }
@@ -73,7 +66,7 @@ function writeMessage(subject:string, message:string) {
     imrSingleton.write(subject, message)
 }
 const gwindow:any = typeof window !== 'undefined' ? window : {}
-const mainApi = check.mobile ? mainApiNS : gwindow.api;
+const mainApi = check.mobile ? mobileInjections.mainApi : gwindow.api;
 
 console.log(">>>> our mainApi is thus", mainApi)
 
@@ -264,6 +257,7 @@ export class AppCore {
         this.model.addSection('environment', {}) // start empty; will get filled in on message.
 
         // console.log('testing nsapplication', nsapplication)
+        let nsapplication = mobileInjections.nsapplication
         if(nsapplication) { // i.e. if mobile
             const res = nsapplication.getResources()
             const env = res && res.passedEnvironment

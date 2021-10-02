@@ -16,7 +16,7 @@ let frameworkContext:any
 
 // bridged in injection for mobile
 let comCommon = require('./app-core/ComCommon')
-import {getTheApp} from "./app-core/AppCore";
+import {getTheApp, setMobileInjections} from "./app-core/AppCore";
 
 // console.log("%%%%%%%%%%% past basic discovery %%%%%%%%%%%%%%%")
 // console.log("isNS = "+isNS)
@@ -244,10 +244,20 @@ export function registerApp(injected:any, backApp:TBBackApp) : void {
 
     injectDependencies(injected) // bring in our target
 
+
+
     if(injected.electronApp) {
         new AppGateway(ipcMain)  // wire up front and back
         console.log('Launching Electron App\n')
     } else {
+        // do injections into app core from mobile
+        const mbi:any = {
+            nscore: injected.nscore,
+            nsapplication: injected.nativescriptApp,
+            mainApi: injected.mainApi,
+            callExtensionApi: injected.callExtensionApi
+        }
+        setMobileInjections(mbi)
         console.log('Launching Nativescript App\n')
     }
     console.log('Completing launch through FrameworkBackContext constructor')
