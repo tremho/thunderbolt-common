@@ -27,13 +27,15 @@ export function setMobileInjections(mbi:any) {
     mobileInjections.nscore = mbi.nscore
     mobileInjections.nsapplication = mbi.nsapplication
     mainApi = mobileInjections.mainApi = mbi.mainApi
-    mobileInjections.callExtensionApi = mbi.callExtensionApi
+    callExtensionApi = mbi.callExtensionApi
 
     console.log("<><><><><><><><>")
+    console.log("%%%%%%%%%%%%%%%%")
     console.log('mobile injections')
     Object.getOwnPropertyNames(mobileInjections).forEach(p => {
         console.log('  '+p+': '+ typeof mobileInjections[p])
     })
+    console.log("%%%%%%%%%%%%%%%%")
     console.log("<><><><><><><><>")
 }
 
