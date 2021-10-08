@@ -132,12 +132,12 @@ export class AppCore {
     public get MenuApi() {
         return this.menuApi
     }
-    public get MainApi() {
+    public get Api() {
         return mainApi
     }
 
     public get ExtMenuApi() {
-        return (mainApi && typeof mainApi.addMenuItem === 'function') ? mainApi : null
+        return (mainApi && mainApi.MENU && typeof mainApi.MENU.addMenuItem === 'function') ? mainApi.MENU : null
     }
 
     public isMobile():boolean {
@@ -302,7 +302,7 @@ export class AppCore {
             // only for Electron
             // request a new emit of the environment on refresh
             console.log('##### Requesting environment on restart ---------!!!')
-            this.MainApi.requestEnvironment();
+            this.Api.requestEnvironment();
             console.log('##### Setting up resize checker -----------')
             const window = {width:0, height:0}
             // let resizeInterval = setInterval(() => {
@@ -349,7 +349,7 @@ export class AppCore {
                 } catch(e:any) {
                 }
                 console.log('getting paths for app', appName)
-                return mainApi.getUserAndPathInfo(appName).then((info: any) => {
+                return mainApi.FILE.getUserAndPathInfo(appName).then((info: any) => {
                     console.log(info)
                     const pathSetters = getRemoteSetters()
                     pathSetters.setCurrentWorkingDirectory(info.cwd)
@@ -898,7 +898,7 @@ export class AppCore {
     }
 
     messageBox(options:any) {
-        return Promise.resolve(mainApi && mainApi.openDialog(options))
+        return Promise.resolve(mainApi && mainApi.DIALOG && mainApi.DIALOG.openDialog(options))
     }
 
 }

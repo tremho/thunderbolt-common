@@ -52,7 +52,7 @@ declare module "@tremho/jove-common" {
          */
         get model(): AppModel;
         get MenuApi(): MenuApi;
-        get MainApi(): any;
+        get Api(): any;
         get ExtMenuApi(): any;
         isMobile(): boolean;
         static getTheApp(): any;
