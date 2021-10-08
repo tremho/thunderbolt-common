@@ -248,6 +248,7 @@ export class AppCore {
             })
         }
 
+
         console.log('SetUIElements past first check. now adding page section to model')
 
         this.model.addSection('page', {navInfo: {pageId: '', context: {}}})
@@ -299,6 +300,9 @@ export class AppCore {
             })
         } else {
             // only for Electron
+            // request a new emit of the environment on refresh
+            console.log('##### Requesting environment on restart ---------!!!')
+            this.MainApi.requestEnvironment();
             console.log('##### Setting up resize checker -----------')
             const window = {width:0, height:0}
             // let resizeInterval = setInterval(() => {
@@ -412,7 +416,7 @@ export class AppCore {
                 handled = handler(menuEvent)
             }
         }
-        // default action for about if not trapped
+        // default action for about if not trappedƒ
         if(!handled) {
             if(props.id === 'APP_ABOUT') {
                 return this.defaultAboutBox()
