@@ -949,6 +949,7 @@ export class ComCommon extends NotCommon{
             // let isBound = (p === 'bind') || (d.indexOf('$') !==-1)
             let {directive, value} = this.evaluateBindExpression(d)
             component.state[p] = value
+            component.update()
             if(directive) {
                 let {section, prop, alias, updateAlways} = this.comBinder.deconstructBindStatement(directive)
                 let mpath = section+'.'+prop
@@ -961,11 +962,11 @@ export class ComCommon extends NotCommon{
                     if(comp.btrack && comp.btrack[prop]) {
                         let {value} = this.evaluateBindExpression(comp.props[p])
                         component.state[locprop] = value || ''
+                        component.update()
                     }
                 })
             }
         }
-        component.update()
     }
 
     evaluateBindExpression(expr:string): {directive:string, value:string } {
