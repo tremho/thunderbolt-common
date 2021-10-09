@@ -995,7 +995,7 @@ export class ComCommon extends NotCommon{
                 try {
                     v = this.app.model.getAtPath(d)
                 } catch(e) {
-
+                    v = '"?'+d+'?"'
                 }
                 value += lit + v
             }
