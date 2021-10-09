@@ -951,6 +951,7 @@ export class ComCommon extends NotCommon{
             component.state[p] = value
             if(directive) {
                 let {section, prop, alias, updateAlways} = this.comBinder.deconstructBindStatement(directive)
+                if(!alias) alias = 'text' // our local prop (TODO: this should be 'p', no?)
                 let mpath = section+'.'+prop
                 let locprop = alias || prop
                 let {value} = this.evaluateBindExpression(directive)
