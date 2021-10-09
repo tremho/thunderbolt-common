@@ -950,22 +950,17 @@ export class ComCommon extends NotCommon{
             let {directive, value} = this.evaluateBindExpression(d)
             component.state[p] = value
             if(directive) {
-                this.comBinder.applyComponentBindings(component, directive, (component:any, name:string, value:any, updateAlways:boolean) => {
-                    // Handle the update to the component itself
-                    if(check.riot) {
-                        let doUpdate = updateAlways || value != component.bound[name]
-                        if (doUpdate) {
-                            try {
-                                component.state[name] = value
-                                component.update()
-                            } catch (e) {}
-                        }
-                    } else {
-                        // hook in custom component lifecycle on update for mobile
-                        if(component.preStdOnBeforeUpdate) {
-                            component.preStdOnBeforeUpdate()
-                        }
-                        component.state.set(name, value)
+                let {section, prop, alias, updateAlways} = this.comBinder.deconstructBindStatement(directive)
+                let mpath = section+'.'+prop
+                let locprop = alias || prop
+                let {value} = this.evaluateBindExpression(directive)
+                component.state[locprop] = value || ''
+                if(!component.btrack) component.btrack = {}
+                component.btrack[prop] = true
+                this.model.bind(component, section, prop, (comp:any, prop:string, inValue:any) => {
+                    if(comp.btrack && comp.btrack[prop]) {
+                        let {value} = this.evaluateBindExpression(directive)
+                        component.state[locprop] = value || ''
                     }
                 })
             }
