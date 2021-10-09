@@ -991,7 +991,7 @@ export class ComCommon extends NotCommon{
                 directive = ''
             } else {
                 directive = d
-                value += lit + this.app.model.getAtPath(d)
+                value += lit + '"{'+d+'}"'
             }
             ls = xn
         }
