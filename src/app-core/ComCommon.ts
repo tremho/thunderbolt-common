@@ -970,6 +970,7 @@ export class ComCommon extends NotCommon{
                 })
             }
         }
+        component.state.text = 'Sanity value'
     }
 
     evaluateBindExpression(expr:string): {directive:string, value:string } {
