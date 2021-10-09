@@ -137,7 +137,7 @@ export class AppCore {
     }
 
     public get ExtMenuApi() {
-        return (mainApi && mainApi.MENU && typeof mainApi.MENU.addMenuItem === 'function') ? mainApi.MENU : null
+        return (mainApi && typeof mainApi.addMenuItem === 'function') ? mainApi : null
     }
 
     public isMobile():boolean {
@@ -349,7 +349,7 @@ export class AppCore {
                 } catch(e:any) {
                 }
                 console.log('getting paths for app', appName)
-                return mainApi.FILE.getUserAndPathInfo(appName).then((info: any) => {
+                return mainApi.getUserAndPathInfo(appName).then((info: any) => {
                     console.log(info)
                     const pathSetters = getRemoteSetters()
                     pathSetters.setCurrentWorkingDirectory(info.cwd)
@@ -898,7 +898,7 @@ export class AppCore {
     }
 
     messageBox(options:any) {
-        return Promise.resolve(mainApi && mainApi.DIALOG && mainApi.DIALOG.openDialog(options))
+        return Promise.resolve(mainApi && mainApi.openDialog(options))
     }
 
 }
