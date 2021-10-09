@@ -951,16 +951,15 @@ export class ComCommon extends NotCommon{
             component.state[p] = value
             if(directive) {
                 let {section, prop, alias, updateAlways} = this.comBinder.deconstructBindStatement(directive)
-                if(!alias) alias = 'text' // our local prop (TODO: this should be 'p', no?)
                 let mpath = section+'.'+prop
-                let locprop = alias || prop
+                let locprop = alias || p
                 let {value} = this.evaluateBindExpression(directive)
                 component.state[locprop] = value || ''
                 if(!component.btrack) component.btrack = {}
                 component.btrack[prop] = true
                 this.model.bind(component, section, prop, (comp:any, prop:string, inValue:any) => {
                     if(comp.btrack && comp.btrack[prop]) {
-                        let {value} = this.evaluateBindExpression(directive)
+                        let {value} = this.evaluateBindExpression(comp.props[p])
                         component.state[locprop] = value || ''
                     }
                 })
