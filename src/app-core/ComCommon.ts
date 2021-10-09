@@ -990,10 +990,10 @@ export class ComCommon extends NotCommon{
                 // TODO: v = this.app.getFromCurrentPageData(d.substring(1))
                 directive = ''
             } else {
-                directive = d
+                directive = d.substring(1)
                 let v = ''
                 try {
-                    v = this.app.model.getAtPath(d)
+                    v = this.app.model.getAtPath(directive)
                 } catch(e) {
                     v = '"?'+d+'?"'
                 }
