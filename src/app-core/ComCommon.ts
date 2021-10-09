@@ -936,11 +936,67 @@ export class ComCommon extends NotCommon{
     // -------------------------------------------------------------------------------------------------------
 
     bindComponent2(props:string[]) {
-        // enumerate the props
         // @ts-ignore
         let component = this.riot || this.rootComponent
-        console.log('bindcomponent2', component, props)
+        if(!component.state) {
+            component.state = new Observable()
+        }
 
+        // enumerate the props
+        for(let p of Object.getOwnPropertyNames(props))  {
+            // @ts-ignore
+            let d = props[p]
+            let isBound = (p === 'bind') || (d.indexOf('$') !==-1)
+            let {directive, value} = this.evaluateBindExpression(d)
+            component.state[p] = value
+            if(isBound) {
+                this.comBinder.applyComponentBindings(component, directive, (component:any, name:string, value:any, updateAlways:boolean) => {
+                    // Handle the update to the component itself
+                    if(check.riot) {
+                        let doUpdate = updateAlways || value != component.bound[name]
+                        if (doUpdate) {
+                            try {
+                                component.state[name] = value
+                                component.update()
+                            } catch (e) {}
+                        }
+                    } else {
+                        // hook in custom component lifecycle on update for mobile
+                        if(component.preStdOnBeforeUpdate) {
+                            component.preStdOnBeforeUpdate()
+                        }
+                        component.state.set(name, value)
+                    }
+                })
+
+            }
+        }
+    }
+
+    evaluateBindExpression(expr:string): {directive:string, value:string } {
+        let value:string = ''
+        let n:number
+        let ls = 0;
+        let le = expr.length
+        let directive = ''
+        while((n = expr.indexOf('$')) !== -1) {
+            le = n
+            let xn = expr.indexOf(' ', n)
+            if (xn == -1) xn = expr.length
+            let d = expr.substring(n, xn)
+            let lit = expr.substring(ls, le)
+            if (d.charAt(0) === '$') {
+                // double $$ is page data
+                // TODO: v = this.app.getFromCurrentPageData(d.substring(1))
+                directive = ''
+            } else {
+                directive = d
+                value += lit + this.app.model.getAtPath(d)
+            }
+            ls = xn
+        }
+        value += expr.substring(ls, le)
+        return {directive, value}
     }
 
     /**
