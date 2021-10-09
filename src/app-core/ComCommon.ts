@@ -946,10 +946,10 @@ export class ComCommon extends NotCommon{
         for(let p of Object.getOwnPropertyNames(props))  {
             // @ts-ignore
             let d = props[p]
-            let isBound = (p === 'bind') || (d.indexOf('$') !==-1)
+            // let isBound = (p === 'bind') || (d.indexOf('$') !==-1)
             let {directive, value} = this.evaluateBindExpression(d)
             component.state[p] = value
-            if(isBound) {
+            if(directive) {
                 this.comBinder.applyComponentBindings(component, directive, (component:any, name:string, value:any, updateAlways:boolean) => {
                     // Handle the update to the component itself
                     if(check.riot) {
