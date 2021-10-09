@@ -37,6 +37,7 @@ export default {
         if(!div) div = this.root.firstChild
         // @ts-ignore
         this.cm.setCommonProps(div, props, this.tagDefaults)
+        this.cm.bindComponent2(props)
         this.cm.bindComponent()
         // @ts-ignore
         if(this.postStdOnMounted) this.postStdOnMounted(props, state)

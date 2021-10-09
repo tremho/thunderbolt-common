@@ -935,6 +935,14 @@ export class ComCommon extends NotCommon{
 
     // -------------------------------------------------------------------------------------------------------
 
+    bindComponent2(props:string[]) {
+        // enumerate the props
+        // @ts-ignore
+        let component = this.riot || this.rootComponent
+        console.log('bindcomponent2', component, props)
+
+    }
+
     /**
      * Set up the binding for this component
      * Inherit bindings of parent scope(s) and append/modify locally.
