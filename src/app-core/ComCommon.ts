@@ -948,6 +948,7 @@ export class ComCommon extends NotCommon{
             let d = props[p]
             // let isBound = (p === 'bind') || (d.indexOf('$') !==-1)
             let {directive, value} = this.evaluateBindExpression(d)
+            if(p === 'bind') directive = d
             component.state[p] = value
             component.update()
             if(directive) {
