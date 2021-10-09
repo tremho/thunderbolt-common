@@ -1001,7 +1001,7 @@ export class ComCommon extends NotCommon{
             }
             ls = xn
         }
-        value += expr.substring(ls, n)
+        value += expr.substring(ls)
         return {directive, value}
     }
 
