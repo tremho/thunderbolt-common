@@ -991,11 +991,17 @@ export class ComCommon extends NotCommon{
                 directive = ''
             } else {
                 directive = d
-                value += lit + '"{'+d+'}"'
+                let v = ''
+                try {
+                    v = this.app.model.getAtPath(d)
+                } catch(e) {
+
+                }
+                value += lit + v
             }
             ls = xn
         }
-        value += expr.substring(ls, le)
+        value += expr.substring(ls, n)
         return {directive, value}
     }
 
