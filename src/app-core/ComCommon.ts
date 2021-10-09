@@ -979,14 +979,14 @@ export class ComCommon extends NotCommon{
         let ls = 0;
         let le = expr.length
         let directive = ''
-        while((n = expr.indexOf('#')) !== -1) {
+        while((n = expr.indexOf('@')) !== -1) {
             le = n
             let xn = expr.indexOf(' ', n)
             if (xn == -1) xn = expr.length
             let d = expr.substring(n, xn)
             let lit = expr.substring(ls, le)
-            if (d.charAt(0) === '#') {
-                // double ## is page data
+            if (d.charAt(0) === ':') {
+                // @: is page data
                 // TODO: v = this.app.getFromCurrentPageData(d.substring(1))
                 directive = ''
             } else {
