@@ -86,9 +86,9 @@ function bind(component:any, model:object, section:string, prop:string, onChange
 // broadcast to component layer
 function announce(section:string, prop:string, value:any, old?:any) {
     // find bindings for section name, prop
-    if(section === 'environment' && prop == 'screen') {
+    // if(section === 'environment' && prop == 'screen') {
         // console.log('bind onChange for environment.screen')
-    }
+    // }
     // @ts-ignore
     const bnds = bindings.up[section]
     if(bnds) bnds.forEach((bnd:any) => {

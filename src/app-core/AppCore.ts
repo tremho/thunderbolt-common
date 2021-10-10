@@ -653,15 +653,18 @@ export class AppCore {
             fullPageName = pageName + '-page'
         }
 
-        let data:any
+        let data:any = {}
+        // @ts-ignore
+        if(!this.model[section]) {
+            let sdata:any = {}
+            sdata[fullPageName] = {}
+            this.model.addSection('page-data', sdata)
+        }
         try {
             // console.log('...spd trace 1')
             data = this.model.getAtPath('page-data.' + fullPageName) || {}
         } catch(e:any) {
-            // console.error('...spd catch 1', e.message)
             data = {}
-            data[fullPageName] = {}
-            this.model.addSection('page-data', data)
         }
         // console.log('...spd trace 2')
         if(typeof item === 'object') {
