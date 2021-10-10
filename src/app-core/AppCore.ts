@@ -246,6 +246,11 @@ export class AppCore {
                     this.model.setAtPath('infoMessage.messages', msgArray)
                 })
             })
+        } else {
+            if(!mainApi) {
+                console.log('setting mobile mainApi from injections')
+                mainApi = mobileInjections.mainApi
+            }
         }
 
 
