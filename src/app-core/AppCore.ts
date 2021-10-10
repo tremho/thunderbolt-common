@@ -655,7 +655,7 @@ export class AppCore {
 
         let data:any = {}
         // @ts-ignore
-        if(!this.model[section]) {
+        if(!this.model['page-data']) {
             let sdata:any = {}
             sdata[fullPageName] = {}
             this.model.addSection('page-data', sdata)
