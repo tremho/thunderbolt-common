@@ -666,37 +666,37 @@ export class AppCore {
         // console.log('...spd trace 2')
         if(typeof item === 'object') {
             // console.log('...spd trace 3')
-            this.model.setAtPath('page-data.'+fullPageName, item, true, true)
+            this.model.setAtPath('page-data.'+fullPageName, item, true)
         } else {
             // console.log('...spd trace 4')
             data[item] = value
-            this.model.setAtPath('page-data.'+fullPageName, data, false, true)
+            this.model.setAtPath('page-data.'+fullPageName, data, true)
         }
 
         // console.log('...spd trace 5')
         let curActivityId = this.currentActivity && this.currentActivity.activityId
 
-        if(!check.mobile) {
-            const pageComp = curActivityId && findPageComponent(curActivityId)
-            if (pageComp && pageComp.comBinder) {
-                // console.log('...binding...')
-                pageComp.comBinder.applyComponentBindings(pageComp, 'page-data.' + fullPageName, (component: any, name: string, value: any, updateAlways: boolean) => {
-                    // Handle the update to the component itself
-                    // console.log('updating page')
-                    if (check.riot) {
-                        // console.log('...')
-                        try {
-                            component.bound.data = value
-                            component.update()
-                        } catch (e:any) {
-                        }
-                    } else {
-                        component.bound.set(name, value)
-                    }
-                })
-                pageComp.reset()
-            }
-        }
+        // if(!check.mobile) {
+        //     const pageComp = curActivityId && findPageComponent(curActivityId)
+        //     if (pageComp && pageComp.comBinder) {
+        //         // console.log('...binding...')
+        //         pageComp.comBinder.applyComponentBindings(pageComp, 'page-data.' + fullPageName, (component: any, name: string, value: any, updateAlways: boolean) => {
+        //             // Handle the update to the component itself
+        //             // console.log('updating page')
+        //             if (check.riot) {
+        //                 // console.log('...')
+        //                 try {
+        //                     component.bound.data = value
+        //                     component.update()
+        //                 } catch (e:any) {
+        //                 }
+        //             } else {
+        //                 component.bound.set(name, value)
+        //             }
+        //         })
+        //         pageComp.reset()
+        //     }
+        // }
 
     }
 
