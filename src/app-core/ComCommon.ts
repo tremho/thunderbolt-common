@@ -945,8 +945,7 @@ export class ComCommon extends NotCommon{
         // enumerate the props
         for(let p of Object.getOwnPropertyNames(props))  {
             // @ts-ignore
-            let d = props[p]
-            d.replace(/@@/g, '$%AT%$')
+            let d = (props[p] || '').replace(/@@/g, '$%AT%$')
             // let isBound = (p === 'bind') || (d.indexOf('$') !==-1)
             let {directive, value} = this.evaluateBindExpression(d)
             value.replace(/\$%AT%\$/g, '@')
