@@ -948,7 +948,7 @@ export class ComCommon extends NotCommon{
             let d = (props[p] || '').replace(/@@/g, '$%AT%$')
             // let isBound = (p === 'bind') || (d.indexOf('$') !==-1)
             let {directive, value} = this.evaluateBindExpression(d)
-            value.replace(/\$%AT%\$/g, '@')
+            value = value.replace(/\$%AT%\$/g, '@')
             if(p === 'bind') directive = d
             component.state[p] = value
             component.update()
