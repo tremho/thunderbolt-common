@@ -953,6 +953,11 @@ export class ComCommon extends NotCommon{
             component.update()
             if(directive) {
                 let {section, prop, alias, updateAlways} = this.comBinder.deconstructBindStatement(directive)
+                if(directive.charAt(0) === ':') {
+                    section = 'page-data'
+                    prop = directive.substring(1)
+                    alias = p
+                }
                 let mpath = section+'.'+prop
                 let locprop = alias || p
                 let {value} = this.evaluateBindExpression(directive)
@@ -988,7 +993,7 @@ export class ComCommon extends NotCommon{
                 // @: is page data
                 let pd = d.substring(2)
                 v = this.app.getFromCurrentPageData(pd)
-                directive = ''
+                directive = d.substring(1)
             } else {
                 directive = d.substring(1)
                 try {
