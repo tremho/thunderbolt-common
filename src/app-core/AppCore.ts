@@ -724,6 +724,7 @@ export class AppCore {
      * @param pageName
      */
     public getPageData(pageName:string) {
+        if(pageName.substring(pageName.length-5) !== '-page') pageName += '-page'
         try {
             return this.model.getAtPath('page-data.' + pageName)
         } catch(e:any) {

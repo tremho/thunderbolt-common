@@ -30,7 +30,8 @@ export default {
     onMounted(props:any, state:any) {
         // @ts-ignore
         if(this.preStdOnMounted) this.preStdOnMounted(props, state)
-        // console.log(this.root.tagName, 'onMounted', props, state, this.bound)
+        // @ts-ignore
+        console.log(this.root.tagName, 'onMounted', props, state, this.bound)
         // @ts-ignore
         let div = this.$(this.innerTag || 'div')
         // @ts-ignore

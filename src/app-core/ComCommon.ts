@@ -941,8 +941,6 @@ export class ComCommon extends NotCommon{
         if(!component.state) {
             component.state = new Observable()
         }
-        if(component.btrack) return; // already bound
-
         // enumerate the props
         for(let p of Object.getOwnPropertyNames(props))  {
             // @ts-ignore
