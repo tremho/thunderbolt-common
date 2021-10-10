@@ -955,7 +955,8 @@ export class ComCommon extends NotCommon{
                 let {section, prop, alias, updateAlways} = this.comBinder.deconstructBindStatement(directive)
                 if(directive.charAt(0) === ':') {
                     section = 'page-data'
-                    prop = directive.substring(1)
+                    let navinfo = this.model.getAtPath('page.navInfo')
+                    prop = navinfo.pageId + '-page'
                     alias = p
                 }
                 let mpath = section+'.'+prop
