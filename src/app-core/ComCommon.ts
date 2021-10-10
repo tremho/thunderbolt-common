@@ -941,6 +941,7 @@ export class ComCommon extends NotCommon{
         if(!component.state) {
             component.state = new Observable()
         }
+        if(component.btrack) return; // already bound
 
         // enumerate the props
         for(let p of Object.getOwnPropertyNames(props))  {
@@ -985,7 +986,7 @@ export class ComCommon extends NotCommon{
             let d = expr.substring(n, xn)
             let lit = expr.substring(ls, le)
             let v = ''
-            if (d.charAt(0) === ':') {
+            if (d.charAt(1) === ':') {
                 // @: is page data
                 let pd = d.substring(2)
                 v = this.app.getFromCurrentPageData(pd)
