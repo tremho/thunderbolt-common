@@ -660,7 +660,7 @@ export class AppCore {
         } catch(e:any) {
             // console.error('...spd catch 1', e.message)
             data = {}
-            data[pageName] = {}
+            data[fullPageName] = {}
             this.model.addSection('page-data', data)
         }
         // console.log('...spd trace 2')

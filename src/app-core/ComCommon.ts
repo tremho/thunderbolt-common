@@ -998,8 +998,8 @@ export class ComCommon extends NotCommon{
                 } catch(e) {
                     v = '"?'+d+'?"'
                 }
-                value += lit + v
             }
+            value += lit + v
             ls = xn
         }
         value += expr.substring(ls)
