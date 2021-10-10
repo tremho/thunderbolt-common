@@ -653,15 +653,15 @@ export class AppCore {
             fullPageName = pageName + '-page'
         }
 
-        let data
+        let data:any
         try {
             // console.log('...spd trace 1')
             data = this.model.getAtPath('page-data.' + fullPageName) || {}
         } catch(e:any) {
             // console.error('...spd catch 1', e.message)
-            const pgs:any = {}
-            pgs[pageName] = {}
-            const pages = this.model.addSection('page-data', pgs)
+            data = {}
+            data[pageName] = {}
+            this.model.addSection('page-data', data)
         }
         // console.log('...spd trace 2')
         if(typeof item === 'object') {
@@ -730,6 +730,17 @@ export class AppCore {
             console.warn('no page data for '+pageName)
             return {}
         }
+    }
+
+    public getFromCurrentPageData(accPath:string) {
+        let navinfo = this.model.getAtPath('page.navInfo')
+        let pageData = this.getPageData(navinfo.pageId)
+        let v:any = pageData
+        const parts = accPath.split('.')
+        for(let p of parts) {
+            v = v[p] || ''
+        }
+        return v
     }
 
 

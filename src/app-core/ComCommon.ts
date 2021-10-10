@@ -985,13 +985,14 @@ export class ComCommon extends NotCommon{
             if (xn == -1) xn = expr.length
             let d = expr.substring(n, xn)
             let lit = expr.substring(ls, le)
+            let v = ''
             if (d.charAt(0) === ':') {
                 // @: is page data
-                // TODO: v = this.app.getFromCurrentPageData(d.substring(1))
+                let pd = d.substring(2)
+                v = this.app.getFromCurrentPageData(pd)
                 directive = ''
             } else {
                 directive = d.substring(1)
-                let v = ''
                 try {
                     v = this.app.model.getAtPath(directive)
                 } catch(e) {
