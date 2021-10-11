@@ -983,7 +983,14 @@ export class ComCommon extends NotCommon{
                 }
                 this.model.bind(component, section, prop, (comp:any, prop:string, inValue:any) => {
                     if(comp.btrack && comp.btrack[prop]) {
-                        let {directive, value} = this.evaluateBindExpression(comp.props[p])
+                        let po = comp.props[p]
+                        if(typeof po === 'object') {
+                            d = (po.value || '')
+                            p = po.locprop
+                            tcomp = po.component
+                        } else d = (po || '')
+
+                        let {directive, value} = this.evaluateBindExpression(d)
                         if(!directive) value = inValue
                         component.state[locprop] = value || ''
                         if(component.update) component.update()
