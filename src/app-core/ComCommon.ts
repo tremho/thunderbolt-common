@@ -948,7 +948,10 @@ export class ComCommon extends NotCommon{
             if(p === 'bind') directive = d
             component.state[p] = value
             if(component.update) component.update()
-            else component.set(p, value)
+            else {
+                console.log('setting initial', p, value)
+                component.set(p, value)
+            }
             if(directive) {
                 let {section, prop, alias, updateAlways} = this.comBinder.deconstructBindStatement(directive)
                 if(directive.charAt(0) === ':') {
