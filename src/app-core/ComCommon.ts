@@ -938,9 +938,6 @@ export class ComCommon extends NotCommon{
     bindComponent2(props:string[]) {
         // @ts-ignore
         let component = this.riot || this.rootComponent
-        if(!component.state) {
-            component.state = new Observable()
-        }
         // enumerate the props
         for(let p of Object.getOwnPropertyNames(props))  {
             // @ts-ignore
