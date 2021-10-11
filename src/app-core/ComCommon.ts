@@ -940,8 +940,16 @@ export class ComCommon extends NotCommon{
         let component = this.riot || this.rootComponent
         // enumerate the props
         for(let p of Object.getOwnPropertyNames(props))  {
+            let d
             // @ts-ignore
-            let d = (props[p] || '').replace(/@@/g, '$%AT%$')
+            let po = props[p]
+            let tcomp:any
+            if(typeof po === 'object') {
+                d = (po.value || '')
+                p = po.locprop
+                tcomp = po.component
+            } else d = (po || '')
+            d = d.replace(/@@/g, '$%AT%$')
             // let isBound = (p === 'bind') || (d.indexOf('$') !==-1)
             let {directive, value} = this.evaluateBindExpression(d)
             value = value.replace(/\$%AT%\$/g, '@')
@@ -950,7 +958,7 @@ export class ComCommon extends NotCommon{
             if(component.update) component.update()
             else {
                 console.log('setting initial', p, value)
-                component.set(p, value)
+                tcomp.set(p, value)
             }
             if(directive) {
                 let {section, prop, alias, updateAlways} = this.comBinder.deconstructBindStatement(directive)
@@ -971,7 +979,7 @@ export class ComCommon extends NotCommon{
                         sourceProperty: p,
                         targetProperty: locprop
                     }
-                    component.bind(bopts, component.state)
+                    tcomp.bind(bopts, component.state)
                 }
                 this.model.bind(component, section, prop, (comp:any, prop:string, inValue:any) => {
                     if(comp.btrack && comp.btrack[prop]) {
