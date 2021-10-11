@@ -958,7 +958,7 @@ export class ComCommon extends NotCommon{
             if(component.update) component.update()
             else {
                 console.log('setting initial', p, value)
-                tcomp.set(p, value)
+                tcomp.set(p, 'init: '+value)
             }
             if(directive) {
                 let {section, prop, alias, updateAlways} = this.comBinder.deconstructBindStatement(directive)
