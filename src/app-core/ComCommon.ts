@@ -950,7 +950,7 @@ export class ComCommon extends NotCommon{
             value = value.replace(/\$%AT%\$/g, '@')
             if(p === 'bind') directive = d
             component.state[p] = value
-            component.update()
+            if(component.update) component.update()
             if(directive) {
                 let {section, prop, alias, updateAlways} = this.comBinder.deconstructBindStatement(directive)
                 if(directive.charAt(0) === ':') {
