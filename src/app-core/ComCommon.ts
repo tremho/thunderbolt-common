@@ -970,7 +970,7 @@ export class ComCommon extends NotCommon{
                         let {directive, value} = this.evaluateBindExpression(comp.props[p])
                         if(!directive) value = inValue
                         component.state[locprop] = value || ''
-                        component.update()
+                        if(component.update) component.update()
                     }
                 })
             }
