@@ -948,9 +948,8 @@ export class ComCommon {
                     prop = navinfo.pageId + '-page'
                     alias = p
                 }
-                let mpath = section+'.'+prop
                 let locprop = alias || p
-                let {value} = this.evaluateBindExpression(directive)
+                let {value} = this.evaluateBindExpression(d)
                 component.state[locprop] = value || ''
                 if(!component.btrack) component.btrack = {}
                 component.btrack[prop] = true
