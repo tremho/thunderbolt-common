@@ -938,7 +938,7 @@ export class ComCommon {
             if(component.update) component.update()
             else {
                 console.log('setting initial', p, value)
-                tcomp.set(p, 'init: '+value)
+                tcomp.set(p, value)
             }
             if(directive) {
                 let {section, prop, alias, updateAlways} = this.comBinder.deconstructBindStatement(directive)
@@ -972,7 +972,11 @@ export class ComCommon {
                         let {directive, value} = this.evaluateBindExpression(d)
                         if(!directive) value = inValue
                         component.state[locprop] = value || ''
-                        if(component.update) component.update()
+                        if(component.update) component.update() 
+                        else {
+                            // force an update if the binding won't work for us
+                            tcomp.set(locprop, value)
+                        }
                     }
                 })
             }
