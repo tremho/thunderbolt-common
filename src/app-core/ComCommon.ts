@@ -935,11 +935,7 @@ export class ComCommon {
             value = value.replace(/\$%AT%\$/g, '@')
             if(p === 'bind') directive = d
             component.state[p] = value
-            if(component.update) component.update()
-            else {
-                console.log('setting initial', p, value)
-                tcomp.set(p, value)
-            }
+            component.update()
             if(directive) {
                 let {section, prop, alias, updateAlways} = this.comBinder.deconstructBindStatement(directive)
                 if(directive.charAt(0) === ':') {
@@ -953,13 +949,6 @@ export class ComCommon {
                 component.state[locprop] = value || ''
                 if(!component.btrack) component.btrack = {}
                 component.btrack[prop] = true
-                if(component.bindingContext) {
-                    const bopts = {
-                        sourceProperty: p,
-                        targetProperty: locprop
-                    }
-                    tcomp.bind(bopts, component.state)
-                }
                 this.model.bind(component, section, prop, (comp:any, prop:string, inValue:any) => {
                     if(comp.btrack && comp.btrack[prop]) {
                         let po = comp.props[p]
@@ -972,11 +961,7 @@ export class ComCommon {
                         let {directive, value} = this.evaluateBindExpression(d)
                         if(!directive) value = inValue
                         component.state[locprop] = value || ''
-                        if(component.update) component.update() 
-                        else {
-                            // force an update if the binding won't work for us
-                            tcomp.set(locprop, value)
-                        }
+                        component.update()
                     }
                 })
             }
