@@ -13,29 +13,9 @@ let Color = class {
 
 export type LocalBind = [any, string, string]
 
-let NotCommon
-if(check.mobile) {
-    NotCommon = class {
-        protected readonly rootComponent:any // View
-        constructor(arg:any) {
-            this.rootComponent = arg;
-        }
-    }
-    try {
-        Color = require('@nativescript/core').Color
-        View = require('@nativescript/core').View
-        Observable = require('@nativescript/core').Observable
-    } catch(e) {}
-} else {
-    NotCommon = class {
-        protected readonly riot:any
-        constructor(arg:any) {
-            this.riot = arg;
-        }
-    }
-}
-
-export class ComCommon extends NotCommon{
+export class ComCommon {
+    protected rootComponent?:any;
+    protected riot?:any;
     private readonly fits:string[]
     private fitNum:number
     private comBinder:ComBinder
@@ -43,9 +23,10 @@ export class ComCommon extends NotCommon{
     private readonly _model:AppModel
     private bound:object|undefined
 
-    constructor(arg:any)
-    {
-        super(arg)
+    constructor(arg:any) {
+
+        if(check.mobile) this.rootComponent = arg;
+        else this.riot = arg;
         arg.b = this.evalBinding.bind(this)
         this.fits = []
         this.fitNum = 0;
@@ -68,8 +49,7 @@ export class ComCommon extends NotCommon{
      * (in other words, the app of the Page)
      * @returns {AppCore}
      */
-    getApp():AppCore
-    {
+    getApp():AppCore {
         if(check.mobile) {
             return getTheApp()
         } else if(check.riot) {
@@ -897,9 +877,9 @@ export class ComCommon extends NotCommon{
 
         let border = (this.getComponentAttribute(component, 'border') || defaults.border || '')
         let bp = borderSplit(border)
-        let borderStyle = (this.getComponentAttribute(component, 'borderStyle') || defaults.borderStyle || bp.style)
-        let borderColor = (this.getComponentAttribute(component, 'borderColor') || defaults.borderColor || bp.color)
-        if(borderColor === 'undefined') borderColor = undefined
+        let borderStyle = (this.getComponentAttribute(component, 'borderStyle') || defaults.borderStyle || bp.style || '')
+        let borderColor = (this.getComponentAttribute(component, 'borderColor') || defaults.borderColor || bp.color || '')
+        if(borderColor === 'undefined') borderColor = ''
         let borderWidth = (this.getComponentAttribute(component, 'borderWidth') || defaults.borderWidth || bp.width)
         if(border) component.set('border', border)
         if(borderStyle) component.set('borderStyle', borderStyle)
