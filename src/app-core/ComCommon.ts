@@ -751,9 +751,9 @@ export class ComCommon {
         component.set('textAlign', textAlign)
         container.verticalAlignment = vAlign
 
-        let color = component.get('color') || defaults.color
+        let color = defaults.color
         let background = component.get('background') || defaults.background
-        let backgroundColor = component.get('backgroundColor') || defaults.backgroundColor
+        let backgroundColor = defaults.backgroundColor
         if(color === 'undefined') color = undefined
         while(background.indexOf('undefined') !== -1) {
             background = background.replace('undefined', '')
@@ -763,7 +763,7 @@ export class ComCommon {
         if(color || background || backgroundColor) {
             if (color) {
                 // console.log('setting color to '+color)
-                component.set('color', new Color(color))
+                component.set('color', color)
             }
             if (background) {
                 // console.log('setting background to '+background)
