@@ -918,6 +918,15 @@ export class ComCommon {
     bindComponent2(props:string[]) {
         // @ts-ignore
         let component = this.riot || this.rootComponent
+        if(check.mobile) {
+            // handle bind as case for mobile here
+            const bind = component.get('bind') || ''
+            let {section, prop, alias, updateAlways} = this.comBinder.deconstructBindStatement(bind)
+            let locprop = alias || prop
+            let mpath = section +'.'+ prop
+            // @ts-ignore
+            if(!props[locprop]) props[locprop] = '@'+mpath
+        }
         // enumerate the props
         for(let p of Object.getOwnPropertyNames(props))  {
             let d
