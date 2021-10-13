@@ -26,7 +26,7 @@ export class ComBinder {
      * @param {string} stmt the binding statement
      * @return {object} statement parts deconstructed.
      */
-    deconstructBindStatement(stmt:string) {
+    deconstructBindStatement(stmt:string = '') {
         const parts = stmt.split(' as ')
         let path = parts[0]
         const updateAlways = (path.charAt(0) === '!')
