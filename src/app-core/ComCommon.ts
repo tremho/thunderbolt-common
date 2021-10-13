@@ -920,7 +920,8 @@ export class ComCommon {
         let component = this.riot || this.rootComponent
         if(check.mobile) {
             // handle bind as case for mobile here
-            const bind = this.getComponentAttribute(component, 'bind')
+            let bind = (component.hasOwnProperty('bind') && component.get('bind')) || ''
+            if(typeof bind === 'function') bind = ''
             let {section, prop, alias, updateAlways} = this.comBinder.deconstructBindStatement(bind)
             let locprop = alias || prop
             let mpath = section +'.'+ prop
