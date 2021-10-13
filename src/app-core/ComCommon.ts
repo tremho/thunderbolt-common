@@ -921,12 +921,11 @@ export class ComCommon {
         if(check.mobile) {
             // handle bind as case for mobile here
             let bind = (component.hasOwnProperty('bind') && component.get('bind')) || ''
-            if(typeof bind === 'function') bind = ''
             let {section, prop, alias, updateAlways} = this.comBinder.deconstructBindStatement(bind)
             let locprop = alias || prop
             let mpath = section +'.'+ prop
             // @ts-ignore
-            if(locprop) props[locprop] = '@'+mpath
+            if(locprop) props[locprop] = {component: component.textComponent || component, value: '@'+mpath, locprop}
         }
         // enumerate the props
         for(let p of Object.getOwnPropertyNames(props))  {
