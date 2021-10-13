@@ -926,7 +926,7 @@ export class ComCommon {
             let locprop = alias || prop
             let mpath = section +'.'+ prop
             // @ts-ignore
-            if(!props[locprop]) props[locprop] = '@'+mpath
+            if(locprop && !props[locprop]) props[locprop] = '@'+mpath
         }
         // enumerate the props
         for(let p of Object.getOwnPropertyNames(props))  {
