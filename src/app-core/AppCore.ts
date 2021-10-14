@@ -113,6 +113,7 @@ export class AppCore {
      componentGateResolver:any
      modelGateResolver:any
      pageUpdates:any = {}
+     runTest:boolean = false
 
     constructor() {
         this.menuApi = new MenuApi(this)
@@ -122,6 +123,16 @@ export class AppCore {
         this.componentGate = new Promise(resolve => {
             this.componentGateResolver = resolve
         })
+    }
+
+    private async checkForTest() {
+         console.log('>> checking for test indication file')
+        if(mainApi) {
+            console.log('looking for ~dotest file ')
+            this.runTest = await mainApi.fileExists('~dotest')
+        }
+        console.log('test will '+ (this.runTest ? 'be run':' not be run' ))
+        return this.runTest
     }
     /**
      * get the model used for binding to the UI.
@@ -176,6 +187,7 @@ export class AppCore {
     public setupUIElements(appFront:any) {
         console.log('>>> setupUIElements >>>')
 
+        this.checkForTest()
 
         // set the infomessage log handling
         if(!check.mobile) {
@@ -530,6 +542,14 @@ export class AppCore {
 
         if(pageId.substring(pageId.length-5) === '-page') {
             pageId = pageId.substring(0, pageId.length-5)
+        }
+
+        if(pageId === 'main' && this.runTest ) {
+            mainApi.startTest().then(() => {
+                this.runTest = false
+                console.log('>>>>>>>>>>>>>>>>>> TEST COMPLETED <<<<<<<<<<<<<<<<<<<<')
+                this.navigateToPage(pageId, context, skipHistory)
+            })
         }
 
         console.log('continuing with navigate to page')
