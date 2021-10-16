@@ -554,7 +554,7 @@ export class AppCore {
                 this.runTest = false
                 console.log('>>>>>>>>>>>>>>>>>> TEST COMPLETED <<<<<<<<<<<<<<<<<<<<')
                 if (this.testDisposition === 'exit') {
-                    process.exit(0)
+                    mainApi.appExit(0)
                 } else {
                     this.navigateToPage(pageId, context, skipHistory)
                 }
