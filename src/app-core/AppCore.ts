@@ -114,6 +114,7 @@ export class AppCore {
      modelGateResolver:any
      pageUpdates:any = {}
      runTest:boolean = false
+     testDisposition:string = ''
 
     constructor() {
         this.menuApi = new MenuApi(this)
@@ -130,6 +131,9 @@ export class AppCore {
         if(mainApi) {
             console.log('looking for ~dotest file ')
             this.runTest = await mainApi.fileExists('~dotest')
+            if(this.runTest) {
+                this.testDisposition = mainApi.readFileText('~dotest')
+            }
         }
         console.log('test will '+ (this.runTest ? 'be run':' not be run' ))
         return this.runTest
@@ -545,10 +549,14 @@ export class AppCore {
         }
 
         if(pageId === 'main' && this.runTest ) {
-            mainApi.startTest().then(() => {
+            mainApi.startTest().then((disposition:string) => {
                 this.runTest = false
                 console.log('>>>>>>>>>>>>>>>>>> TEST COMPLETED <<<<<<<<<<<<<<<<<<<<')
-                this.navigateToPage(pageId, context, skipHistory)
+                if (disposition === 'exit') {
+                    process.exit(0)
+                } else {
+                    this.navigateToPage(pageId, context, skipHistory)
+                }
             })
         }
 
