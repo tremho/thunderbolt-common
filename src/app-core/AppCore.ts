@@ -132,7 +132,7 @@ export class AppCore {
             console.log('looking for ~dotest file ')
             this.runTest = await mainApi.fileExists('~dotest')
             if(this.runTest) {
-                this.testDisposition = mainApi.readFileText('~dotest')
+                this.testDisposition = await mainApi.readFileText('~dotest')
                 console.log('test disposition read as ', this.testDisposition)
             }
         }
