@@ -133,6 +133,7 @@ export class AppCore {
             this.runTest = await mainApi.fileExists('~dotest')
             if(this.runTest) {
                 this.testDisposition = mainApi.readFileText('~dotest')
+                console.log('test disposition read as ', this.testDisposition)
             }
         }
         console.log('test will '+ (this.runTest ? 'be run':' not be run' ))
@@ -549,10 +550,10 @@ export class AppCore {
         }
 
         if(pageId === 'main' && this.runTest ) {
-            mainApi.startTest().then((disposition:string) => {
+            mainApi.startTest().then(() => {
                 this.runTest = false
                 console.log('>>>>>>>>>>>>>>>>>> TEST COMPLETED <<<<<<<<<<<<<<<<<<<<')
-                if (disposition === 'exit') {
+                if (this.testDisposition === 'exit') {
                     process.exit(0)
                 } else {
                     this.navigateToPage(pageId, context, skipHistory)
