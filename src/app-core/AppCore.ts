@@ -550,15 +550,17 @@ export class AppCore {
         }
 
         if(pageId === 'main' && this.runTest ) {
-            mainApi.startTest().then(() => {
-                this.runTest = false
-                console.log('>>>>>>>>>>>>>>>>>> TEST COMPLETED <<<<<<<<<<<<<<<<<<<<')
-                if (this.testDisposition === 'exit') {
-                    mainApi.appExit(0)
-                } else {
-                    this.navigateToPage(pageId, context, skipHistory)
-                }
-            })
+            setTimeout(() => {
+                mainApi.startTest().then(() => {
+                    this.runTest = false
+                    console.log('>>>>>>>>>>>>>>>>>> TEST COMPLETED <<<<<<<<<<<<<<<<<<<<')
+                    if (this.testDisposition === 'exit') {
+                        mainApi.appExit(0)
+                    } else {
+                        this.navigateToPage(pageId, context, skipHistory)
+                    }
+                })
+            }, 1000); // delay start of test so we can get a debugger on this.
         }
 
         console.log('continuing with navigate to page')
