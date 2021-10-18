@@ -202,6 +202,9 @@ export class AppCore {
             mainApi.messageInit().then(() => {
                 console.log('messages wired')
                 this.model.addSection('infoMessage', {messages: []})
+                mainApi.addMessageListener('testXchg', (data:any) => {
+                    console.log('testXChg data seen', data)
+                })
                 mainApi.addMessageListener('IM', (data:any) => {
                     writeMessage(data.subject, data.message)
                 })
