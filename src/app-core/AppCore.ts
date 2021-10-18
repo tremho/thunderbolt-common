@@ -558,7 +558,8 @@ export class AppCore {
                     this.runTest = false
                     console.log('>>>>>>>>>>>>>>>>>> TEST COMPLETED <<<<<<<<<<<<<<<<<<<<')
                     if (this.testDisposition === 'exit') {
-                        mainApi.appExit(0)
+                        // mainApi.appExit(0)
+                        console.log('not exiting right now')
                     } else {
                         this.navigateToPage(pageId, context, skipHistory)
                     }
