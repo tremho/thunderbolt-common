@@ -958,14 +958,14 @@ export class AppCore {
 
 
     connectTestMethods() {
-        if(mainApi) {
-            mainApi.callTestRequest = (request:string, params:string[]) => {
-                console.log('callTestRequest', request, params)
-                const ops:any = testOps
-                const fn = ops[request]
-                return fn && fn.apply(this, params)
-            }
-         }
+        // const callTestRequest = (request:string, params:string[]) => {
+        //     console.log('callTestRequest', request, params)
+        //     const ops:any = testOps
+        //     const fn = ops[request]
+        //     return fn && fn.apply(this, params)
+        // }
+        if(gwindow) gwindow.testOp = testOps
+
     }
 
 }
