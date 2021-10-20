@@ -1,10 +1,13 @@
 import {AppCore} from "../app-core/AppCore";
 
-// All functions receive AppCore as the "this" when called from AppCore (connectTestMethods / callTestRequest)
+let app:AppCore
 
+export function initModule(appIn:AppCore) {
+    app = appIn
+}
 export function readModelValue(modelPath:string) {
     console.log('readModelValue @', modelPath)
-    // @ts-ignore
-    const app:AppCore = this
-    return app.model.getAtPath(modelPath)
+    const resp =  app.model.getAtPath(modelPath)
+    console.log('returning ', resp)
+    return resp
 }

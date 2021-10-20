@@ -965,6 +965,7 @@ export class AppCore {
             return fn && fn.apply(this, params)
         }
         if(gwindow) {
+            testOps.initModule(this)
             gwindow.callTestRequest = callTestRequest
             console.log('connected callTestRequest to window at ', gwindow.callTestRequest)
         }
