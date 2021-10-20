@@ -962,8 +962,9 @@ export class AppCore {
             console.log('callTestRequest', request, params)
             const ops:any = testOps
             const fn = ops[request]
-            const resp =  Promise.resolve(fn && fn.apply(this, params))
+            const resp =  fn && fn.apply(this, params)
             console.log('callTestRequest in app-core returns ', resp)
+            return resp
         }
         if(gwindow) {
             testOps.initModule(this)
