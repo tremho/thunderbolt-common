@@ -29,8 +29,10 @@ declare module "@tremho/jove-common" {
     export {TBFrontApp as TBFrontApp}
     export {FrontAppStartCallback as FrontAppStartCallback}
     export {FrontAppExitCallback as FrontAppExitCallback}
+
     interface TBBackApp {}
     function registerApp(targetPlatform:object, backApp:TBBackApp) : void
+
     class AppCore {
         appModel: AppModel;
         rootPath: string;
