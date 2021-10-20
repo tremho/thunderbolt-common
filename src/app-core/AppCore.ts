@@ -967,7 +967,6 @@ export class AppCore {
         if(gwindow) {
             gwindow.callTestRequest = callTestRequest
             console.log('connected callTestRequest to window at ', gwindow.callTestRequest)
-            gwindow.foobar = "FOOBAR FOREVER!"
         }
 
 
