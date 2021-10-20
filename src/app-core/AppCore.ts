@@ -19,6 +19,8 @@ import {EventData} from "./EventData";
 import * as BEF from "./ BackExtensionsFront";
 import {ComNormal} from "./ComNormal";
 
+import * as testOps from "../test-actions/TestOps"
+
 const gwindow:any = typeof window !== 'undefined' ? window : {}
 let mainApi = check.mobile ? null : gwindow.api;
 
@@ -132,6 +134,7 @@ export class AppCore {
             console.log('looking for ~dotest file ')
             this.runTest = await mainApi.fileExists('~dotest')
             if(this.runTest) {
+                this.connectTestMethods()
                 this.testDisposition = await mainApi.readFileText('~dotest')
                 console.log('test disposition read as ', this.testDisposition)
             }
@@ -951,6 +954,18 @@ export class AppCore {
 
     messageBox(options:any) {
         return Promise.resolve(mainApi && mainApi.openDialog(options))
+    }
+
+
+    connectTestMethods() {
+        if(mainApi) {
+            mainApi.callTestRequest = (request:string, params:string[]) => {
+                console.log('callTestRequest', request, params)
+                const ops:any = testOps
+                const fn = ops[request]
+                return fn && fn.apply(this, params)
+            }
+         }
     }
 
 }
