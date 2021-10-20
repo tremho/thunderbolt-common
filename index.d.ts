@@ -16,23 +16,21 @@ import {
     FrontAppExitCallback
 } from "./typings";
 
+export { ToolExtension as ToolExtension }
+export { MenuItem  as MenuItem }
+export { IndicatorItem as IndicatorItem }
+export { ToolItem as ToolItem }
+export { AppModel as AppModel }
+export { EventData as EventData }
+export { ComNormal as ComNormal }
+export {FrameworkBackContext as FrameworkBackContext}
+export {TBFrontApp as TBFrontApp}
+export {FrontAppStartCallback as FrontAppStartCallback}
+export {FrontAppExitCallback as FrontAppExitCallback}
 
 declare module "@tremho/jove-common" {
-    export { ToolExtension as ToolExtension }
-    export { MenuItem  as MenuItem }
-    export { IndicatorItem as IndicatorItem }
-    export { ToolItem as ToolItem }
-    export { AppModel as AppModel }
-    export { EventData as EventData }
-    export { ComNormal as ComNormal }
-    export {FrameworkBackContext as FrameworkBackContext}
-    export {TBFrontApp as TBFrontApp}
-    export {FrontAppStartCallback as FrontAppStartCallback}
-    export {FrontAppExitCallback as FrontAppExitCallback}
-
     interface TBBackApp {}
     function registerApp(targetPlatform:object, backApp:TBBackApp) : void
-
     class AppCore {
         appModel: AppModel;
         rootPath: string;
