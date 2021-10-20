@@ -958,13 +958,18 @@ export class AppCore {
 
 
     connectTestMethods() {
-        // const callTestRequest = (request:string, params:string[]) => {
-        //     console.log('callTestRequest', request, params)
-        //     const ops:any = testOps
-        //     const fn = ops[request]
-        //     return fn && fn.apply(this, params)
-        // }
-        if(gwindow) gwindow.testOp = testOps
+        const callTestRequest = (request:string, params:string[]) => {
+            console.log('callTestRequest', request, params)
+            const ops:any = testOps
+            const fn = ops[request]
+            return fn && fn.apply(this, params)
+        }
+        if(gwindow) {
+            gwindow.callTestRequest = callTestRequest
+            console.log('connected callTestRequest to window at ', gwindow.callTestRequest)
+        }
+
+
 
     }
 
