@@ -88,7 +88,7 @@ export async function setComponentProperty(componentName:string, propName:string
  * @Returns true if action function was called
  */
 export async function triggerAction(componentName:string, action:string = 'action') {
-    console.log('> triggerAction', action)
+    console.log('> triggerAction', componentName, action)
     const comp = componentMap[componentName]
     if (comp) {
         const fname = comp.com.getComponentAttribute(comp, action)
@@ -102,7 +102,11 @@ export async function triggerAction(componentName:string, action:string = 'actio
 
             callPageFunction(fname, [JSON.stringify(ev)])
             return true
+        } else {
+            console.warn(`action ${action} does not resolve to a function name`)
         }
+    } else {
+        console.warn(`component ${componentName} not assigned`)
     }
     return false
 }
