@@ -88,7 +88,7 @@ export async function setComponentProperty(componentName:string, propName:string
  * @Returns true if action function was called
  */
 export async function triggerAction(componentName:string, action:string) {
-    if(!action) action = 'action'
+    action = 'action' // TODO: sanity force
     console.log('> triggerAction', componentName, action)
     const comp = componentMap[componentName]
     if (comp) {
