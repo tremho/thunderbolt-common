@@ -553,6 +553,9 @@ export class AppCore {
 
         if(pageId === 'main' && this.runTest ) {
             setTimeout(() => {
+                if(this.testDisposition.indexOf('debug') !== -1) {
+                    mainApi.openDevTools()
+                }
                 mainApi.startTest().then(() => {
                     this.runTest = false
                     console.log('>>>>>>>>>>>>>>>>>> TEST COMPLETED <<<<<<<<<<<<<<<<<<<<')
