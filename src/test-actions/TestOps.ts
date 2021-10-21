@@ -58,7 +58,7 @@ export async function readComponentProperty(componentName:string, propName:strin
 
     const comp = componentMap[componentName]
     console.log('>> TestOp: readComponentProperty ', componentName, propName, comp)
-    const resp = comp && comp.com.getComponentAttribute(propName)
+    const resp = comp && comp.com.getComponentAttribute(comp, propName)
     console.log('returning', resp)
     return resp
 }
@@ -74,7 +74,7 @@ export async function setComponentProperty(componentName:string, propName:string
     const comp = componentMap[componentName]
     if(comp) {
         // TODO: Create setComponentAttribute in ComCommon
-        // comp.com.setComponentAttribute(propName, propValue)
+        // comp.com.setComponentAttribute(comp, propName, propValue)
     }
 
 }
