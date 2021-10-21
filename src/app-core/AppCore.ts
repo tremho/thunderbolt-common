@@ -493,7 +493,6 @@ export class AppCore {
             if(typeof this.currentActivity[name] === 'function') {
                 this.currentActivity[name](comEvent)
             }
-
         }
     }
 

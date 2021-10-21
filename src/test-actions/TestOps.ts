@@ -1,13 +1,124 @@
 import {AppCore} from "../app-core/AppCore";
+import { EventData } from "../app-core/EventData";
 
 let app:AppCore
 
+let componentMap:any = {}
+
+/**
+ * Called on app start by app-core to establish our app context
+ * @param appIn
+ */
 export function initModule(appIn:AppCore) {
     app = appIn
+    componentMap = {}
 }
+
+/**
+ * Reads the value in the app model at the given model path
+ * @param modelPath
+ */
 export function readModelValue(modelPath:string) {
-    // console.log('>readModelValue @', modelPath)
-    const resp =  app.model.getAtPath(modelPath)
-    // console.log('returning ', resp)
-    return resp
+    return app.model.getAtPath(modelPath)
 }
+
+/**
+ * Sets a value in the model at the given model path
+ * @param modelPath
+ * @param value
+ */
+export async function setModelValue(modelPath:string, value:any) {
+    app.model.setAtPath(modelPath, value)
+}
+
+/**
+ * Selects a component on the page via a selector and assigns it to a name we can reference later
+ *
+ * @param name Name to assign to the component
+ * @param tagName tag name of the component (e.g. simple-label)
+ * @param [prop] optional name of a property to check on this component
+ * @param [propValue] optional if prop given, this is the value to match
+ *
+ * @return Component object found and assigned
+ */
+export async function assignComponent(name:string, tagName:string, prop?:string, propValue?:string) {
+    const comp = app.findComponent(tagName, prop, propValue)
+    componentMap[name] = comp
+    return comp
+}
+
+/**
+ * Reads the value of a property of the named component
+ *
+ * @param componentName
+ * @param propName
+ */
+export async function readComponentProperty(componentName:string, propName:string) {
+
+    const comp = componentMap[componentName]
+    return comp && comp.com.getComponentAttribute(propName)
+}
+
+/**
+ * Sets the  property of a named component to the given value
+ *
+ * @param componentName
+ * @param propName
+ * @param propValue
+ */
+export async function setComponentProperty(componentName:string, propName:string, propValue:string) {
+    const comp = componentMap[componentName]
+    if(comp) {
+        // TODO: Create setComponentAttribute in ComCommon
+        // comp.com.setComponentAttribute(propName, propValue)
+    }
+
+}
+
+/**
+ * Triggers the named action on the named component.
+ * this effectively simulates an event call to the function named in the 'action' property
+ * @param componentName Assigned component name
+ * @param [action] optional action property name, defaults to 'action'
+ */
+export async function triggerAction(componentName:string, action:string = 'action') {
+    const comp = componentMap[componentName]
+    if (comp) {
+        const fname = comp.com.getComponentAttribute(action)
+        const ev: EventData = new EventData()
+        ev.app = app
+        ev.sourceComponent = comp
+        ev.tag = action
+        ev.eventType = 'test'
+
+        return callPageFunction(fname, [JSON.stringify(ev)])
+    }
+}
+
+/**
+ * Navigate to the given page, optionally passing a context object
+ * @param pageName
+ * @param context
+ */
+export async function goToPage(pageName:string, context?:any) {
+    app.navigateToPage(pageName, context)
+}
+
+/**
+ * Call a function of a given name on the current page, passing optional parameters
+ * @param funcName  Name of exported function found on current page logic
+ * @param [parameters]  Array of optional parameters to pass
+ */
+export async function callPageFunction(funcName:string, parameters:string[] = []) {
+    const activity = app.currentActivity
+    if(activity) {
+        if(typeof activity[funcName] === 'function') {
+            activity[funcName](...parameters)
+        }
+    }
+}
+
+// perform a menu action
+// perform a tool action
+//
+// take + record screenshot
