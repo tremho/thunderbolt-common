@@ -567,7 +567,7 @@ export class AppCore {
                         this.navigateToPage(pageId, context, skipHistory)
                     }
                 })
-            }, 1000); // delay start of test so we can get a debugger on this.
+            }, 100);
         }
 
         console.log('continuing with navigate to page')
