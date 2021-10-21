@@ -99,7 +99,7 @@ export async function triggerAction(componentName:string, action:string) {
             console.log(' ...a')
             ev.app = app
             console.log(' ...b')
-            ev.sourceComponent = comp
+            ev.sourceComponent = 'test '+componentName
             console.log(' ...c')
             ev.tag = action
             console.log(' ...d')
