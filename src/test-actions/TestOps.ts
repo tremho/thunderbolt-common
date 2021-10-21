@@ -84,6 +84,8 @@ export async function setComponentProperty(componentName:string, propName:string
  * this effectively simulates an event call to the function named in the 'action' property
  * @param componentName Assigned component name
  * @param [action] optional action property name, defaults to 'action'
+ *
+ * @Returns true if action function was called
  */
 export async function triggerAction(componentName:string, action:string = 'action') {
     const comp = componentMap[componentName]
@@ -96,7 +98,8 @@ export async function triggerAction(componentName:string, action:string = 'actio
             ev.tag = action
             ev.eventType = 'test'
 
-            return callPageFunction(fname, [JSON.stringify(ev)])
+            callPageFunction(fname, [JSON.stringify(ev)])
+            return true
         }
     }
 }
@@ -116,6 +119,7 @@ export async function goToPage(pageName:string, context?:any) {
  * @param [parameters]  Array of optional parameters to pass (objects and arrays must be serialized JSON)
  */
 export async function callPageFunction(funcName:string, parameters:string[] = []) {
+    console.log('callPageFunction', funcName, parameters)
     const pconv:any = []
     for(let p of parameters) {
         if(typeof p === 'string' && (p.charAt(0) === '{' || p.charAt(0) === '[') ) {
@@ -127,8 +131,11 @@ export async function callPageFunction(funcName:string, parameters:string[] = []
     const activity = app.currentActivity
     if(activity) {
         if(typeof activity[funcName] === 'function') {
-            activity[funcName](...pconv)
+            console.log('calling ', funcName, pconv)
+            return activity[funcName](...pconv)
         }
+    } else {
+        console.warn('no activity found')
     }
 }
 
