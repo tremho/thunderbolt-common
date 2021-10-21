@@ -105,8 +105,9 @@ export async function triggerAction(componentName:string, action:string) {
             console.log(' ...d')
             ev.eventType = 'test'
             console.log(' constructed event', ev)
+            const strev = JSON.stringify(ev)
 
-            callPageFunction(fname, [JSON.stringify(ev)])
+            callPageFunction(fname, [strev])
             return true
         } else {
             console.warn(`action ${action} does not resolve to a function name`)
