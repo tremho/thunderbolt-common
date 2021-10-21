@@ -959,17 +959,17 @@ export class AppCore {
 
     connectTestMethods() {
         const callTestRequest = (request:string, params:string[]) => {
-            console.log('callTestRequest', request, params)
+            // console.log('callTestRequest', request, params)
             const ops:any = testOps
             const fn = ops[request]
             const resp =  fn && fn.apply(this, params)
-            console.log('callTestRequest in app-core returns ', resp)
+            // console.log('callTestRequest in app-core returns ', resp)
             return resp
         }
         if(gwindow) {
             testOps.initModule(this)
             gwindow.callTestRequest = callTestRequest
-            console.log('connected callTestRequest to window at ', gwindow.callTestRequest)
+            // console.log('connected callTestRequest to window at ', gwindow.callTestRequest)
         }
 
 
