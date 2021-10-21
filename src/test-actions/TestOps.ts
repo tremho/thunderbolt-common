@@ -88,14 +88,16 @@ export async function setComponentProperty(componentName:string, propName:string
 export async function triggerAction(componentName:string, action:string = 'action') {
     const comp = componentMap[componentName]
     if (comp) {
-        const fname = comp.com.getComponentAttribute(action)
-        const ev: EventData = new EventData()
-        ev.app = app
-        ev.sourceComponent = comp
-        ev.tag = action
-        ev.eventType = 'test'
+        const fname = comp.com.getComponentAttribute(comp, action)
+        if(fname) {
+            const ev: EventData = new EventData()
+            ev.app = app
+            ev.sourceComponent = comp
+            ev.tag = action
+            ev.eventType = 'test'
 
-        return callPageFunction(fname, [JSON.stringify(ev)])
+            return callPageFunction(fname, [JSON.stringify(ev)])
+        }
     }
 }
 
@@ -111,13 +113,21 @@ export async function goToPage(pageName:string, context?:any) {
 /**
  * Call a function of a given name on the current page, passing optional parameters
  * @param funcName  Name of exported function found on current page logic
- * @param [parameters]  Array of optional parameters to pass
+ * @param [parameters]  Array of optional parameters to pass (objects and arrays must be serialized JSON)
  */
 export async function callPageFunction(funcName:string, parameters:string[] = []) {
+    const pconv:any = []
+    for(let p of parameters) {
+        if(typeof p === 'string' && (p.charAt(0) === '{' || p.charAt(0) === '[') ) {
+            pconv.push(JSON.parse(p))
+        } else {
+            pconv.push(p)
+        }
+    }
     const activity = app.currentActivity
     if(activity) {
         if(typeof activity[funcName] === 'function') {
-            activity[funcName](...parameters)
+            activity[funcName](...pconv)
         }
     }
 }
