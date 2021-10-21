@@ -44,7 +44,7 @@ export async function setModelValue(modelPath:string, value:any) {
 export async function assignComponent(name:string, tagName:string, prop?:string, propValue?:string) {
     const comp = app.findComponent(tagName, prop, propValue)
     componentMap[name] = comp
-    return comp
+    // return comp
 }
 
 /**
