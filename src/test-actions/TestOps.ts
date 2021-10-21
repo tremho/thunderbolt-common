@@ -39,12 +39,13 @@ export async function setModelValue(modelPath:string, value:any) {
  * @param [prop] optional name of a property to check on this component
  * @param [propValue] optional if prop given, this is the value to match
  *
- * @return Component object found and assigned
+ * @return true if was component was found and assigned to name
  */
 export async function assignComponent(name:string, tagName:string, prop?:string, propValue?:string) {
     const comp = app.findComponent(tagName, prop, propValue)
     componentMap[name] = comp
-    // return comp
+
+    return comp ? true : false
 }
 
 /**
