@@ -88,10 +88,12 @@ export async function setComponentProperty(componentName:string, propName:string
  * @Returns true if action function was called
  */
 export async function triggerAction(componentName:string, action:string = 'action') {
+    console.log('> triggerAction', action)
     const comp = componentMap[componentName]
     if (comp) {
         const fname = comp.com.getComponentAttribute(comp, action)
         if(fname) {
+            console.log('  fname', fname)
             const ev: EventData = new EventData()
             ev.app = app
             ev.sourceComponent = comp
@@ -102,6 +104,7 @@ export async function triggerAction(componentName:string, action:string = 'actio
             return true
         }
     }
+    return false
 }
 
 /**
