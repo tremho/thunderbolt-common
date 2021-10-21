@@ -96,15 +96,15 @@ export async function triggerAction(componentName:string, action:string) {
         if(fname) {
             console.log('  fname', fname)
             const ev: EventData = new EventData()
-            console.log(' ...a')
-            ev.app = app
-            console.log(' ...b')
-            ev.sourceComponent = 'test '+componentName
-            console.log(' ...c')
-            ev.tag = action
-            console.log(' ...d')
-            ev.eventType = 'test'
-            console.log(' constructed event', ev)
+            // console.log(' ...a')
+            // ev.app = app
+            // console.log(' ...b')
+            // ev.sourceComponent = 'test '+componentName
+            // console.log(' ...c')
+            // ev.tag = action
+            // console.log(' ...d')
+            // ev.eventType = 'test'
+            // console.log(' constructed event', ev)
             const strev = JSON.stringify(ev)
 
             callPageFunction(fname, [strev])
