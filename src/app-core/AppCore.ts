@@ -557,9 +557,10 @@ export class AppCore {
                     this.runTest = false
                     console.log('>>>>>>>>>>>>>>>>>> TEST COMPLETED <<<<<<<<<<<<<<<<<<<<')
                     if (this.testDisposition === 'exit') {
-                        // mainApi.appExit(0)
-                        console.log('not exiting right now')
-                    } else {
+                        mainApi.appExit(0)
+                    } else if(this.testDisposition.substring(0,3) === 'run') {
+                        const pi = this.testDisposition.substring(4).trim()
+                        if(pi) {pageId = pi; context = undefined; skipHistory = undefined}
                         this.navigateToPage(pageId, context, skipHistory)
                     }
                 })

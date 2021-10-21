@@ -56,7 +56,10 @@ export async function assignComponent(name:string, tagName:string, prop?:string,
 export async function readComponentProperty(componentName:string, propName:string) {
 
     const comp = componentMap[componentName]
-    return comp && comp.com.getComponentAttribute(propName)
+    console.log('>> TestOp: readComponentProperty ', componentName, propName, comp)
+    const resp = comp && comp.com.getComponentAttribute(propName)
+    console.log('returning', resp)
+    return resp
 }
 
 /**
