@@ -140,7 +140,21 @@ export async function callPageFunction(funcName:string, parameters:string[] = []
     const pconv:any = []
     for(let p of parameters) {
         if(typeof p === 'string' && (p.charAt(0) === '{' || p.charAt(0) === '[') ) {
-            pconv.push(JSON.parse(p))
+            const obj = JSON.parse(p)
+            for(let p of Object.getOwnPropertyNames(obj)) {
+                let v = obj[p]
+                if(p.charAt(0) === '$') {
+                    let n = p.lastIndexOf('$')
+                    let k = p.substring(0, n + 1)
+                    if (k === '$$APP$$$') {
+                        obj[p] = app
+                    } else if (k === '$$TESTCOMP$$') {
+                        let cname = p.substring(n + 1)
+                        obj[p] = componentMap[cname]
+                    }
+                }
+            }
+            pconv.push(obj)
         } else {
             if(p.charAt(0) === '$') {
                 let n = p.lastIndexOf('$')
