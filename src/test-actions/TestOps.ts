@@ -143,9 +143,9 @@ export async function callPageFunction(funcName:string, parameters:string[] = []
             const obj = JSON.parse(p)
             for(let p of Object.getOwnPropertyNames(obj)) {
                 let v = obj[p]
-                if(p.charAt(0) === '$') {
-                    let n = p.lastIndexOf('$')
-                    let k = p.substring(0, n + 1)
+                if(v.charAt(0) === '$') {
+                    let n = v.lastIndexOf('$')
+                    let k = v.substring(0, n + 1)
                     if (k === '$$APP$$$') {
                         obj[p] = app
                     } else if (k === '$$TESTCOMP$$') {
