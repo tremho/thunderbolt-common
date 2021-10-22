@@ -146,7 +146,7 @@ export async function callPageFunction(funcName:string, parameters:string[] = []
                 if(v.charAt(0) === '$') {
                     let n = v.lastIndexOf('$')
                     let k = v.substring(0, n + 1)
-                    if (k === '$$APP$$$') {
+                    if (k === '$$APP$$') {
                         obj[p] = app
                     } else if (k === '$$TESTCOMP$$') {
                         let cname = p.substring(n + 1)
