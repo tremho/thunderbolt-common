@@ -96,15 +96,15 @@ export async function triggerAction(componentName:string, action:string) {
         if(fname) {
             console.log('  fname', fname)
             const ev: EventData = new EventData()
-            // console.log(' ...a')
-            // ev.app = app
-            // console.log(' ...b')
-            // ev.sourceComponent = 'test '+componentName
-            // console.log(' ...c')
-            // ev.tag = action
-            // console.log(' ...d')
-            // ev.eventType = 'test'
-            // console.log(' constructed event', ev)
+
+            // TODO: Problem -- ev.app must be set, but this is a circular object that can't pass, so is sourceComponent.
+            // My planned solution: use keywords for '$$APP$$', etc and swap these in callFunction pconv.
+
+            ev.app = "$$APP$$"
+            ev.sourceComponent = '$$TESTCOMP$$ '+componentName
+            ev.tag = action
+            ev.eventType = 'test'
+            console.log(' constructed event', ev)
             const strev = JSON.stringify(ev)
 
             callPageFunction(fname, [strev])
@@ -131,6 +131,9 @@ export async function goToPage(pageName:string, context?:any) {
  * Call a function of a given name on the current page, passing optional parameters
  * @param funcName  Name of exported function found on current page logic
  * @param [parameters]  Array of optional parameters to pass (objects and arrays must be serialized JSON)
+ *
+ * TODO: Convert keyword objects (
+ *
  */
 export async function callPageFunction(funcName:string, parameters:string[] = []) {
     console.log('callPageFunction', funcName, parameters)
@@ -139,7 +142,18 @@ export async function callPageFunction(funcName:string, parameters:string[] = []
         if(typeof p === 'string' && (p.charAt(0) === '{' || p.charAt(0) === '[') ) {
             pconv.push(JSON.parse(p))
         } else {
-            pconv.push(p)
+            if(p.charAt(0) === '$') {
+                let n = p.lastIndexOf('$')
+                let k = p.substring(0, n+1)
+                if(k === '$$APP$$$') {
+                    pconv.push(app)
+                } else if(k === '$$TESTCOMP$$') {
+                    let cname = p.substring(n+1)
+                    pconv.push(componentMap[cname])
+                }
+            } else {
+                pconv.push(p)
+            }
         }
     }
     const activity = app.currentActivity
