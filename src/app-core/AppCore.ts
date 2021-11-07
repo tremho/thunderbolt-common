@@ -559,7 +559,7 @@ export class AppCore {
                 mainApi.startTest().then(() => {
                     this.runTest = false
                     console.log('>>>>>>>>>>>>>>>>>> TEST COMPLETED <<<<<<<<<<<<<<<<<<<<')
-                    if (this.testDisposition === 'exit') {
+                    if (this.testDisposition.indexOf('exit') !== -1) {
                         mainApi.appExit(0)
                     } else if(this.testDisposition.substring(0,3) === 'run') {
                         const pi = this.testDisposition.substring(4).trim()
