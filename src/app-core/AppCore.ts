@@ -552,8 +552,10 @@ export class AppCore {
         }
 
         if(pageId === 'main' && this.runTest ) {
-            if(this.testDisposition.indexOf('debug') !== -1) {
-                mainApi.openDevTools()
+            if(!check.mobile) {
+                if (this.testDisposition.indexOf('debug') !== -1) {
+                    mainApi.openDevTools()
+                }
             }
             let host:string
             let hi = this.testDisposition.indexOf('host=')
