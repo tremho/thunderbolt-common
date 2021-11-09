@@ -555,9 +555,14 @@ export class AppCore {
             if(this.testDisposition.indexOf('debug') !== -1) {
                 mainApi.openDevTools()
             }
+            let host:string
+            let hi = this.testDisposition.indexOf('host=')
+            if(hi!==-1) {
+                host = this.testDisposition.substring(hi+5).trim()
+            }
             setTimeout(() => {
                 console.log("RUNNING TESTS")
-                mainApi.startTest().then(() => {
+                mainApi.startTest(host).then(() => {
                     this.runTest = false
                     console.log('>>>>>>>>>>>>>>>>>> TEST COMPLETED <<<<<<<<<<<<<<<<<<<<')
                     if (this.testDisposition.indexOf('exit') !== -1) {
