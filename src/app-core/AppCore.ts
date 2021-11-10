@@ -20,6 +20,7 @@ import * as BEF from "./ BackExtensionsFront";
 import {ComNormal} from "./ComNormal";
 
 import * as testOps from "../test-actions/TestOps"
+import {setCallTestRequest} from "../../../thunderbolt-mobile/src/api/ApiGateway";
 
 const gwindow:any = typeof window !== 'undefined' ? window : {}
 let mainApi = check.mobile ? null : gwindow.api;
@@ -30,6 +31,7 @@ export function setMobileInjections(mbi:any) {
     mobileInjections.nsapplication = mbi.nsapplication
     mainApi = mobileInjections.mainApi = mbi.mainApi
     callExtensionApi = mbi.callExtensionApi
+    mobileInjections.setCallTestRequest = mbi.setCallTestRequest
 
     console.log("<><><><><><><><>")
     console.log("%%%%%%%%%%%%%%%%")
@@ -977,11 +979,14 @@ export class AppCore {
             // console.log('callTestRequest in app-core returns ', resp)
             return resp
         }
+        testOps.initModule(this)
         if(gwindow) {
-            testOps.initModule(this)
             gwindow.callTestRequest = callTestRequest
             // console.log('connected callTestRequest to window at ', gwindow.callTestRequest)
+        } else {
+            mobileInjections.setCallTestRequest(callTestRequest)
         }
+
 
 
 
