@@ -982,8 +982,9 @@ export class AppCore {
         testOps.initModule(this)
         if(gwindow) {
             gwindow.callTestRequest = callTestRequest
-            // console.log('connected callTestRequest to window at ', gwindow.callTestRequest)
+            console.log('connected callTestRequest to window at ', gwindow.callTestRequest)
         } else {
+            console.log('connecting callTestRequest via mobile injections', mobileInjections.setCallTestRequest)
             mobileInjections.setCallTestRequest(callTestRequest)
         }
 
