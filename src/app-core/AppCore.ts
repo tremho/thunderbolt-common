@@ -35,6 +35,10 @@ export function setMobileInjections(mbi:any) {
 
     console.log("<><><><><><><><>")
     console.log("%%%%%%%%%%%%%%%%")
+    console.log('imported mbi injections')
+    Object.getOwnPropertyNames(mbi).forEach(p => {
+        console.log('  '+p+': '+ typeof mbi[p])
+    })
     console.log('mobile injections')
     Object.getOwnPropertyNames(mobileInjections).forEach(p => {
         console.log('  '+p+': '+ typeof mobileInjections[p])
@@ -971,6 +975,7 @@ export class AppCore {
 
 
     connectTestMethods() {
+        console.log('IN CONNECT TEST METHODS')
         const callTestRequest = (request:string, params:string[]) => {
             // console.log('callTestRequest', request, params)
             const ops:any = testOps
