@@ -7,8 +7,6 @@
 
 // console.log("%%%%%%%%%%%%%%%%%%%%% top of index.js (common) %%%%%%%%%%%%%%%%%%%%%")
 
-import {setCallTestRequest} from "../../thunderbolt-mobile/src/api/ApiGateway";
-
 let electronApp:any, BrowserWindow:any, preloadPath:string, AppGateway:any, ipcMain:any
 let makeWindowStatePersist:any
 let nscore:any, nativescriptApp:any, registerExtensionModule:any
