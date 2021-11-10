@@ -199,23 +199,23 @@ export class AppCore {
     }
 
     public setupUIElements(appFront:any) {
-        console.log('>>> setupUIElements >>>')
+        // console.log('>>> setupUIElements >>>')
 
         this.checkForTest()
 
         // set the infomessage log handling
         if(!check.mobile) {
-            console.log('not mobile, clearing component gate')
+            // console.log('not mobile, clearing component gate')
             this.componentIsReady() // not used in riot, so clear the gate
 
             mainApi.messageInit().then(() => {
-                console.log('messages wired')
+                // console.log('messages wired')
                 this.model.addSection('infoMessage', {messages: []})
                 mainApi.addMessageListener('IM', (data:any) => {
                     writeMessage(data.subject, data.message)
                 })
                 mainApi.addMessageListener('EV', (data:any) => {
-                    console.log('event info incoming:', data)
+                    // console.log('event info incoming:', data)
                     let evName = data.subject;
                     let evData = data.data;
                     if (evName === 'resize') {
@@ -243,7 +243,7 @@ export class AppCore {
                             setEnvironment(env) // for check
                             this.setPlatformClass(env)
                             this.setPathUtilInfo(env).then(() => {
-                                console.log('Setting up models annd menus')
+                                // console.log('Setting up models and menus')
                                 // Set up app models and menus
                                 this.model.addSection('menu', {})
                                 if (appFront && appFront.appStart) { // appStart in tbFrontApp will likely create its own menu
@@ -259,7 +259,7 @@ export class AppCore {
                                 }
                             })
                         } catch(e:any) {
-                            console.error('problem processing envInfo EV message', e)
+                            // console.error('problem processing envInfo EV message', e)
                             throw(e)
                         }
                     }
@@ -280,12 +280,12 @@ export class AppCore {
         }
 
 
-        console.log('SetUIElements past first check. now adding page section to model')
+        // console.log('SetUIElements past first check. now adding page section to model')
 
         this.model.addSection('page', {navInfo: {pageId: '', context: {}}})
 
         // Set environment items
-        console.log('... now adding environment section to model')
+        // console.log('... now adding environment section to model')
         // this will allow us to do platform branching and so on
         this.model.addSection('environment', {}) // start empty; will get filled in on message.
 
@@ -314,7 +314,7 @@ export class AppCore {
             }
 
             this.setPathUtilInfo(env).then(() => {
-                console.log('Setting up models annd menus')
+                // console.log('Setting up models annd menus')
                 // Set up app models and menus
                 this.model.addSection('menu', {})
                 if (appFront && appFront.appStart) { // appStart in tbFrontApp will likely create its own menu
@@ -332,9 +332,9 @@ export class AppCore {
         } else {
             // only for Electron
             // request a new emit of the environment on refresh
-            console.log('##### Requesting environment on restart ---------!!!')
+            // console.log('##### Requesting environment on restart ---------!!!')
             this.Api.requestEnvironment();
-            console.log('##### Setting up resize checker -----------')
+            // console.log('##### Setting up resize checker -----------')
             const window = {width:0, height:0}
             // let resizeInterval = setInterval(() => {
             let resizeChecker = new ResizeSensor(document.body, () =>{
@@ -366,7 +366,7 @@ export class AppCore {
             } else {
                 platClass = 'linux'
             }
-            console.log('setting platClass to '+platClass)
+            // console.log('setting platClass to '+platClass)
             document.body.classList.add(platClass)
         }
     }
@@ -381,18 +381,18 @@ export class AppCore {
                 }
                 console.log('getting paths for app', appName)
                 return mainApi.getUserAndPathInfo(appName).then((info: any) => {
-                    console.log(info)
+                    // console.log(info)
                     const pathSetters = getRemoteSetters()
                     pathSetters.setCurrentWorkingDirectory(info.cwd)
                     pathSetters.setAssetsDirectory(info.assets)
                     pathSetters.setHomeDirectory(info.home)
-                    console.log('sending appDataPath', info.appData)
+                    // console.log('sending appDataPath', info.appData)
                     pathSetters.setAppDataDirectory(info.appData)
-                    console.log('sending documentsPath', info.documents)
+                    // console.log('sending documentsPath', info.documents)
                     pathSetters.setDocumentsDirectory(info.documents)
-                    console.log('sending downloadsPath', info.downloads)
+                    // console.log('sending downloadsPath', info.downloads)
                     pathSetters.setDownloadsDirectory(info.downloads)
-                    console.log('sending desktopPath', info.desktop)
+                    // console.log('sending desktopPath', info.desktop)
                     pathSetters.setDesktopDirectory(info.desktop)
                     const plat = env.runtime.platform.name === 'win32' ? 'win32' : 'posix'
                     pathSetters.setPlatform(plat)
@@ -404,15 +404,15 @@ export class AppCore {
 
 
     setupMenu(menuPath:string) {
-        console.log('%%%%%%%%%%%%%%%%%% setupMenu has been called')
+        // console.log('%%%%%%%%%%%%%%%%%% setupMenu has been called')
         let pathUtils = this.Path
         if(mainApi) {
             // in case our paths aren't set up yet in pathUtils, default to expectation
             let assetPath = pathUtils.join(pathUtils.assetsPath || 'front/assets', menuPath)
-            console.log('>> will set menu from ', assetPath)
+            // console.log('>> will set menu from ', assetPath)
             return Promise.resolve(setupMenu(this, assetPath))
         }
-        console.error('no menu loaded -- api unavailable')
+        // console.error('no menu loaded -- api unavailable')
         return Promise.resolve() // no menu loaded
     }
 
@@ -627,11 +627,11 @@ export class AppCore {
             // Function needs to build full page including the layout stack and any event handlers.
             // not sure what effect this has on back history, since there's nothing passed for that.
 
-            console.log('------------------')
-            console.log(' -- Looking at Frame classes')
-            console.log('className', theFrame.className)
-            console.log('cssClasses', theFrame.cssClasses)
-            console.log('------------------')
+            // console.log('------------------')
+            // console.log(' -- Looking at Frame classes')
+            // console.log('className', theFrame.className)
+            // console.log('cssClasses', theFrame.cssClasses)
+            // console.log('------------------')
 
 
         } else {
@@ -639,11 +639,11 @@ export class AppCore {
             if (!pageComponent) {
                 throw Error('No page component for ' + pageId)
             }
-            console.log('------------------')
-            console.log(' -- Looking at body classes')
-            console.log('className', document.body.className)
-            console.log('classList', document.body.classList)
-            console.log('------------------')
+            // console.log('------------------')
+            // console.log(' -- Looking at body classes')
+            // console.log('className', document.body.className)
+            // console.log('classList', document.body.classList)
+            // console.log('------------------')
 
             const activity = pageComponent.activity;
             if (!activity) {
