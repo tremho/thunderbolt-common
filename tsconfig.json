@@ -21,8 +21,7 @@
     "./node_modules/"
   ],
   "include": [
-    "**/*.ts",
-    "src/preload.js"
+    "src/**/*.ts"
   ]
 }
 
