@@ -7,6 +7,8 @@
 
 // console.log("%%%%%%%%%%%%%%%%%%%%% top of index.js (common) %%%%%%%%%%%%%%%%%%%%%")
 
+import {setCallTestRequest} from "../../thunderbolt-mobile/src/api/ApiGateway";
+
 let electronApp:any, BrowserWindow:any, preloadPath:string, AppGateway:any, ipcMain:any
 let makeWindowStatePersist:any
 let nscore:any, nativescriptApp:any, registerExtensionModule:any
@@ -40,6 +42,12 @@ function injectDependencies(injected:any) {
         }
 
         console.log('%%%%%% injection happens %%%%%%%%')
+        console.log('index injections')
+        Object.getOwnPropertyNames(injected).forEach(p => {
+            console.log('  '+p+': '+ typeof injected[p])
+        })
+        console.log("%%%%%%%%%%%%%%%%")
+
 }
 
 /**
@@ -255,7 +263,8 @@ export function registerApp(injected:any, backApp:TBBackApp) : void {
             nscore: injected.nscore,
             nsapplication: injected.nativescriptApp,
             mainApi: injected.mainApi,
-            callExtensionApi: injected.callExtensionApi
+            callExtensionApi: injected.callExtensionApi,
+            setCallTestRequest: injected.setCallTestRequest
         }
         setMobileInjections(mbi)
         console.log('Launching Nativescript App\n')
