@@ -266,6 +266,7 @@ export function registerApp(injected:any, backApp:TBBackApp) : void {
             callExtensionApi: injected.callExtensionApi,
             setCallTestRequest: injected.setCallTestRequest
         }
+        console.log('☞ setting mobile injections from index.js, and setCallTestRequest is ', typeof mbi.setCallTestRequest)
         setMobileInjections(mbi)
         console.log('Launching Nativescript App\n')
     }

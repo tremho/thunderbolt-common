@@ -32,12 +32,12 @@ export function setMobileInjections(mbi:any) {
     callExtensionApi = mbi.callExtensionApi
     mobileInjections.setCallTestRequest = mbi.setCallTestRequest
 
-    console.log("\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/")
+    console.log("☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞")
     console.log('running as ', check.mobile ? 'MOBILE' : 'DESKTOP')
     console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
 
     console.log("<><><><><><><><>")
-    console.log("%%%%%%%%%%%%%%%%\\/\\/\\/\\/\\/\\/\\/")
+    console.log("%%%%%%%%%%%%%%%%☞☞☞☞☞☞☞☞☞☞")
     console.log('imported mbi injections')
     Object.getOwnPropertyNames(mbi).forEach(p => {
         console.log('  '+p+': '+ typeof mbi[p])
