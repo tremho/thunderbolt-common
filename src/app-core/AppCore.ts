@@ -981,25 +981,24 @@ export class AppCore {
     connectTestMethods() {
         console.log('IN CONNECT TEST METHODS')
         const callTestRequest = (request:string, params:string[]) => {
-            // console.log('callTestRequest', request, params)
+            console.log('callTestRequest', request, params)
             const ops:any = testOps
             const fn = ops[request]
             const resp =  fn && fn.apply(this, params)
-            // console.log('callTestRequest in app-core returns ', resp)
+            console.log('callTestRequest in app-core returns ', resp)
             return resp
         }
         testOps.initModule(this)
+        console.log('gwindow is ',gwindow)
         if(gwindow) {
             gwindow.callTestRequest = callTestRequest
             console.log('connected callTestRequest to window at ', gwindow.callTestRequest)
-        } else {
+        }
+        console.log('mobileInjections.setCallTestRequest is ',mobileInjections?.setCallTestRequest)
+        if(mobileInjections?.setCallTestRequest) {
             console.log('connecting callTestRequest via mobile injections', mobileInjections.setCallTestRequest)
             mobileInjections.setCallTestRequest(callTestRequest)
         }
-
-
-
-
     }
 
 }
