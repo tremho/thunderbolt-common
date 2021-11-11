@@ -983,8 +983,12 @@ export class AppCore {
             gwindow.callTestRequest = callTestRequest
             // console.log('connected callTestRequest to window at ', gwindow.callTestRequest)
         }
-
-
+        // console.log('mobileInjections.setCallTestRequest is ',mobileInjections?.setCallTestRequest)
+        if(mobileInjections?.setCallTestRequest) {
+            // console.log('connecting callTestRequest via mobile injections', mobileInjections.setCallTestRequest)
+            mobileInjections.setCallTestRequest(callTestRequest)
+            // console.log('connected callTestRequest to window at ', gwindow.callTestRequest)
+        }
 
     }
 

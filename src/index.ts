@@ -255,7 +255,8 @@ export function registerApp(injected:any, backApp:TBBackApp) : void {
             nscore: injected.nscore,
             nsapplication: injected.nativescriptApp,
             mainApi: injected.mainApi,
-            callExtensionApi: injected.callExtensionApi
+            callExtensionApi: injected.callExtensionApi,
+            setCallTestRequest: injected.setCallTestRequest
         }
         setMobileInjections(mbi)
         console.log('Launching Nativescript App\n')
