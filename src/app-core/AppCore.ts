@@ -30,6 +30,7 @@ export function setMobileInjections(mbi:any) {
     mobileInjections.nsapplication = mbi.nsapplication
     mainApi = mobileInjections.mainApi = mbi.mainApi
     callExtensionApi = mbi.callExtensionApi
+    mobileInjections.setCallTestRequest = mbi.setCallTestRequest
 
     console.log("<><><><><><><><>")
     console.log("%%%%%%%%%%%%%%%%")
@@ -193,23 +194,23 @@ export class AppCore {
     }
 
     public setupUIElements(appFront:any) {
-        console.log('>>> setupUIElements >>>')
+        // console.log('>>> setupUIElements >>>')
 
         this.checkForTest()
 
         // set the infomessage log handling
         if(!check.mobile) {
-            console.log('not mobile, clearing component gate')
+            // console.log('not mobile, clearing component gate')
             this.componentIsReady() // not used in riot, so clear the gate
 
             mainApi.messageInit().then(() => {
-                console.log('messages wired')
+                // console.log('messages wired')
                 this.model.addSection('infoMessage', {messages: []})
                 mainApi.addMessageListener('IM', (data:any) => {
                     writeMessage(data.subject, data.message)
                 })
                 mainApi.addMessageListener('EV', (data:any) => {
-                    console.log('event info incoming:', data)
+                    // console.log('event info incoming:', data)
                     let evName = data.subject;
                     let evData = data.data;
                     if (evName === 'resize') {
@@ -237,7 +238,7 @@ export class AppCore {
                             setEnvironment(env) // for check
                             this.setPlatformClass(env)
                             this.setPathUtilInfo(env).then(() => {
-                                console.log('Setting up models annd menus')
+                                // console.log('Setting up models annd menus')
                                 // Set up app models and menus
                                 this.model.addSection('menu', {})
                                 if (appFront && appFront.appStart) { // appStart in tbFrontApp will likely create its own menu
@@ -274,12 +275,12 @@ export class AppCore {
         }
 
 
-        console.log('SetUIElements past first check. now adding page section to model')
+        // console.log('SetUIElements past first check. now adding page section to model')
 
         this.model.addSection('page', {navInfo: {pageId: '', context: {}}})
 
         // Set environment items
-        console.log('... now adding environment section to model')
+        // console.log('... now adding environment section to model')
         // this will allow us to do platform branching and so on
         this.model.addSection('environment', {}) // start empty; will get filled in on message.
 
@@ -308,7 +309,7 @@ export class AppCore {
             }
 
             this.setPathUtilInfo(env).then(() => {
-                console.log('Setting up models annd menus')
+                // console.log('Setting up models annd menus')
                 // Set up app models and menus
                 this.model.addSection('menu', {})
                 if (appFront && appFront.appStart) { // appStart in tbFrontApp will likely create its own menu
@@ -360,7 +361,7 @@ export class AppCore {
             } else {
                 platClass = 'linux'
             }
-            console.log('setting platClass to '+platClass)
+            // console.log('setting platClass to '+platClass)
             document.body.classList.add(platClass)
         }
     }
@@ -373,20 +374,20 @@ export class AppCore {
                     appName = env.build.app.name
                 } catch(e:any) {
                 }
-                console.log('getting paths for app', appName)
+                // console.log('getting paths for app', appName)
                 return mainApi.getUserAndPathInfo(appName).then((info: any) => {
-                    console.log(info)
+                    // console.log(info)
                     const pathSetters = getRemoteSetters()
                     pathSetters.setCurrentWorkingDirectory(info.cwd)
                     pathSetters.setAssetsDirectory(info.assets)
                     pathSetters.setHomeDirectory(info.home)
-                    console.log('sending appDataPath', info.appData)
+                    // console.log('sending appDataPath', info.appData)
                     pathSetters.setAppDataDirectory(info.appData)
-                    console.log('sending documentsPath', info.documents)
+                    // console.log('sending documentsPath', info.documents)
                     pathSetters.setDocumentsDirectory(info.documents)
-                    console.log('sending downloadsPath', info.downloads)
+                    // console.log('sending downloadsPath', info.downloads)
                     pathSetters.setDownloadsDirectory(info.downloads)
-                    console.log('sending desktopPath', info.desktop)
+                    // console.log('sending desktopPath', info.desktop)
                     pathSetters.setDesktopDirectory(info.desktop)
                     const plat = env.runtime.platform.name === 'win32' ? 'win32' : 'posix'
                     pathSetters.setPlatform(plat)
@@ -398,15 +399,15 @@ export class AppCore {
 
 
     setupMenu(menuPath:string) {
-        console.log('%%%%%%%%%%%%%%%%%% setupMenu has been called')
+        // console.log('%%%%%%%%%%%%%%%%%% setupMenu has been called')
         let pathUtils = this.Path
         if(mainApi) {
             // in case our paths aren't set up yet in pathUtils, default to expectation
             let assetPath = pathUtils.join(pathUtils.assetsPath || 'front/assets', menuPath)
-            console.log('>> will set menu from ', assetPath)
+            // console.log('>> will set menu from ', assetPath)
             return Promise.resolve(setupMenu(this, assetPath))
         }
-        console.error('no menu loaded -- api unavailable')
+        // console.error('no menu loaded -- api unavailable')
         return Promise.resolve() // no menu loaded
     }
 
@@ -450,7 +451,7 @@ export class AppCore {
     }
 
     public defaultAboutBox() {
-        console.log('Default about box')
+        // console.log('Default about box')
 
         const env = this.model.getAtPath('environment')
         const appInfo = env.build.app
@@ -578,10 +579,10 @@ export class AppCore {
             }, 100);
         }
 
-        console.log('continuing with navigate to page')
+        // console.log('continuing with navigate to page')
         // set the page in the model.  For Riot, this forces the page to change on update
         // for mobile, we need to do that through native navigation, but we still want the model to be the same
-        console.log('$$$$$$$$$$ navigate to page ' + pageId)
+        // console.log('$$$$$$$$$$ navigate to page ' + pageId)
         const navInfo = this.model.getAtPath('page.navInfo')
         let prevPageId = navInfo.pageId
         let prevContext = navInfo.context
@@ -621,11 +622,11 @@ export class AppCore {
             // Function needs to build full page including the layout stack and any event handlers.
             // not sure what effect this has on back history, since there's nothing passed for that.
 
-            console.log('------------------')
-            console.log(' -- Looking at Frame classes')
-            console.log('className', theFrame.className)
-            console.log('cssClasses', theFrame.cssClasses)
-            console.log('------------------')
+            // console.log('------------------')
+            // console.log(' -- Looking at Frame classes')
+            // console.log('className', theFrame.className)
+            // console.log('cssClasses', theFrame.cssClasses)
+            // console.log('------------------')
 
 
         } else {
@@ -633,11 +634,11 @@ export class AppCore {
             if (!pageComponent) {
                 throw Error('No page component for ' + pageId)
             }
-            console.log('------------------')
-            console.log(' -- Looking at body classes')
-            console.log('className', document.body.className)
-            console.log('classList', document.body.classList)
-            console.log('------------------')
+            // console.log('------------------')
+            // console.log(' -- Looking at body classes')
+            // console.log('className', document.body.className)
+            // console.log('classList', document.body.classList)
+            // console.log('------------------')
 
             const activity = pageComponent.activity;
             if (!activity) {
@@ -1025,9 +1026,9 @@ function findPageComponent(pageId:string) {
 function mergeEnvironmentData(env:any, data:any, riotVersion?:string) {
 
     // debug
-    console.log('-------env merge')
-    console.log('env, data ', env, data)
-    console.log('riot version ', riotVersion)
+    // console.log('-------env merge')
+    // console.log('env, data ', env, data)
+    // console.log('riot version ', riotVersion)
 
     try {
         // merges the sometimes differently formatted environment info from
@@ -1035,15 +1036,15 @@ function mergeEnvironmentData(env:any, data:any, riotVersion?:string) {
         // the canonical Environment data.
         data = data.data || data
         let build = data.build
-        console.log('build isolated', build)
+        // console.log('build isolated', build)
         let rfw = Object.assign({},
             env.runtime && env.runtime.framework,
             data.runtime && data.runtime.framework)
-        console.log('runtime.framework, isolated', rfw)
+        // console.log('runtime.framework, isolated', rfw)
         let platform = data.runtime && data.runtime.platform
         if(!platform) platform = env.runtime && env.runtime.platform
         if(!platform) platform = env.platform || {}
-        console.log('runtime platform, isolated', platform)
+        // console.log('runtime platform, isolated', platform)
         if(riotVersion) rfw.riot = riotVersion
         rfw.nativeScript = build.platform.nativeScript
         let out: any = {
