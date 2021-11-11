@@ -32,16 +32,7 @@ export function setMobileInjections(mbi:any) {
     callExtensionApi = mbi.callExtensionApi
     mobileInjections.setCallTestRequest = mbi.setCallTestRequest
 
-    console.log("☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞☞")
-    console.log('running as ', check.mobile ? 'MOBILE' : 'DESKTOP')
-    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
-
     console.log("<><><><><><><><>")
-    console.log("%%%%%%%%%%%%%%%%☞☞☞☞☞☞☞☞☞☞")
-    console.log('imported mbi injections')
-    Object.getOwnPropertyNames(mbi).forEach(p => {
-        console.log('  '+p+': '+ typeof mbi[p])
-    })
     console.log("%%%%%%%%%%%%%%%%")
     console.log('mobile injections')
     Object.getOwnPropertyNames(mobileInjections).forEach(p => {
@@ -247,7 +238,7 @@ export class AppCore {
                             setEnvironment(env) // for check
                             this.setPlatformClass(env)
                             this.setPathUtilInfo(env).then(() => {
-                                // console.log('Setting up models and menus')
+                                // console.log('Setting up models annd menus')
                                 // Set up app models and menus
                                 this.model.addSection('menu', {})
                                 if (appFront && appFront.appStart) { // appStart in tbFrontApp will likely create its own menu
@@ -263,7 +254,7 @@ export class AppCore {
                                 }
                             })
                         } catch(e:any) {
-                            // console.error('problem processing envInfo EV message', e)
+                            console.error('problem processing envInfo EV message', e)
                             throw(e)
                         }
                     }
@@ -336,9 +327,9 @@ export class AppCore {
         } else {
             // only for Electron
             // request a new emit of the environment on refresh
-            // console.log('##### Requesting environment on restart ---------!!!')
+            console.log('##### Requesting environment on restart ---------!!!')
             this.Api.requestEnvironment();
-            // console.log('##### Setting up resize checker -----------')
+            console.log('##### Setting up resize checker -----------')
             const window = {width:0, height:0}
             // let resizeInterval = setInterval(() => {
             let resizeChecker = new ResizeSensor(document.body, () =>{
@@ -383,7 +374,7 @@ export class AppCore {
                     appName = env.build.app.name
                 } catch(e:any) {
                 }
-                console.log('getting paths for app', appName)
+                // console.log('getting paths for app', appName)
                 return mainApi.getUserAndPathInfo(appName).then((info: any) => {
                     // console.log(info)
                     const pathSetters = getRemoteSetters()
@@ -460,7 +451,7 @@ export class AppCore {
     }
 
     public defaultAboutBox() {
-        console.log('Default about box')
+        // console.log('Default about box')
 
         const env = this.model.getAtPath('environment')
         const appInfo = env.build.app
@@ -588,10 +579,10 @@ export class AppCore {
             }, 100);
         }
 
-        console.log('continuing with navigate to page')
+        // console.log('continuing with navigate to page')
         // set the page in the model.  For Riot, this forces the page to change on update
         // for mobile, we need to do that through native navigation, but we still want the model to be the same
-        console.log('$$$$$$$$$$ navigate to page ' + pageId)
+        // console.log('$$$$$$$$$$ navigate to page ' + pageId)
         const navInfo = this.model.getAtPath('page.navInfo')
         let prevPageId = navInfo.pageId
         let prevContext = navInfo.context
@@ -979,26 +970,26 @@ export class AppCore {
 
 
     connectTestMethods() {
-        console.log('IN CONNECT TEST METHODS')
         const callTestRequest = (request:string, params:string[]) => {
-            console.log('callTestRequest', request, params)
+            // console.log('callTestRequest', request, params)
             const ops:any = testOps
             const fn = ops[request]
             const resp =  fn && fn.apply(this, params)
-            console.log('callTestRequest in app-core returns ', resp)
+            // console.log('callTestRequest in app-core returns ', resp)
             return resp
         }
-        testOps.initModule(this)
-        console.log('gwindow is ',gwindow)
         if(gwindow) {
+            testOps.initModule(this)
             gwindow.callTestRequest = callTestRequest
-            console.log('connected callTestRequest to window at ', gwindow.callTestRequest)
+            // console.log('connected callTestRequest to window at ', gwindow.callTestRequest)
         }
-        console.log('mobileInjections.setCallTestRequest is ',mobileInjections?.setCallTestRequest)
+        // console.log('mobileInjections.setCallTestRequest is ',mobileInjections?.setCallTestRequest)
         if(mobileInjections?.setCallTestRequest) {
-            console.log('connecting callTestRequest via mobile injections', mobileInjections.setCallTestRequest)
+            // console.log('connecting callTestRequest via mobile injections', mobileInjections.setCallTestRequest)
             mobileInjections.setCallTestRequest(callTestRequest)
+            // console.log('connected callTestRequest to window at ', gwindow.callTestRequest)
         }
+
     }
 
 }
@@ -1039,9 +1030,9 @@ function findPageComponent(pageId:string) {
 function mergeEnvironmentData(env:any, data:any, riotVersion?:string) {
 
     // debug
-    console.log('-------env merge')
-    console.log('env, data ', env, data)
-    console.log('riot version ', riotVersion)
+    // console.log('-------env merge')
+    // console.log('env, data ', env, data)
+    // console.log('riot version ', riotVersion)
 
     try {
         // merges the sometimes differently formatted environment info from
@@ -1049,15 +1040,15 @@ function mergeEnvironmentData(env:any, data:any, riotVersion?:string) {
         // the canonical Environment data.
         data = data.data || data
         let build = data.build
-        console.log('build isolated', build)
+        // console.log('build isolated', build)
         let rfw = Object.assign({},
             env.runtime && env.runtime.framework,
             data.runtime && data.runtime.framework)
-        console.log('runtime.framework, isolated', rfw)
+        // console.log('runtime.framework, isolated', rfw)
         let platform = data.runtime && data.runtime.platform
         if(!platform) platform = env.runtime && env.runtime.platform
         if(!platform) platform = env.platform || {}
-        console.log('runtime platform, isolated', platform)
+        // console.log('runtime platform, isolated', platform)
         if(riotVersion) rfw.riot = riotVersion
         rfw.nativeScript = build.platform.nativeScript
         let out: any = {
