@@ -296,17 +296,17 @@ function commuteToModel(app:AppCore) {
 
     const model = app.model;
     if(menuName) {
-        console.log('commuting menu to model')
+        // console.log('commuting menu to model')
         for (let i = 0; i < appmenu.length; i++) {
             app.MenuApi.addMenuItem(menuName, appmenu[i])
         }
     }
     if(toolbarName) {
-        console.log('commuting toolbar to model')
+        // console.log('commuting toolbar to model')
         app.MenuApi.addToolbarItems(toolbarName, appTools)
     }
     if(indicatorName) {
-        console.log('commuting indicators to model')
+        // console.log('commuting indicators to model')
         app.MenuApi.addIndicatorItems(indicatorName, appIndicators)
     }
 }

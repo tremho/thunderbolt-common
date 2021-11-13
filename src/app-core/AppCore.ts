@@ -32,14 +32,14 @@ export function setMobileInjections(mbi:any) {
     callExtensionApi = mbi.callExtensionApi
     mobileInjections.setCallTestRequest = mbi.setCallTestRequest
 
-    console.log("<><><><><><><><>")
-    console.log("%%%%%%%%%%%%%%%%")
-    console.log('mobile injections')
-    Object.getOwnPropertyNames(mobileInjections).forEach(p => {
-        console.log('  '+p+': '+ typeof mobileInjections[p])
-    })
-    console.log("%%%%%%%%%%%%%%%%")
-    console.log("<><><><><><><><>")
+    // console.log("<><><><><><><><>")
+    // console.log("%%%%%%%%%%%%%%%%")
+    // console.log('mobile injections')
+    // Object.getOwnPropertyNames(mobileInjections).forEach(p => {
+    //     console.log('  '+p+': '+ typeof mobileInjections[p])
+    // })
+    // console.log("%%%%%%%%%%%%%%%%")
+    // console.log("<><><><><><><><>")
 }
 
 let Imr:any;
@@ -130,17 +130,17 @@ export class AppCore {
     }
 
     private async checkForTest() {
-         console.log('>> checking for test indication file')
+         // console.log('>> checking for test indication file')
         if(mainApi) {
-            console.log('looking for ~dotest file ')
+            // console.log('looking for ~dotest file ')
             this.runTest = await mainApi.fileExists('~dotest')
             if(this.runTest) {
                 this.connectTestMethods()
                 this.testDisposition = await mainApi.readFileText('~dotest')
-                console.log('test disposition read as ', this.testDisposition)
+                // console.log('test disposition read as ', this.testDisposition)
             }
         }
-        console.log('test will '+ (this.runTest ? 'be run':' not be run' ))
+        // console.log('test will '+ (this.runTest ? 'be run':' not be run' ))
         return this.runTest
     }
     /**
@@ -242,14 +242,14 @@ export class AppCore {
                                 // Set up app models and menus
                                 this.model.addSection('menu', {})
                                 if (appFront && appFront.appStart) { // appStart in tbFrontApp will likely create its own menu
-                                    console.log('Starting app')
+                                    // console.log('Starting app')
                                     Promise.resolve(appFront.appStart(this)).then(() => {
-                                        console.log("Clearing model gate")
+                                        // console.log("Clearing model gate")
                                         this.modelGateResolver()
                                     })
                                 } else {
                                     // no front app, or no appStart, so we are just vanilla default
-                                    console.log("Clearing model gate with no app")
+                                    // console.log("Clearing model gate with no app")
                                     this.modelGateResolver()
                                 }
                             })
@@ -269,7 +269,7 @@ export class AppCore {
             })
         } else {
             if(!mainApi) {
-                console.log('setting mobile mainApi from injections')
+                // console.log('setting mobile mainApi from injections')
                 mainApi = mobileInjections.mainApi
             }
         }
@@ -293,9 +293,10 @@ export class AppCore {
             // console.log('was passed by ', res)
 
             this.model.setAtPath('environment', env)
-            console.log('===================')
-            console.log('environment', env)
-            console.log('===================')
+            // too verbose for mobile to spew onto console
+            // console.log('===================')
+            // console.log('environment', env)
+            // console.log('===================')
             setEnvironment(env) // for check
             // this.setPlatformClass(env) // not needed for mobile
 
@@ -313,23 +314,23 @@ export class AppCore {
                 // Set up app models and menus
                 this.model.addSection('menu', {})
                 if (appFront && appFront.appStart) { // appStart in tbFrontApp will likely create its own menu
-                    console.log('Starting app')
+                    // console.log('Starting app')
                     Promise.resolve(appFront.appStart(this)).then(() => {
-                        console.log("Clearing model gate")
+                        // console.log("Clearing model gate")
                         this.modelGateResolver()
                     })
                 } else {
                     // no front app, or no appStart, so we are just vanilla default
-                    console.log("Clearing model gate with no app")
+                    // console.log("Clearing model gate with no app")
                     this.modelGateResolver()
                 }
             })
         } else {
             // only for Electron
             // request a new emit of the environment on refresh
-            console.log('##### Requesting environment on restart ---------!!!')
+            // console.log('##### Requesting environment on restart ---------!!!')
             this.Api.requestEnvironment();
-            console.log('##### Setting up resize checker -----------')
+            // console.log('##### Setting up resize checker -----------')
             const window = {width:0, height:0}
             // let resizeInterval = setInterval(() => {
             let resizeChecker = new ResizeSensor(document.body, () =>{
@@ -451,7 +452,7 @@ export class AppCore {
     }
 
     public defaultAboutBox() {
-        // console.log('Default about box')
+        console.log('Default about box')
 
         const env = this.model.getAtPath('environment')
         const appInfo = env.build.app
@@ -564,10 +565,10 @@ export class AppCore {
                 host = this.testDisposition.substring(hi+5).trim()
             }
             setTimeout(() => {
-                console.log("RUNNING TESTS")
+                // console.log("RUNNING TESTS")
                 mainApi.startTest(host).then(() => {
                     this.runTest = false
-                    console.log('>>>>>>>>>>>>>>>>>> TEST COMPLETED <<<<<<<<<<<<<<<<<<<<')
+                    // console.log('>>>>>>>>>>>>>>>>>> TEST COMPLETED <<<<<<<<<<<<<<<<<<<<')
                     if (this.testDisposition.indexOf('exit') !== -1) {
                         mainApi.appExit(0)
                     } else if(this.testDisposition.substring(0,3) === 'run') {

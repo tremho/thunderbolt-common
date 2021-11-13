@@ -57,9 +57,9 @@ export async function assignComponent(name:string, tagName:string, prop?:string,
 export async function readComponentProperty(componentName:string, propName:string) {
 
     const comp = componentMap[componentName]
-    console.log('>> TestOp: readComponentProperty ', componentName, propName, comp)
+    // console.log('>> TestOp: readComponentProperty ', componentName, propName, comp)
     const resp = comp && comp.com.getComponentAttribute(comp, propName)
-    console.log('returning', resp)
+    // console.log('returning', resp)
     return resp
 }
 
@@ -89,12 +89,12 @@ export async function setComponentProperty(componentName:string, propName:string
  */
 export async function triggerAction(componentName:string, action:string) {
     action = 'action' // TODO: sanity force
-    console.log('> triggerAction', componentName, action)
+    // console.log('> triggerAction', componentName, action)
     const comp = componentMap[componentName]
     if (comp) {
         const fname = comp.com.getComponentAttribute(comp, action)
         if(fname) {
-            console.log('  fname', fname)
+            // console.log('  fname', fname)
             const ev: EventData = new EventData()
 
             // TODO: Problem -- ev.app must be set, but this is a circular object that can't pass, so is sourceComponent.
@@ -104,7 +104,7 @@ export async function triggerAction(componentName:string, action:string) {
             ev.sourceComponent = '$$TESTCOMP$$ '+componentName
             ev.tag = action
             ev.eventType = 'test'
-            console.log(' constructed event', ev)
+            // console.log(' constructed event', ev)
             const strev = JSON.stringify(ev)
 
             callPageFunction(fname, [strev])
@@ -136,7 +136,7 @@ export async function goToPage(pageName:string, context?:any) {
  *
  */
 export async function callPageFunction(funcName:string, parameters:string[] = []) {
-    console.log('callPageFunction', funcName, parameters)
+    // console.log('callPageFunction', funcName, parameters)
     const pconv:any = []
     for(let p of parameters) {
         if(typeof p === 'string' && (p.charAt(0) === '{' || p.charAt(0) === '[') ) {
@@ -173,7 +173,7 @@ export async function callPageFunction(funcName:string, parameters:string[] = []
     const activity = app.currentActivity
     if(activity) {
         if(typeof activity[funcName] === 'function') {
-            console.log('calling ', funcName, pconv)
+            // console.log('calling ', funcName, pconv)
             return activity[funcName](...pconv)
         }
     } else {

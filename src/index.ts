@@ -75,7 +75,7 @@ export class FrameworkBackContext {
 
         // console.log(">> waiting on startup Promises")
         Promise.all(this.startupPromises).then(() => {
-            console.log(">> Startup Promises resolve")
+            // console.log(">> Startup Promises resolve")
             try {
                 const {appName, title} = startupTasks.passEnvironmentAndGetTitles()
                 this.appName = appName
