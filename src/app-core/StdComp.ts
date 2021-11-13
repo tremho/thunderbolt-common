@@ -31,7 +31,7 @@ export default {
         // @ts-ignore
         if(this.preStdOnMounted) this.preStdOnMounted(props, state)
         // @ts-ignore
-        console.log(this.root.tagName, 'onMounted', props, state, this.bound)
+        // console.log(this.root.tagName, 'onMounted', props, state, this.bound)
         // @ts-ignore
         let div = this.$(this.innerTag || 'div')
         // @ts-ignore

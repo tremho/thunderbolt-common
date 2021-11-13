@@ -39,12 +39,12 @@ function injectDependencies(injected:any) {
 
         }
 
-        console.log('%%%%%% injection happens %%%%%%%%')
-        console.log('index injections')
-        Object.getOwnPropertyNames(injected).forEach(p => {
-            console.log('  '+p+': '+ typeof injected[p])
-        })
-        console.log("%%%%%%%%%%%%%%%%")
+        // console.log('%%%%%% injection happens %%%%%%%%')
+        // console.log('index injections')
+        // Object.getOwnPropertyNames(injected).forEach(p => {
+        //     console.log('  '+p+': '+ typeof injected[p])
+        // })
+        // console.log("%%%%%%%%%%%%%%%%")
 
 }
 
@@ -69,11 +69,11 @@ export class FrameworkBackContext {
         this.nativescriptApp = nativescriptApp
         this.backApp = backApp
 
-        console.log('Framework back app constructor')
+        // console.log('Framework back app constructor')
 
         this.beginStartup()
 
-        console.log(">> waiting on startup Promises")
+        // console.log(">> waiting on startup Promises")
         Promise.all(this.startupPromises).then(() => {
             console.log(">> Startup Promises resolve")
             try {
@@ -99,14 +99,14 @@ export class FrameworkBackContext {
 
     beginStartup() {
         try {
-            console.log(">> in common beginStartup()")
+            // console.log(">> in common beginStartup()")
             this.startupPromises.push(Promise.resolve(startupTasks.readBuildEnvironment()))
             if (electronApp) {
-                console.log('electron app. Pushing whenReady')
+                // console.log('electron app. Pushing whenReady')
                 this.startupPromises.push(electronApp.whenReady)
-                console.log('adding electron state event listeners')
+                // console.log('adding electron state event listeners')
                 electronApp.on('activate', () => {
-                    console.log('Framework back app Activated')
+                    // console.log('Framework back app Activated')
                     // On macOS it's common to re-create a window in the app when the
                     // dock icon is clicked and there are no other windows open.
                     if (BrowserWindow.getAllWindows().length === 0) this.createWindow()
@@ -244,7 +244,7 @@ export interface TBPage {
  */
 export function registerApp(injected:any, backApp:TBBackApp) : void {
 
-    console.log('>>>>> Start of Framework: Register App')
+    // console.log('>>>>> Start of Framework: Register App')
 
     // console.log('injections incoming:', injected)
 
@@ -264,11 +264,11 @@ export function registerApp(injected:any, backApp:TBBackApp) : void {
             callExtensionApi: injected.callExtensionApi,
             setCallTestRequest: injected.setCallTestRequest
         }
-        console.log('☞ setting mobile injections from index.js, and setCallTestRequest is ', typeof mbi.setCallTestRequest)
+        // console.log('☞ setting mobile injections from index.js, and setCallTestRequest is ', typeof mbi.setCallTestRequest)
         setMobileInjections(mbi)
-        console.log('Launching Nativescript App\n')
+        console.log('Starting Nativescript App\n')
     }
-    console.log('Completing launch through FrameworkBackContext constructor')
+    // console.log('Completing launch through FrameworkBackContext constructor')
     frameworkContext = new FrameworkBackContext(backApp) // the constructor takes it away
 }
 

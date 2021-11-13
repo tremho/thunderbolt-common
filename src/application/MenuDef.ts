@@ -38,7 +38,7 @@ let indicatorName = ''
 
 function processMenuDef(app:AppCore, defText:string|undefined) {
     const lines = defText ? defText.split('\n') : []
-    console.log('processing menu def', lines.length+' lines')
+    // console.log('processing menu def', lines.length+' lines')
     lines.forEach(ln =>  {
         processDefinition(app, ln)
         if(menuName) {

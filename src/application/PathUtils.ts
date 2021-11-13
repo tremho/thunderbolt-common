@@ -18,41 +18,41 @@ let desktopPath:string
 
 // system calls here at setup
 function setPlatform(plat:string) {
-    console.log('setting plat to ', plat)
+    // console.log('setting plat to ', plat)
     platform = plat
 }
 
 // system calls here at setup
 function setCurrentWorkingDirectory(cwd:string) {
-    console.log('setting cwd to ', cwd)
+    // console.log('setting cwd to ', cwd)
     currentWorkingDirectory = cwd
 }
 
 // system calls here at setup
 function setHomeDirectory(userDir:string) {
-    console.log('setting home to ', userDir)
+    // console.log('setting home to ', userDir)
     homeDirectory = userDir
 }
 // system calls here at setup
 function setAssetsDirectory(path:string) {
-    console.log('setting assets to ', path)
+    // console.log('setting assets to ', path)
     resourcePath = path
 }
 
 function setAppDataDirectory(path:string) {
-    console.log('setting appData to ', path)
+    // console.log('setting appData to ', path)
     appDataPath = path
 }
 function setDocumentsDirectory(path:string) {
-    console.log('setting documents to ', path)
+    // console.log('setting documents to ', path)
     documentsPath = path
 }
 function setDownloadsDirectory(path:string) {
-    console.log('setting downloads to ', path)
+    // console.log('setting downloads to ', path)
     downloadsPath = path
 }
 function setDesktopDirectory(path:string) {
-    console.log('setting desktop to ', path)
+    // console.log('setting desktop to ', path)
     desktopPath = path
 }
 
