@@ -185,3 +185,46 @@ export async function callPageFunction(funcName:string, parameters:string[] = []
 // perform a tool action
 //
 // take + record screenshot
+
+function compView(el:HTMLElement) {
+    let comp:any = {}
+
+    comp.automationText = el.getAttribute('automationText') || ''
+    comp.className = el.className
+    comp.tagName = el.tagName
+    comp.text = el.getAttribute('text') || ''
+    let bounds = el.getBoundingClientRect()
+    comp.bounds = {
+        top: bounds.top,
+        left : bounds.left,
+        width: bounds.width,
+        height: bounds.height,
+        z : Number(el.style.zIndex || 0) || 1
+    }
+    comp.children = []
+    let ch:Element|null = el.firstElementChild
+    while(ch) {
+        comp.children.push(compView(ch as HTMLElement))
+    }
+
+    return comp
+
+}
+
+export async function tree() {
+    let tree:any = {}
+    let win:Window|undefined;
+    if(typeof window !== undefined) win = window
+    let page:any;
+    if(win) {
+        const boundTag: HTMLElement|null = win.document.body.querySelector('[is="app"]')
+        if(boundTag) {
+            page = boundTag.firstChild?.firstChild
+            // this is the current page.  we may need to iterate siblings to find visible, but I think this is the only one
+            // we will find realized to the DOM
+            tree.pageId = page.tagName
+            tree.content = compView(page)
+        }
+    }
+    return tree
+}
