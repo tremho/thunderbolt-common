@@ -565,7 +565,7 @@ export class AppCore {
                 host = this.testDisposition.substring(hi+5).trim()
             }
             setTimeout(() => {
-                // console.log("RUNNING TESTS")
+                console.log("RUNNING TESTS")
                 mainApi.startTest(host).then(() => {
                     this.runTest = false
                     console.log('>>>>>>>>>>>>>>>>>> TEST COMPLETED <<<<<<<<<<<<<<<<<<<<')
