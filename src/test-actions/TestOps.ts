@@ -189,16 +189,10 @@ export async function callPageFunction(funcName:string, parameters:string[] = []
 function compView(el:HTMLElement) {
     let comp:any = {}
 
-    console.log('compview 1', el)
-
     comp.automationText = el.getAttribute('automationText') || ''
-    console.log('compview 2', comp)
     comp.className = el.className
-    console.log('compview 3', comp)
     comp.tagName = el.tagName
-    console.log('compview 4', comp)
     comp.text = el.getAttribute('text') || ''
-    console.log('compview 5', comp)
     let bounds = el.getBoundingClientRect()
     comp.bounds = {
         top: bounds.top,
@@ -207,7 +201,7 @@ function compView(el:HTMLElement) {
         height: bounds.height,
         z : Number(el.style.zIndex || 0) || 1
     }
-    console.log('compview 6', comp)
+    // console.log('compview ', comp, el)
 
     comp.children = []
     let ch:Element|null = el.firstElementChild
@@ -215,7 +209,6 @@ function compView(el:HTMLElement) {
         comp.children.push(compView(ch as HTMLElement))
         ch = ch.nextElementSibling
     }
-
     return comp
 
 }
@@ -239,5 +232,6 @@ export async function tree() {
             tree.content = compView(page)
         }
     }
+    console.log('tree', tree)
     return tree
 }
