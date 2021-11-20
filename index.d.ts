@@ -21,16 +21,45 @@ export { MenuItem  as MenuItem }
 export { AppModel as AppModel }
 export { EventData as EventData }
 export { ComNormal as ComNormal }
-export { IndicatorItem as IndicatorItem }
-export { ToolItem as ToolItem }
-export { FrameworkBackContext as FrameworkBackContext }
-export { TBFrontApp as TBFrontApp }
-export { FrontAppStartCallback as FrontAppStartCallback }
-export { FrontAppExitCallback as FrontAppExitCallback }
 
 declare module "@tremho/jove-common" {
-    interface TBBackApp {}
+    class FrameworkBackContext {
+        electronWindow: any;
+        electronApp: any;
+        nativescriptApp: any;
+        backApp: TBBackApp;
+        title: string;
+        appName: string;
+        windowKeeper: any;
+        passedEnvironment: any;
+        startupPromises: Promise<unknown>[];
+        constructor(backApp: TBBackApp);
+        beginStartup(): void;
+        createWindow(): void;
+        /**
+         * Register an extension that is run on the back-side
+         * @param name
+         * @param module
+         */
+        registerExtensionModule(name: string, module: any): void;
+    }
+    interface TBBackApp {
+        appStart: BackAppStartCallback;
+        appExit: BackAppExitCallback;
+        options: any;
+    }
+    interface TBFrontApp {
+        appStart: FrontAppStartCallback;
+        appExit: FrontAppExitCallback;
+        passEnvironment(env: any): void;
+        getPassedEnvironment(): any;
+    }
+    interface TBPage {
+        pageBegin: PageBeginCallback;
+        pageDone: PageDoneCallback;
+    }
     function registerApp(targetPlatform:object, backApp:TBBackApp) : void
+
     class AppCore {
         appModel: AppModel;
         rootPath: string;
