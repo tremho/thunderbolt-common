@@ -22,6 +22,24 @@ export { AppModel as AppModel }
 export { EventData as EventData }
 export { ComNormal as ComNormal }
 
+export type FrameworkFrontContext = any // treat as any here. But in reality it will be AppCore from the front process
+
+/** Callback for __appStart__ lifecycle */
+export type BackAppStartCallback = (context:FrameworkBackContext) => void
+/** Callback for __appExit__ lifecycle */
+export type BackAppExitCallback = (context:FrameworkBackContext) => void
+
+/** Callback for __appStart__ lifecycle */
+export type FrontAppStartCallback = (context:FrameworkFrontContext) => Promise<void>
+/** Callback for __appExit__ lifecycle */
+export type FrontAppExitCallback = (context:FrameworkFrontContext) => Promise<void>
+
+/** Callback for __pageBegin__ lifecycle */
+export type PageBeginCallback = (context:FrameworkFrontContext, userData:any) => Promise<void>
+
+/** Callback for __pageDone__ lifecycle */
+export type PageDoneCallback = (context:FrameworkFrontContext, userData:any) => Promise<void>
+
 declare module "@tremho/jove-common" {
     class FrameworkBackContext {
         electronWindow: any;
@@ -46,7 +64,7 @@ declare module "@tremho/jove-common" {
     interface TBBackApp {
         appStart: BackAppStartCallback;
         appExit: BackAppExitCallback;
-        options: any;
+        options?: any;
     }
     interface TBFrontApp {
         appStart: FrontAppStartCallback;

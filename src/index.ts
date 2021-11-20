@@ -215,7 +215,7 @@ export type PageDoneCallback = (context:FrameworkFrontContext, userData:any) => 
 export interface TBBackApp {
     appStart: BackAppStartCallback
     appExit: BackAppExitCallback
-    options: any
+    options?: any
 }
 /**
  * Signature for a Jove app registration, front (render) process
