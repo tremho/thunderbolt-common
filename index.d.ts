@@ -18,11 +18,11 @@ import {
 
 export { ToolExtension as ToolExtension }
 export { MenuItem  as MenuItem }
-export { IndicatorItem as IndicatorItem }
-export { ToolItem as ToolItem }
 export { AppModel as AppModel }
 export { EventData as EventData }
 export { ComNormal as ComNormal }
+export { IndicatorItem as IndicatorItem }
+export { ToolItem as ToolItem }
 export {FrameworkBackContext as FrameworkBackContext}
 export {TBFrontApp as TBFrontApp}
 export {FrontAppStartCallback as FrontAppStartCallback}
