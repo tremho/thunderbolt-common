@@ -1,11 +1,11 @@
 {
   "name": "@tremho/jove-common",
-  "version": "0.6.9-pre-release.305",
+  "version": "0.6.9-pre-release.306",
   "description": "Common component of the Jove framework",
   "main": "build/index.js",
   "types": "./index.d.ts",
   "scripts": {
-    "prepublish": "npm run build && npm run typings",
+    "prepublish": "npm run build",
     "clean": "rm -fr build node_modules && npm install",
     "build": "tsc",
     "typings": "tsc -d src/app-core/AppCore.ts --declarationDir typings --target ES2015 --module commonjs",
