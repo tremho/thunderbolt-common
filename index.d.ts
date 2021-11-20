@@ -23,10 +23,10 @@ export { EventData as EventData }
 export { ComNormal as ComNormal }
 export { IndicatorItem as IndicatorItem }
 export { ToolItem as ToolItem }
-export {FrameworkBackContext as FrameworkBackContext}
-export {TBFrontApp as TBFrontApp}
-export {FrontAppStartCallback as FrontAppStartCallback}
-export {FrontAppExitCallback as FrontAppExitCallback}
+export { FrameworkBackContext as FrameworkBackContext }
+export { TBFrontApp as TBFrontApp }
+export { FrontAppStartCallback as FrontAppStartCallback }
+export { FrontAppExitCallback as FrontAppExitCallback }
 
 declare module "@tremho/jove-common" {
     interface TBBackApp {}
