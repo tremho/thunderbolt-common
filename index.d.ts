@@ -1,43 +1,220 @@
-import {PathUtils} from "./typings";
-import {StringParser} from "./typings/general/StringParser";
-import {HistoryRecord} from "./typings/app-core/AppCore";
-import {
-    ToolExtension,
-    MenuApi,
-    MenuItem,
-    IndicatorItem,
-    ToolItem,
-    AppModel,
-    EventData,
-    ComNormal,
-    FrameworkBackContext,
-    TBFrontApp,
-    FrontAppStartCallback,
-    FrontAppExitCallback
-} from "./typings";
-
-export { EventData as EventData }
-export { ComNormal as ComNormal }
-
-export type FrameworkFrontContext = any // treat as any here. But in reality it will be AppCore from the front process
-
-/** Callback for __appStart__ lifecycle */
-export type BackAppStartCallback = (context:FrameworkBackContext) => void
-/** Callback for __appExit__ lifecycle */
-export type BackAppExitCallback = (context:FrameworkBackContext) => void
-
-/** Callback for __appStart__ lifecycle */
-export type FrontAppStartCallback = (context:FrameworkFrontContext) => Promise<void>
-/** Callback for __appExit__ lifecycle */
-export type FrontAppExitCallback = (context:FrameworkFrontContext) => Promise<void>
-
-/** Callback for __pageBegin__ lifecycle */
-export type PageBeginCallback = (context:FrameworkFrontContext, userData:any) => Promise<void>
-
-/** Callback for __pageDone__ lifecycle */
-export type PageDoneCallback = (context:FrameworkFrontContext, userData:any) => Promise<void>
 
 declare module "@tremho/jove-common" {
+
+    class PathParts {
+        root: string;
+        dir: string;
+        base: string;
+        name: string;
+        ext: string;
+    }
+    function setPlatform(plat: string): void;
+    function setCurrentWorkingDirectory(cwd: string): void;
+    function setHomeDirectory(userDir: string): void;
+    function setAssetsDirectory(path: string): void;
+    function setAppDataDirectory(path: string): void;
+    function setDocumentsDirectory(path: string): void;
+    function setDownloadsDirectory(path: string): void;
+    function setDesktopDirectory(path: string): void;
+    function getRemoteSetters(): {
+        setPlatform: typeof setPlatform;
+        setCurrentWorkingDirectory: typeof setCurrentWorkingDirectory;
+        setHomeDirectory: typeof setHomeDirectory;
+        setAssetsDirectory: typeof setAssetsDirectory;
+        setAppDataDirectory: typeof setAppDataDirectory;
+        setDocumentsDirectory: typeof setDocumentsDirectory;
+        setDownloadsDirectory: typeof setDownloadsDirectory;
+        setDesktopDirectory: typeof setDesktopDirectory;
+    };
+    class PathUtils {
+        /**
+         * Gets the posix version of this API, regardless of the recognized platform
+         */
+        get posix(): any;
+        /**
+         * Gets the windows version of this API, regardless of the recognized platform
+         */
+        get win32(): any;
+        /**
+         * Returns the path delimiter (as in what separates paths in the path environment variable)
+         */
+        get delimiter(): string;
+        /**
+         * Returns the path folder separator (e.g. '/' or '\')
+         */
+        get sep(): string;
+        /**
+         * Returns which platform we are under
+         */
+        get platform(): string;
+        /**
+         * returns the user's home directory
+         */
+        get home(): string;
+        /**
+         * returns the working directory of the executable
+         */
+        get cwd(): string;
+        /**
+         * returns the directory of the assets folder
+         * may be undefined if not found in expected location
+         */
+        get assetsPath(): string;
+        /**
+         * returns the directory of the application files
+         * may be undefined for Linux, or if not found in expected location
+         */
+        get appDataPath(): string;
+        /**
+         * returns the directory reserved  for user documents
+         * may be undefined for Linux, or if not found in expected location
+         */
+        get documentsPath(): string;
+        /**
+         * returns the directory reserved  for user downloads
+         * may be undefined for Linux, or if not found in expected location
+         */
+        get downloadsPath(): string;
+        /**
+         * returns the directory reserved  for system desktop
+         * may be undefined for Linux, or if not found in expected location
+         */
+        get desktopPath(): string;
+        /**
+         * Returns the directory of the current path (i.e. no basename)
+         * @param path
+         */
+        dirname(path: string): string;
+        /**
+         * Returns the basename of the file referenced in this path (i.e. filename w/o extension)
+         * @param path
+         */
+        basename(path: string): string;
+        /**
+         * Returns the extension of the file referenced in this path
+         * @param path
+         */
+        extension(path: string): string;
+        /**
+         * Formats a path from a structured set of properties
+         * @param {PathParts} parts
+         */
+        format(parts: PathParts): string;
+        /**
+         * Deconstructs a path into a structured set of properties
+         * @param path
+         */
+        parse(path: string): PathParts;
+        isAbsolute(path: string): boolean;
+        /**
+         * Joins path segments with appropriate separator
+         * @param paths
+         */
+        join(...paths: string[]): string;
+        /**
+         * Normalize a path to remove redundancies
+         * @param path
+         */
+        normalize(path: string): string;
+        /**
+         * Construct a relative path from a larger path to subset base
+         * @param from
+         * @param to
+         */
+        relative(from: string, to: string): string;
+        /**
+         * Resolve a relative or absolute path into a fully qualified absolute path
+         * @param paths
+         */
+        resolve(...paths: string[]): string;
+    }
+
+
+    export type FrameworkFrontContext = any // treat as any here. But in reality it will be AppCore from the front process
+
+    /** Callback for __appStart__ lifecycle */
+    export type BackAppStartCallback = (context:FrameworkBackContext) => void
+    /** Callback for __appExit__ lifecycle */
+    export type BackAppExitCallback = (context:FrameworkBackContext) => void
+
+    /** Callback for __appStart__ lifecycle */
+    export type FrontAppStartCallback = (context:FrameworkFrontContext) => Promise<void>
+    /** Callback for __appExit__ lifecycle */
+    export type FrontAppExitCallback = (context:FrameworkFrontContext) => Promise<void>
+
+    /** Callback for __pageBegin__ lifecycle */
+    export type PageBeginCallback = (context:FrameworkFrontContext, userData:any) => Promise<void>
+
+    /** Callback for __pageDone__ lifecycle */
+    export type PageDoneCallback = (context:FrameworkFrontContext, userData:any) => Promise<void>
+
+    class HistoryRecord {
+        pageId: string;
+        context: object | undefined;
+    }
+    class StringParser {
+        private parseString;
+        private parsePos;
+        /**
+         * Constructs a StringParser object, setting up a string to be parsed
+         *
+         * @param parseString
+         */
+        constructor(parseString: string);
+        /**
+         * Moves just behind the match occurrence, looking forward
+         *
+         * @param match
+         */
+        aheadTo(match: string): void;
+        /**
+         * Moves just forward of the match occurrence, looking forward
+         * @param match
+         */
+        aheadPast(match: string): void;
+        /**
+         * Moves just forward the match occurrence, looking backward.
+         * @param match
+         */
+        backTo(match: string): void;
+        /**
+         * Moves to the start of the match occurrence, looking backward.
+         * @param match
+         */
+        backBefore(match: string): void;
+        /**
+         * Reads the word next in the parse string.
+         * "Word" is terminated by the occurrence of one of the given delimiters.
+         *
+         * @param delimiters
+         */
+        readNext(delimiters?: string[]): string;
+        /**
+         * Reads the word prior to the current position.
+         * "Word" is terminated by the occurrence of one of the given delimiters.
+         *
+         * @param delimiters
+         */
+        readPrevious(delimiters?: string[]): string;
+        /**
+         * advances past any interceding whitespace at current position.
+         */
+        skipWhitespace(): void;
+        /**
+         * Returns the remaining part of the string ahead of parse position
+         */
+        getRemaining(): string;
+        /**
+         * Moves the current parse position the given amount
+         * @param charCount
+         */
+        advancePosition(charCount: number): void;
+        /**
+         * Returns the current parse position
+         */
+        get parsePosition(): number;
+    }
+
     class CompInfo {
         info: any;
         component: any;
