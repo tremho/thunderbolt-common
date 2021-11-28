@@ -935,7 +935,7 @@ export class ComCommon {
             let tcomp:any
             if(typeof po === 'object') {
                 d = (po.value || '')
-                p = po.locprop
+                // p = po.locprop
                 tcomp = po.component
             } else d = (po || '')
             d = d.replace(/@@/g, '$%AT%$')
@@ -963,8 +963,8 @@ export class ComCommon {
                         let po = comp.props[p]
                         if(typeof po === 'object') {
                             d = (po.value || '')
-                            p = po.locprop
-                            tcomp = po.component
+                            // p = po.locprop
+                            // tcomp = po.component
                         } else d = (po || '')
 
                         let {directive, value} = this.evaluateBindExpression(d)
