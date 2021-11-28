@@ -977,7 +977,7 @@ export class ComCommon {
         }
     }
 
-    evaluateBindExpression(expr:string): {directive:string, value:string } {
+    evaluateBindExpression(expr:string, pure = false): {directive:string, value:string } {
         let value:string = ''
         let n:number
         let ls = 0;
@@ -1003,10 +1003,13 @@ export class ComCommon {
                     v = '"?'+d+'?"'
                 }
             }
-            value += lit + v
-            ls = xn
+            if(pure) {
+                value = v
+            } else {
+                value += lit + v + expr.substring(ls)
+                ls = xn
+            }
         }
-        value += expr.substring(ls)
         return {directive, value}
     }
 
