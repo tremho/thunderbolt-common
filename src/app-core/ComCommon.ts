@@ -1007,8 +1007,8 @@ export class ComCommon {
                 value = v
             } else {
                 value += lit + v
-                ls = xn
             }
+            ls = xn
         }
         if(!pure) value += expr.substring(ls)
         return {directive, value}
