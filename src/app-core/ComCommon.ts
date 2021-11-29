@@ -1003,10 +1003,10 @@ export class ComCommon {
                     v = '"?'+d+'?"'
                 }
             }
+            ls = xn
             if(pure) {
                 value = v
             } else {
-                ls = xn
                 value += lit + v + expr.substring(ls)
             }
         }
