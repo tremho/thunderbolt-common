@@ -1003,13 +1003,14 @@ export class ComCommon {
                     v = '"?'+d+'?"'
                 }
             }
-            ls = xn
             if(pure) {
                 value = v
             } else {
-                value += lit + v + expr.substring(ls)
+                value += lit + v
+                ls = xn
             }
         }
+        if(!pure) value += expr.substring(ls)
         return {directive, value}
     }
 
