@@ -937,7 +937,7 @@ export class ComCommon {
                 d = (po.value || '')
                 // p = po.locprop
                 tcomp = po.component
-            } else d = (po || '')
+            } else d = ''+(po || '')
             d = d.replace(/@@/g, '$%AT%$')
             // let isBound = (p === 'bind') || (d.indexOf('$') !==-1)
             let {directive, value} = this.evaluateBindExpression(d)
