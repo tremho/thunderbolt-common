@@ -421,7 +421,7 @@ export class ComCommon {
         // Check for special handling for alignment (via flex)
         const comp = this.getComponent(el)
         let container = this.getComponentParent(comp)
-        const taglc = container.root.tagName.toLowerCase()
+        const taglc = container?.root?.tagName?.toLowerCase()
         let flexChild = (taglc === 'stack-layout' || taglc === 'flex-layout')
         let stretchHeight, stretchWidth
         if(flexChild) {
