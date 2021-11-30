@@ -16,9 +16,9 @@ let smstack:any[] = []
 
 // async
 function readMenuDef(app:AppCore, menuPath?:string) {
-    return app.Api.FILE.fileExists(menuPath).then((exists:boolean) => {
+    return app.Api.fileExists(menuPath).then((exists:boolean) => {
         if(exists) {
-            return app.Api.FILE.readFileText(menuPath).then((defText:string) => {
+            return app.Api.readFileText(menuPath).then((defText:string) => {
                 return processMenuDef(app, defText)
             }).catch((e:Error) => {
                 console.error('unable to read menu', e.message)
@@ -548,9 +548,9 @@ export function setupMenu(app:AppCore, menuData?:string) {
     appTools = []
     appIndicators = []
     smstack = []
-    if(app.Api && app.Api.MENU && app.Api.MENU.resetMenu) {
+    if(app.Api && app.Api.resetMenu) {
         // a check to see if we are on desktop
-        app.Api.MENU.resetMenu()
+        app.Api.resetMenu()
     }
     return readMenuDef(app, menuData)
 
