@@ -71,6 +71,10 @@ export class FrameworkBackContext {
 
         // console.log('Framework back app constructor')
 
+        if(typeof process !== 'undefined') {
+            process.setMaxListeners(Infinity)
+        }
+
         this.beginStartup()
 
         // console.log(">> waiting on startup Promises")
