@@ -69,26 +69,29 @@ function processDefinition(app:AppCore, line:string) {
             let qi = proc.indexOf('"')+1
             if(qi) {
                 let qe = proc.indexOf('"', qi)
-                resourcePath = proc.substring(qi, qe)
+                resourcePath = proc.substring(qi, qe)       // FYI -- not used. resources are all in assets
             }
         } else if(proc.indexOf(mntag) !== -1) {
-            let qi = proc.indexOf('"')+1
-            if(qi) {
-                let qe = proc.indexOf('"', qi)
-                menuName = proc.substring(qi, qe)
-            }
+            menuName = 'main'   // Updated in Dec. include or not, only one id = 'main'
+            // let qi = proc.indexOf('"')+1
+            // if(qi) {
+            //     let qe = proc.indexOf('"', qi)
+            //     menuName = proc.substring(qi, qe)
+            // }
         } else if(proc.indexOf(tbtag) !== -1) {
-            let qi = proc.indexOf('"')+1
-            if(qi) {
-                let qe = proc.indexOf('"', qi)
-                toolbarName = proc.substring(qi, qe)
-            }
+            toolbarName = 'main'    // Updated in Dec. include or not, only one id = 'main'
+            // let qi = proc.indexOf('"')+1
+            // if(qi) {
+            //     let qe = proc.indexOf('"', qi)
+            //     toolbarName = proc.substring(qi, qe)
+            // }
         } else if(proc.indexOf(intag) !== -1) {
-            let qi = proc.indexOf('"')+1
-            if(qi) {
-                let qe = proc.indexOf('"', qi)
-                indicatorName = proc.substring(qi, qe)
-            }
+            indicatorName = 'main'  // Updated in Dec. include or not, only one id = 'main'
+            // let qi = proc.indexOf('"')+1
+            // if(qi) {
+            //     let qe = proc.indexOf('"', qi)
+            //     indicatorName = proc.substring(qi, qe)
+            // }
         }
 
     }
@@ -262,35 +265,7 @@ function applyMods(item:MenuItem, mods:string[]) {
 }
 
 
-/* Take the parsed intermediate objects and translate them into our model format
-
-We could make the entire menu (for a page) a single object (i.e. take deskmenu/appmenu as they are)
-But I like the idea of having each menu list a section.
-This means submenus need to get assigned an id (parent id+[label, ordinal]?) and given their own sections.
-each menu list then needs an array plus a section id, or otherwise be enumerable in proper order.
-binding is then done to these section values.
-
-we also need a menu api so we can programmatically make the menu models.
-- addMenu       // to page; add means append or insert
-- addSubmenu    // to menu by id, returns submenu id
-- removeMenu    // by id
-- removeSubmenu // by id
-- addMenuItem  // add means append or insert
-- deleteMenuItem // by id
-- clearMenu
-- changeMenuItem // by id
-
-
-All of this pertains to the model.
-
-menu-pageId-list [APP, FILE, EDIT]
-menu-pageId-APP
-menu-pageId-FILE
-menu-pageId-EDIT
-menu-pageId-submenu-1
-menu-pageId-submenu-2
-
- */
+/* Take the parsed intermediate objects and translate them into our model format */
 
 function commuteToModel(app:AppCore) {
 
