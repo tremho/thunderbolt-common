@@ -19,7 +19,9 @@ export function initModule(appIn:AppCore) {
  * @param modelPath
  */
 export function readModelValue(modelPath:string) {
-    return app.model.getAtPath(modelPath)
+    let rt = app.model.getAtPath(modelPath)
+    console.log('>> model as read', rt)
+    return rt
 }
 
 /**

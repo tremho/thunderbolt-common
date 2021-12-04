@@ -977,7 +977,7 @@ export class AppCore {
             const ops:any = testOps
             const fn = ops[request]
             const resp =  fn && fn.apply(this, params)
-            // console.log('callTestRequest in app-core returns ', resp)
+            console.log('>> callTestRequest in app-core returns ', resp)
             return resp
         }
         if(gwindow) {
