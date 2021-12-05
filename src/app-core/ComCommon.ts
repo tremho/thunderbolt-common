@@ -1010,7 +1010,7 @@ export class ComCommon {
             }
             ls = xn
         }
-        if(!pure) value += expr.substring(ls)
+        if(!pure || !ls) value += expr.substring(ls)
         return {directive, value}
     }
 
