@@ -988,6 +988,9 @@ export class ComCommon {
             let xn = expr.indexOf(' ', n)
             if (xn == -1) xn = expr.length
             let d = expr.substring(n, xn)
+            if(d.charAt(0) === '"' || d.charAt(0) === "'") {
+                d = d.substring(1, d.length-1)
+            }
             let lit = expr.substring(ls, le)
             let v = ''
             if (d.charAt(1) === ':') {
