@@ -339,6 +339,10 @@ declare module "@tremho/jove-common" {
         value?: any;
         platEvent: any;
     }
+    class MenuEvent {
+        id : string
+        app : AppCore
+    }
     class Bounds {
         x: number;
         y: number;
@@ -577,7 +581,7 @@ declare module "@tremho/jove-common" {
         setPathUtilInfo(env: any): any;
         setupMenu(menuPath: string): Promise<any>;
         setActiveMenu(menuComp: any): void;
-        onMenuAction(props: any): Promise<any>;
+        onMenuAction(props: MenuEvent): Promise<any>;
         defaultAboutBox(): Promise<any>;
         onToolAction(props: any): void;
         callPageAction(name: string, ev: Event): void;

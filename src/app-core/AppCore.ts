@@ -96,6 +96,15 @@ let componentGateCleared:boolean
 let keyListenerBind:any
 let reservedContext:any // mobile only, used for hand off of context between split load
 
+export class MenuEvent {
+    id : string
+    app : AppCore
+    constructor(id:string, app:AppCore) {
+        this.id = id;
+        this.app = app
+    }
+}
+
 /**
  *  Core object of the application.  Contains the app model and gateway functions for actions, which are
  *  mostly handled by action modules.
@@ -418,10 +427,7 @@ export class AppCore {
 
     public onMenuAction(props:any) {
 
-        const menuEvent = {
-            id: props.id,
-            app: this
-        }
+        const menuEvent = new MenuEvent(props.id, this)
 
         if(this.activeMenu) {
             this.activeMenu.update({open:false})
