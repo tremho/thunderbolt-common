@@ -125,18 +125,14 @@ export class ComCommon {
                 let vi = px.indexOf('%', sx)
                 if (++vi) {
                     let m = px.substring(vi).match(/[^a-zA-Z0-9]/)
-                    let ve = (m && m.index) || -1
-                    if(ve !== -1) {
-                        let name = px.substring(vi, vi+ve)
-                        let vx = "vars['" + name + "]"
-                        let vv;
-                        try { vv = eval(vx); } catch(e) {console.error('inner eval: ', e); vv = '???'}
-                        let tx = px.substring(0, vi) + vv + px.substring(ve)
-                        out += tx
-                        sx = ve + 1
-                    } else {
-                        sx = px.length;
-                    }
+                    let ve = (m && m.index) || px.length
+                    let name = px.substring(vi, vi+ve)
+                    let vx = "vars['" + name + "]"
+                    let vv;
+                    try { vv = eval(vx); } catch(e) {console.error('inner eval: ', e); vv = '???'}
+                    let tx = px.substring(0, vi) + vv + px.substring(ve)
+                    out += tx
+                    sx = ve + 1
                 } else {
                     out += px
                     sx = px.length;
