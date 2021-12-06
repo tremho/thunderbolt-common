@@ -127,7 +127,7 @@ export class ComCommon {
                     let m = px.substring(vi).match(/[^a-zA-Z0-9]/)
                     let ve = (m && m.index) || px.length
                     let name = px.substring(vi, vi+ve)
-                    let vx = "vars['" + name + "]"
+                    let vx = "vars."+name
                     let vv = name
                     try { vv = eval(vx); } catch(e) {console.error('inner eval:', vx, e)}
                     let tx = px.substring(0, vi-1) + vv + px.substring(ve)
