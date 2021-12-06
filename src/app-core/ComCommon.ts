@@ -100,7 +100,50 @@ export class ComCommon {
         }
     }
 
-    public evalBinding(name:string) {
+    // we get here with an eval(b(expr)) statement. presumably item and vars are in the closure
+    // example expr = {item[%fact] % %mod; item[%foo] = item[%bar]; item.baz }
+    // compute modulus of item[vars.fact]] % vars.mod  and ignore the result
+    // set item[vars.foo] = item[vars.bar]
+    // return item.baz as value
+
+    public evalBinding(expr:string) {
+        let out = ''
+        // {} are optional endmarkers
+        expr = expr.trim()
+        if(expr.charAt(0) === '{' && expr.charAt(expr.length-1) === '}') {
+            expr = expr.substring(1, expr.length-1)
+        }
+        // potentially multiples split by semicolons
+        const pxs = expr.split(';')
+
+        for(let px of pxs) {
+            if(out) out += '; '
+            let sx = 0
+            while(sx < px.length) {
+                // pre-process %name to vars[name] reference
+                // leave solo % intact (must be followed by a legal name character to form a var name)
+                let vi = px.indexOf('%', sx)
+                if (++vi) {
+                    let m = px.substring(vi).match(/[^a-zA-Z0-9]/)
+                    let ve = (m && m.index) || -1
+                    if(ve !== -1) {
+                        let name = px.substring(vi, ve)
+                        let tx = px.substring(0, vi) + eval("vars['" + name + "]") + px.substring(ve)
+                        out += tx
+                        sx = ve + 1
+                    } else {
+                        sx = px.length;
+                    }
+                } else {
+                    out += px
+                    sx = px.length;
+                }
+            }
+        }
+        return out
+    }
+
+    public evalName(name:string) {
         // console.warn('evalBinding', name)
         const segs = name.split('.')
         //@ts-ignore
