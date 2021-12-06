@@ -127,7 +127,7 @@ export class ComCommon {
                     let m = px.substring(vi).match(/[^a-zA-Z0-9]/)
                     let ve = (m && m.index) || -1
                     if(ve !== -1) {
-                        let name = px.substring(vi, ve)
+                        let name = px.substring(vi, vi+ve)
                         let tx = px.substring(0, vi) + eval("vars['" + name + "]") + px.substring(ve)
                         out += tx
                         sx = ve + 1
