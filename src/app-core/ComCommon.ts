@@ -1009,7 +1009,7 @@ export class ComCommon {
                             // tcomp = po.component
                         } else d = (po || '')
 
-                        let {directive, value} = this.evaluateBindExpression(d)
+                        let {directive, value} = this.evaluateBindExpression(d, true)
                         if(!directive) value = inValue
                         component.state[locprop] = value || ''
                         component.update()
