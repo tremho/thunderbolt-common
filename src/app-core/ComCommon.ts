@@ -128,8 +128,8 @@ export class ComCommon {
                     let ve = (m && m.index) || px.length
                     let name = px.substring(vi, vi+ve)
                     let vx = "vars['" + name + "]"
-                    let vv;
-                    try { vv = eval(vx); } catch(e) {console.error('inner eval: ', e); vv = '???'}
+                    let vv = 'π'
+                    try { vv = eval(vx); } catch(e) {console.error('inner eval:', vx, e)}
                     let tx = px.substring(0, vi) + vv + px.substring(ve)
                     out += tx
                     sx = ve + 1
