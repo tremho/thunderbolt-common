@@ -106,7 +106,7 @@ export class ComCommon {
     // set item[vars.foo] = item[vars.bar]
     // return item.baz as value
 
-    public evalInnerExpression(expr:string) {
+    public evalInnerExpression(expr:string, vars:any) {
         let out = ''
         // {} are optional endmarkers
         expr = expr.trim()
