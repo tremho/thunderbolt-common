@@ -106,7 +106,7 @@ export class ComCommon {
     // set item[vars.foo] = item[vars.bar]
     // return item.baz as value
 
-    public evalBinding(expr:string) {
+    public evalInnerExpression(expr:string) {
         let out = ''
         // {} are optional endmarkers
         expr = expr.trim()
@@ -143,7 +143,7 @@ export class ComCommon {
         return out
     }
 
-    public evalName(name:string) {
+    public evalBinding(name:string) {
         // console.warn('evalBinding', name)
         const segs = name.split('.')
         //@ts-ignore
