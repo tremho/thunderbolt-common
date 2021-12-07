@@ -957,7 +957,7 @@ export class ComCommon {
 
     // -------------------------------------------------------------------------------------------------------
 
-    bindComponent2(props:string[]) {
+    bindComponent2(props:any) {
         // @ts-ignore
         let component = this.riot || this.rootComponent
         if(check.mobile) {
