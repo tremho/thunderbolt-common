@@ -122,10 +122,14 @@ function proxySection(name:string, props:object) {
             let old = obj[prop];
             // @ts-ignore
             obj[prop] = value;
+            let acc = (this as any)
+            let name = acc._name
             announce(name, prop as string, value, old)
             return true;
         }
     })
+    let acc = (proxy as any)
+    acc._name = name;
     return proxy;
 }
 
