@@ -206,7 +206,7 @@ export class AppModel {
         const propObj = this.accessSection(path)
         const prop = path.substring(path.lastIndexOf('.')+1)
         // @ts-ignore
-        console.log(">> getAtPath prop=", prop, "propObj=", propObj, "data=", propObj[prop])
+        // console.log(">> getAtPath prop=", prop, "propObj=", propObj, "data=", propObj[prop])
         // @ts-ignore
         return propObj[prop]
     }
