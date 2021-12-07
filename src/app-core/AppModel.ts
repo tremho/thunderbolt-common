@@ -91,10 +91,14 @@ function announce(section:string, prop:string, value:any, old?:any) {
     // }
     // @ts-ignore
     const bnds = bindings.up[section]
-    if(bnds) bnds.forEach((bnd:any) => {
+    if(bnds) for(let bnd of bnds) {
         // communicate value to ui layer
-        bnd.onChange(bnd.component, prop, value, old)
-    })
+        try {
+            bnd.onChange(bnd.component, prop, value, old)
+        } catch(e) {
+            console.error('bind Change function', e)
+        }
+    }
 }
 
 // to model (downward from component)
