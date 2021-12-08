@@ -781,8 +781,10 @@ export class ComCommon {
         let textAlign = component.get('textAlign')
         // console.log(`align=${align}, textAlign=${textAlign}`)
         let stetchWidth:string = '', stretchHeight:string = ''
-        if(isHorizontal) stretchHeight = container.get('height')
-        else             stetchWidth = container.get('width')
+        if(container) {
+            if (isHorizontal) stretchHeight = container.get('height')
+            else stetchWidth = container.get('width')
+        }
         let ap = alignSplit(align, stetchWidth, stretchHeight)
         let hAlign = ap.hAlign
         let vAlign = ap.vAlign
@@ -791,7 +793,7 @@ export class ComCommon {
         let inner = component.textComponent
         if(inner) inner.textAlign = inner.horizontalAlignment = textAlign
         component.set('textAlign', textAlign)
-        container.verticalAlignment = vAlign
+        if(container) container.verticalAlignment = vAlign
 
         let color = defaults.color
         let background = component.get('background') || defaults.background
@@ -859,12 +861,12 @@ export class ComCommon {
 
         let position = (this.getComponentAttribute(component, 'position') || defaults.position || '')
         if(position) {
-            container.set('position', position)
+            if(container) container.set('position', position)
         }
 
         let gridArea = (this.getComponentAttribute(component, 'gridArea') || defaults.gridArea || '')
         if(gridArea) {
-            if (container.findGridArea) {
+            if (container && container.findGridArea) {
                 let relRow = 0, relCol = 0
                 let rs = ''+component.get('row')
                 relRow = Number(rs)
