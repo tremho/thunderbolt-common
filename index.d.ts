@@ -659,6 +659,7 @@ declare module "@tremho/jove-common" {
         callExtension(moduleName: string, functionName: string, ...args: any[]): any;
         getToolState(toolId: string): string;
         setToolState(toolId: string, state: string): void;
+        toggleToolState(toolId:string, state:string, stateOthers:string): void;
         getIndicatorState(indId: string): string;
         setIndicatorState(indId: string, state: string): void;
         registerToolExtension(name: string, extension: ToolExtension): void;
