@@ -961,7 +961,7 @@ export class AppCore {
         this.model.setAtPath('toolbar-'+toolId+'.state', state || 'default')
     }
     toggleToolState(toolId:string, state:string, stateOthers:string) {
-        const tools = this.model.getAtPath('toolbars-main');
+        const tools = this.model.getAtPath('toolbar.main');
         for(let t of tools) {
             if(t.id === toolId) this.setToolState(t.id, state)
             else this.setToolState(t.id, stateOthers || 'default')
