@@ -428,8 +428,6 @@ export class AppCore {
     public onMenuAction(props:any) {
 
         const menuEvent = new MenuEvent(props.id, this)
-        
-        console.log('OnMenuAction', props)
 
         if(this.activeMenu) {
             this.activeMenu.update({open:false})
@@ -961,6 +959,13 @@ export class AppCore {
     }
     setToolState(toolId:string, state:string) {
         this.model.setAtPath('toolbar-'+toolId+'.state', state || 'default')
+    }
+    toggleToolState(toolId:string, state:string, stateOthers:string) {
+        const tools = this.model.getAtPath('toolbars-main');
+        for(let t of tools) {
+            if(t.id === toolId) this.setToolState(t.id, state)
+            else this.setToolState(t.id, stateOthers || 'default')
+        }
     }
     getIndicatorState(indId:string):string {
         return this.model.getAtPath('indicator-'+indId+".state") || 'default'
