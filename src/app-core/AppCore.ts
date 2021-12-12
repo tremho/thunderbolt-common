@@ -428,6 +428,8 @@ export class AppCore {
     public onMenuAction(props:any) {
 
         const menuEvent = new MenuEvent(props.id, this)
+        
+        console.log('OnMenuAction', props)
 
         if(this.activeMenu) {
             this.activeMenu.update({open:false})
