@@ -288,7 +288,7 @@ function commuteToModel(app:AppCore) {
 
 function processToolLine(line:string) {
     line = line.trim()
-    console.log('tool line', line)
+    // console.log('tool line', line)
     let target = ''
     let id = ''
     let label = ''
@@ -402,7 +402,7 @@ function processToolLine(line:string) {
             }
         })
         item.accelerator = accs[0]
-        console.log('adding tool item ', item)
+        // console.log('adding tool item ', item)
         appTools.push(item)
     }
 }
