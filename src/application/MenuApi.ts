@@ -351,7 +351,7 @@ export class MenuApi {
             const props = {}
             // @ts-ignore
             props[name] = items
-            console.log(">> adding toolbar section")
+            // console.log(">> adding toolbar section")
             this.app.model.addSection('toolbar', props)
         }
         try {
@@ -365,7 +365,7 @@ export class MenuApi {
                     type:tool.type,
                     tooltip:tool.tooltip
                 }
-                console.log(">> adding toolbar section")
+                // console.log(">> adding toolbar section")
                 this.app.model.addSection('toolbar-'+tool.id,  props)
             })
         } catch(e) {
