@@ -232,7 +232,7 @@ export async function tree(componentName:string) {
     if(componentName) {
         comp = componentMap[componentName]
         console.log('looking for component', componentName, 'found', comp)
-        comp = comp.root
+        comp = comp?.root
     }
 
     let win:Window|undefined;
