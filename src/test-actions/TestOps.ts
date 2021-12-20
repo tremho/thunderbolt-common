@@ -191,7 +191,6 @@ export async function callPageFunction(funcName:string, parameters:string[] = []
 function compView(el:HTMLElement) {
     let comp:any = {}
 
-    console.log('>>>>>compView of element', el)
     try {
 
         comp.automationText = el.getAttribute('automationText') || ''
@@ -220,9 +219,15 @@ function compView(el:HTMLElement) {
 
 }
 
-export async function tree() {
+export async function tree(componentName:string) {
     console.log('in Desktop tree iterator')
     let tree:any = {}
+
+    let comp:any;
+    if(componentName) {
+        comp = componentMap[componentName]
+    }
+
     let win:Window|undefined;
     if(typeof window !== undefined) win = window
     console.log('we have a window? ', !!win && !!win.document)
@@ -236,7 +241,10 @@ export async function tree() {
             // this is the current page.  we may need to iterate siblings to find visible, but I think this is the only one
             // we will find realized to the DOM
             tree.pageId = page.tagName
-            tree.content = compView(page)
+            if(comp) tree.compId = comp.tagName
+            else comp = page;
+
+            tree.content = compView(comp)
         }
     }
     console.log('tree', tree)
