@@ -190,7 +190,7 @@ export async function callPageFunction(funcName:string, parameters:string[] = []
 
 function compView(el:HTMLElement) {
     let comp:any = {}
- 
+
     console.log('>>>>>compView of element', el)
     try {
 
@@ -231,7 +231,7 @@ export async function tree() {
         const boundTag: HTMLElement|null = win.document.body.querySelector('[is="app"]')
         console.log('boundTag', boundTag)
         if(boundTag) {
-            page = boundTag.firstChild?.firstChild
+            page = boundTag.firstElementChild?.firstElementChild
             console.log('page', page)
             // this is the current page.  we may need to iterate siblings to find visible, but I think this is the only one
             // we will find realized to the DOM
