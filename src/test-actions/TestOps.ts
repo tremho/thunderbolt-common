@@ -191,6 +191,8 @@ export async function callPageFunction(funcName:string, parameters:string[] = []
 function compView(el:HTMLElement) {
     let comp:any = {}
 
+    console.log('compView of element', el)
+
     comp.automationText = el.getAttribute('automationText') || ''
     comp.className = el.className
     comp.tagName = el.tagName
