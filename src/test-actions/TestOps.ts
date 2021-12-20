@@ -248,6 +248,6 @@ export async function tree(componentName:string) {
             tree.content = compView(comp)
         }
     }
-    // console.log('tree', tree)
+    console.log('tree', tree)
     return tree
 }
