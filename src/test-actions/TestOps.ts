@@ -190,22 +190,25 @@ export async function callPageFunction(funcName:string, parameters:string[] = []
 
 function compView(el:HTMLElement) {
     let comp:any = {}
+ 
+    console.log('>>>>>compView of element', el)
+    try {
 
-    console.log('compView of element', el)
-
-    comp.automationText = el.getAttribute('automationText') || ''
-    comp.className = el.className
-    comp.tagName = el.tagName
-    comp.text = el.getAttribute('text') || ''
-    let bounds = el.getBoundingClientRect()
-    comp.bounds = {
-        top: bounds.top,
-        left : bounds.left,
-        width: bounds.width,
-        height: bounds.height,
-        z : Number(el.style.zIndex || 0) || 1
+        comp.automationText = el.getAttribute('automationText') || ''
+        comp.className = el.className
+        comp.tagName = el.tagName
+        comp.text = el.getAttribute('text') || ''
+        let bounds = el.getBoundingClientRect()
+        comp.bounds = {
+            top: bounds.top,
+            left: bounds.left,
+            width: bounds.width,
+            height: bounds.height,
+            z: Number(el.style.zIndex || 0) || 1
+        }
+    } catch(e) {
+        console.error(e)
     }
-    // console.log('compview ', comp, el)
 
     comp.children = []
     let ch:Element|null = el.firstElementChild
