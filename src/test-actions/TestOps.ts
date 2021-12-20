@@ -195,8 +195,10 @@ function compView(el:HTMLElement) {
 
         if(el.getAttribute) {
             comp.automationText = el.getAttribute('automationText') || ''
-            comp.text = el.getAttribute('text') || ''
+            comp.textProp = el.getAttribute('text') || ''
         }
+        let t:Node = findTextNode(el)
+        if(t) comp.textDisp = t.nodeValue
         comp.className = el.className
         comp.tagName = el.tagName
         let bounds = el.getBoundingClientRect()
@@ -213,16 +215,25 @@ function compView(el:HTMLElement) {
 
     comp.children = []
     let ch:Element|null = el.firstElementChild
-    if(!ch) {
-        console.warn("$$$ No children for ", el)
-    }
     while(ch) {
         comp.children.push(compView(ch as HTMLElement))
         ch = ch.nextElementSibling
     }
     return comp
-
 }
+
+function findTextNode(el:HTMLElement) {
+    let c = el.firstChild
+    while(c) {
+        if(c.nodeType === Node.TEXT_NODE) {
+            return c
+        }
+        let d:any = findTextNode(c as HTMLElement)
+        if(d) return d;
+        c = c.nextSibling
+    }
+}
+
 
 export async function tree(componentName:string) {
     console.log('in Desktop tree iterator with name', componentName)
