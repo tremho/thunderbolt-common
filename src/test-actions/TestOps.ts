@@ -235,10 +235,10 @@ export async function tree(componentName:string) {
     let page:any;
     if(win) {
         const boundTag: HTMLElement|null = win.document.body.querySelector('[is="app"]')
-        console.log('boundTag', boundTag)
+        // console.log('boundTag', boundTag)
         if(boundTag) {
             page = boundTag.firstElementChild?.firstElementChild
-            console.log('page', page)
+            // console.log('page', page)
             // this is the current page.  we may need to iterate siblings to find visible, but I think this is the only one
             // we will find realized to the DOM
             tree.pageId = page.tagName
