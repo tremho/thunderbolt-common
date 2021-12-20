@@ -220,7 +220,7 @@ function compView(el:HTMLElement) {
 }
 
 export async function tree(componentName:string) {
-    console.log('in Desktop tree iterator')
+    console.log('in Desktop tree iterator with name', componentName)
     let tree:any = {}
 
     let comp:any;
