@@ -193,10 +193,12 @@ function compView(el:HTMLElement) {
 
     try {
 
-        comp.automationText = el.getAttribute('automationText') || ''
+        if(el.getAttribute) {
+            comp.automationText = el.getAttribute('automationText') || ''
+            comp.text = el.getAttribute('text') || ''
+        }
         comp.className = el.className
         comp.tagName = el.tagName
-        comp.text = el.getAttribute('text') || ''
         let bounds = el.getBoundingClientRect()
         comp.bounds = {
             top: bounds.top,
@@ -211,6 +213,9 @@ function compView(el:HTMLElement) {
 
     comp.children = []
     let ch:Element|null = el.firstElementChild
+    if(!ch) {
+        console.warn("$$$ No children for ", el)
+    }
     while(ch) {
         comp.children.push(compView(ch as HTMLElement))
         ch = ch.nextElementSibling
