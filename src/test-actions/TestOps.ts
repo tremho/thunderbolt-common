@@ -20,7 +20,7 @@ export function initModule(appIn:AppCore) {
  */
 export function readModelValue(modelPath:string) {
     let rt = app.model.getAtPath(modelPath)
-    console.log('>> model as read', rt)
+    // console.log('>> model as read', rt)
     return rt
 }
 
@@ -236,19 +236,19 @@ function findTextNode(el:HTMLElement) {
 
 
 export async function tree(componentName:string) {
-    console.log('in Desktop tree iterator with name', componentName)
+    // console.log('in Desktop tree iterator with name', componentName)
     let tree:any = {}
 
     let comp:any;
     if(componentName) {
         comp = componentMap[componentName]
-        console.log('looking for component', componentName, 'found', comp)
+        // console.log('looking for component', componentName, 'found', comp)
         comp = comp?.root
     }
 
     let win:Window|undefined;
     if(typeof window !== undefined) win = window
-    console.log('we have a window? ', !!win && !!win.document)
+    // console.log('we have a window? ', !!win && !!win.document)
     let page:any;
     if(win) {
         const boundTag: HTMLElement|null = win.document.body.querySelector('[is="app"]')

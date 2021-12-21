@@ -241,9 +241,9 @@ export class AppCore {
                             // @ts-ignore
                             env = mergeEnvironmentData(env, data, this._riotVersion)
                             this.model.setAtPath('environment', env)
-                            console.log('===================')
-                            console.log('environment', env)
-                            console.log('===================')
+                            // console.log('===================')
+                            // console.log('environment', env)
+                            // console.log('===================')
                             setEnvironment(env) // for check
                             this.setPlatformClass(env)
                             this.setPathUtilInfo(env).then(() => {
@@ -312,7 +312,7 @@ export class AppCore {
             // set up native back button listener
             if(nsapplication.android) {
                 nsapplication.android.on("activityBackPressed", (data:any) => {
-                    console.log('Android back button pressed')
+                    // console.log('Android back button pressed')
                     data.cancel = true // prevent further action
                     this.navigateBack()
                 })
@@ -458,7 +458,7 @@ export class AppCore {
     }
 
     public defaultAboutBox() {
-        console.log('Default about box')
+        // console.log('Default about box')
 
         const env = this.model.getAtPath('environment')
         const appInfo = env.build.app
@@ -571,12 +571,12 @@ export class AppCore {
                 host = this.testDisposition.substring(hi+5).trim()
             }
             setTimeout(() => {
-                console.log("RUNNING TESTS")
+                // console.log("RUNNING TESTS")
                 mainApi.startTest(host).then(() => {
                     this.runTest = false
-                    console.log('>>>>>>>>>>>>>>>>>> TEST COMPLETED <<<<<<<<<<<<<<<<<<<<')
+                    // console.log('>>>>>>>>>>>>>>>>>> TEST COMPLETED <<<<<<<<<<<<<<<<<<<<')
                     if (this.testDisposition.indexOf('exit') !== -1) {
-                        console.log('exiting')
+                        // console.log('exiting')
                         mainApi.appExit(0)
                     } else if(this.testDisposition.substring(0,3) === 'run') {
                         const pi = this.testDisposition.substring(4).trim()
@@ -987,11 +987,11 @@ export class AppCore {
     connectTestMethods() {
         const callTestRequest = (request:string, params:string[]) => {
             request = request.trim()
-            console.log('callTestRequest', request, params)
+            // console.log('callTestRequest', request, params)
             const ops:any = testOps
             const fn = ops[request]
             const resp =  fn && fn.apply(this, params)
-            console.log('>> callTestRequest in app-core returns ', resp)
+            // console.log('>> callTestRequest in app-core returns ', resp)
             return resp
         }
         if(gwindow) {
