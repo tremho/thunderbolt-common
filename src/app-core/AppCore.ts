@@ -139,17 +139,17 @@ export class AppCore {
     }
 
     private async checkForTest() {
-         // console.log('>> checking for test indication file')
+         console.log('>> checking for test indication file')
         if(mainApi) {
-            // console.log('looking for ~dotest file ')
+            console.log('looking for ~dotest file ')
             this.runTest = await mainApi.fileExists('~dotest')
             if(this.runTest) {
                 this.connectTestMethods()
                 this.testDisposition = await mainApi.readFileText('~dotest')
-                // console.log('test disposition read as ', this.testDisposition)
+                console.log('test disposition read as ', this.testDisposition)
             }
         }
-        // console.log('test will '+ (this.runTest ? 'be run':' not be run' ))
+        console.log('test will '+ (this.runTest ? 'be run':' not be run' ))
         return this.runTest
     }
     /**
@@ -571,10 +571,10 @@ export class AppCore {
                 host = this.testDisposition.substring(hi+5).trim()
             }
             setTimeout(() => {
-                // console.log("RUNNING TESTS")
+                console.log("RUNNING TESTS")
                 mainApi.startTest(host).then(() => {
                     this.runTest = false
-                    // console.log('>>>>>>>>>>>>>>>>>> TEST COMPLETED <<<<<<<<<<<<<<<<<<<<')
+                    console.log('>>>>>>>>>>>>>>>>>> TEST COMPLETED <<<<<<<<<<<<<<<<<<<<')
                     if (this.testDisposition.indexOf('exit') !== -1) {
                         // console.log('exiting')
                         mainApi.appExit(0)
