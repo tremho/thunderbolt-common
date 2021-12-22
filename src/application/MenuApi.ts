@@ -321,7 +321,7 @@ export class MenuApi {
     }
 
     getMenuItem(menuId:string, itemId:string):MenuItem|undefined {
-        menuId = 'main-'+menuId
+        menuId = 'main-'+menuId+'-'+itemId
         let n = menuId.indexOf('-')
         if(n === -1) n = menuId.length
         let menuName = menuId.substring(0, n)
