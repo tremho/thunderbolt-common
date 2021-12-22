@@ -320,6 +320,25 @@ export class MenuApi {
         this.app.ExtMenuApi && this.app.ExtMenuApi.checkMenuItem(menuId, itemId, checked)
     }
 
+    getMenuItem(menuId:string, itemId:string):MenuItem|undefined {
+        let n = menuId.indexOf('-')
+        if(n === -1) n = menuId.length
+        let menuName = menuId.substring(0, n)
+        let topModel = this.model.getAtPath('menu.'+menuName)
+        if(!topModel) {
+            console.error('menuId may not be complete ', menuId)
+            throw Error('MENU NOT FOUND: '+menuName)
+        }
+
+        const parentItem = this.getSubmenuFromId(menuId)
+        const children = parentItem.children || []
+        for(let i=0; i<children.length; i++) {
+            if (children[i].id === itemId) {
+                return children[i]
+            }
+        }
+    }
+
     /**
      * Clear the menu of all its items
      *

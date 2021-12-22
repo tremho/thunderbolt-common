@@ -312,6 +312,7 @@ declare module "@tremho/jove-common" {
         changeMenuItem(menuId: string, itemId: string, updatedItem: MenuItem): void;
         enableMenuItem(menuId: string, itemId: string, enabled: boolean): void;
         checkMenuItem(menuId: string, itemId: string, checked: boolean): void;
+        getMenuItem(menuId:string, itemId:string):MenuItem|undefined
         /**
          * Clear the menu of all its items
          *
