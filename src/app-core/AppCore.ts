@@ -656,6 +656,7 @@ export class AppCore {
                 throw Error('No exported activity for ' + pageId)
             }
             activity.context = context;
+            activity.app = this
             // console.log('$$$$ Starting page', pageId, context)
             this.startPageLogic(pageId, activity, context)
         }
