@@ -598,7 +598,10 @@ export class AppCore {
         navInfo.pageId = pageId
         navInfo.context = context || {}
         // this switches the page at this point, or at least updates it
-        /// >> Moved to after activity is set -->> this.model.setAtPath('page.navInfo', navInfo)
+        // Note we must do this before setting the activity because we can't find the activity until the page is realized.
+        // This causes a catch-22 in that components are instantiated on the page change, and if they refer to the activity, they
+        // will get the wrong one until next refresh.
+        this.model.setAtPath('page.navInfo', navInfo)
         if (prevPageId === pageId && prevContext === context) skipHistory = true;
         // note that this isn't used on the mobile side, but we record it anyway.
         // this may be useful later if we have any history-related functionality in common.
@@ -655,9 +658,6 @@ export class AppCore {
             activity.context = context;
             // console.log('$$$$ Starting page', pageId, context)
             this.startPageLogic(pageId, activity, context)
-            // this switches the page at this point, or at least updates it
-            this.model.setAtPath('page.navInfo', navInfo)
-
         }
     }
 
