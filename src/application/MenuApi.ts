@@ -326,16 +326,17 @@ export class MenuApi {
             throw Error('MENU NOT PRESENT')
         }
         let parts = menuPath.split('-')
+        let final = parts[parts.length-1]
         let curItem = topModel.children || []
         for(let p of parts) {
             for(let ch of curItem) {
                 if(ch.id === p) {
+                    if(p === final) return ch
                     curItem = ch.children || []
                     break;
                 }
             }
         }
-        return curItem
     }
 
     /**
