@@ -429,10 +429,17 @@ export class AppCore {
 
         const menuEvent = new MenuEvent(props.id, this)
 
+        // auto-toggle checkbox items by default.  This matches behavior of desktop menu
+        if(this.menuApi) {
+            let mi:any = this.menuApi.getMenuItem(props.id)
+            if(mi.type === 'checkbox') {
+                this.menuApi.checkMenuItem(props.id, !mi.checked)
+            }
+        }
+
         if(this.activeMenu) {
             this.activeMenu.update({open:false})
         }
-
 
 
         // dispatch to current page activity.  include app instance in props

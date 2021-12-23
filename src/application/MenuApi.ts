@@ -289,54 +289,38 @@ export class MenuApi {
         this.app.ExtMenuApi && this.app.ExtMenuApi.enableMenuItem(menuId, itemId, enabled)
     }
 
-    checkMenuItem(menuId:string, itemId:string, checked: boolean) {
-        let n = menuId.indexOf('-')
-        if(n === -1) n = menuId.length
-        let menuName = menuId.substring(0, n)
-        let topModel = this.model.getAtPath('menu.'+menuName)
-        if(!topModel) {
-            console.error('menuId may not be complete ', menuId)
-            throw Error('MENU NOT FOUND: '+menuName)
+    checkMenuItem(itemId:string, checked: boolean) {
+        let topModel = this.model.getAtPath('menu.main')
+        const mi:MenuItem|undefined = this.getMenuItem(itemId)
+        if(mi?.type === 'checkbox') {
+            mi.checked = checked
+        } else {
+            console.error(`menu item ${itemId} is not a checkbox`)
+            throw Error('INCORRECT MENU TYPE '+mi?.type)
         }
-
-        const parentItem = this.getSubmenuFromId(menuId)
-        const children = parentItem.children || []
-        for(let i=0; i<children.length; i++) {
-            if(children[i].id === itemId) {
-                if(children[i].type === 'checkbox') {
-                    children[i].checked = checked
-                } else {
-                    console.error('menu item ${menuId},${itemId} is not a checkbox')
-                    throw Error('INCORRECT MENU TYPE '+children[i].type)
-                }
-                break;
-            }
-        }
-        parentItem.children = children
-
         // update the full model
-        this.model.setAtPath('menu.'+menuName, topModel, true)
+        this.model.setAtPath('menu.main', topModel, true)
 
-        this.app.ExtMenuApi && this.app.ExtMenuApi.checkMenuItem(menuId, itemId, checked)
+        this.app.ExtMenuApi && this.app.ExtMenuApi.checkMenuItem(itemId, checked)
     }
 
-    getMenuItem(menuPath:string):MenuItem|undefined {
+    getMenuItem(itemId:string):MenuItem|undefined {
         let topModel = this.model.getAtPath('menu.main')
         if(!topModel) {
             throw Error('MENU NOT PRESENT')
         }
-        let parts = menuPath.split('-')
-        let final = parts[parts.length-1]
-        let curItem = topModel.children || []
-        for(let p of parts) {
-            for(let ch of curItem) {
-                if(ch.id === p) {
-                    if(p === final) return ch
-                    curItem = ch.children || []
-                    break;
+        const findItem = (children:MenuItem[]):MenuItem|undefined => {
+            for (let ch of children) {
+                if (ch.id === itemId) {
+                    return ch
+                }
+                if (ch.children?.length) {
+                    let rt: MenuItem | undefined = findItem(ch.children)
+                    if (rt) return rt;
                 }
             }
         }
+        return findItem(topModel.children || [])
     }
 
     /**
