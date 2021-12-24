@@ -273,7 +273,7 @@ function commuteToModel(app:AppCore) {
     if(menuName) {
         // console.log('commuting menu to model')
         for (let i = 0; i < appmenu.length; i++) {
-            app.MenuApi.addMenuItem('', appmenu[i])
+            app.MenuApi.addMenuItem('main', appmenu[i])
         }
     }
     if(toolbarName) {
