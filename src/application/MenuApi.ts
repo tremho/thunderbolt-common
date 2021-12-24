@@ -395,7 +395,7 @@ export class MenuApi {
         } catch(e) {
             const props = {}
             // @ts-ignore
-            props[name] = items
+            props.main = items
             // console.log(">> adding toolbar section")
             this.app.model.addSection('toolbar', props)
         }
@@ -429,7 +429,7 @@ export class MenuApi {
         } catch(e) {
             const props = {}
             // @ts-ignore
-            props[name] = items
+            props.main = items
             this.app.model.addSection('indicators', props)
         }
         try {
