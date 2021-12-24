@@ -18,35 +18,72 @@ binding example
     <item label={bound.FILE_SAVE.label}/>
 
 */
+
+/**
+ * Structure of a Menu Item
+ */
 export class MenuItem {
+    /** The displayed label for the item */
     public label:string = ''
+    /** The identifier of the item */
     public id:string = ''
-    public role?:string // parsed and used for desktop (per Electron)
-    public type?:string // submenu, separator, checkbox, radio; set to model
-    public targetCode?:string // used to apply to different platforms
-    public disabled?:boolean // true if menu listing should be shown as disabled; no action
-    public checked?:boolean // true if box or radio type is in checked state
-    public sublabel?:string // sublabel (set by mod, no effect on mac)
-    public tooltip?:string // tooltip (set by mod)
-    public icon?:string // icon path (set by mod)
-    public iconSize?:number[]  // width and height of icon as an array (1 or 2 elements)
-    public accelerator?:string // accelerator to apply
-    public children?: MenuItem[] // found only in incoming submenus in parsing and setup
+    /** parsed and used for adopting common desktop behaviors (per Electron) */
+    public role?:string
+    /** undefined for normal, or one of "submenu", "separator", "checkbox", or "radio" */
+    public type?:string
+    /** used to apply to different platforms */
+    public targetCode?:string
+    /** true if menu listing should be shown as disabled; no action */
+    public disabled?:boolean
+    /** true if box or radio type is in checked state */
+    public checked?:boolean
+    /** sublabel (set by modifier, no effect on mac) */
+    public sublabel?:string
+    /** tooltip (set by modifier, mac only) */
+    public tooltip?:string
+    /** icon path (set by modifier) */
+    public icon?:string
+    /** width and height of icon as an array (1 or 2 elements) */
+    public iconSize?:number[]
+    /** accelerator to apply */
+    public accelerator?:string
+    /** found only in incoming submenus in parsing and setup */
+    public children?: MenuItem[]
 }
 
+/**
+ * Structure of an Indicator Item
+ * Also common to ToolItem
+ */
 export class IndicatorItem {
-    public id:string = ''       // identifier
-    public label?:string    // optional label, appears over icon
-    public state:string = ''    // current state.  will be echoed to data-state also.
-    public className?:string    // optional css classname to apply to container
-    public type?:string     // optional name of implementation object to be made by factory
-    public tooltip?:string  // optional tooltip string appears on hover (desktop only)
-    public icons?: {} // a map with states as keys to icon strings
-}
-export class ToolItem extends IndicatorItem{
-    public accelerator?:string // accelerator to apply
+    /** Identifier */
+    public id:string = ''
+    /** optional label, appears over icon */
+    public label?:string
+    /** current state.  will be echoed to data-state markup property also. */
+    public state:string = ''
+    /** optional css classname to apply to container */
+    public className?:string
+    /** optional name of implementation object to be made by factory */
+    public type?:string
+    /** optional tooltip string appears on hover (desktop only) */
+    public tooltip?:string
+    /** a map with states as keys to icon strings */
+    public icons?: {}
 }
 
+/**
+ * Structure of a Tool Item
+ * extends Indicator Item properties by adding an optional accelerator
+ */
+export class ToolItem extends IndicatorItem{
+    /** accelerator to apply */
+    public accelerator?:string
+}
+
+/**
+ * The Menu API defines all common menu operations.
+ */
 export class MenuApi {
     private app:AppCore
     private model:AppModel
@@ -61,24 +98,20 @@ export class MenuApi {
      * item may be a submenu with children
      * Will create the menu if it does not already exist
      *
-     * @param {string} menuId Identifier of menu
+     * @param {string} menuPath 'path' of menu, where menu identifiers are separated by '-' to form a hierarchical positional description
      * @param {MenuItem }item entry
      * @param {number} [position] insert position, appends if undefined.
-     * @param {number} [recurseChild] leave undefined; used in recursion
      */
-    addMenuItem(menuId:string, item:MenuItem, position?:number) {
+    addMenuItem(menuPath:string, item:MenuItem, position?:number) {
 
-        let n = menuId.indexOf('-')
-        if(n === -1) n = menuId.length
-        let menuName = menuId.substring(0, n)
-        let topItem = this.model.getAtPath('menu.'+menuName)
+        let topItem = this.model.getAtPath('menu.main')
         if(!topItem) {
             topItem = new MenuItem()
-            topItem.label = topItem.id = menuName
+            topItem.label = topItem.id = 'main'
             topItem.children = []
-            this.model.setAtPath('menu.'+menuName, topItem, true)
+            this.model.setAtPath('menu.main', topItem, true)
         }
-        const parentItem = this.getSubmenuFromId(menuId)
+        const parentItem = this.getSubmenuFromPath(menuPath)
         const curMenu = parentItem.children
 
         let kidclone = item.children && item.children.slice() // copy
@@ -97,28 +130,28 @@ export class MenuApi {
         if(this.limitTarget(item, "Desktop")) {
             item.children = kidclone
             this.limitChildren(item, "Desktop")
-            this.app.ExtMenuApi && this.app.ExtMenuApi.addMenuItem(menuId, item, position)
+            this.app.ExtMenuApi && this.app.ExtMenuApi.addMenuItem(menuPath, item, position)
         }
 
         // update the full model
-        this.model.setAtPath('menu.'+menuName, topItem, true)
+        this.model.setAtPath('menu.main', topItem, true)
     }
 
-    getSubmenuFromId(menuId:string) {
-        let n = menuId.indexOf('-')
-        if(n === -1) n = menuId.length
-        let menuName = menuId.substring(0, n)
-        let topItem = this.model.getAtPath('menu.'+menuName)
+    /**
+     * Used internally when needing to find the parent list for a menu item to add, remove, replace.
+     * @param {string} menuPath 'path' of menu, where menu identifiers are separated by '-' to form a hierarchical positional description
+     */
+    private getSubmenuFromPath(menuPath:string) {
+        let topItem = this.model.getAtPath('menu.main')
         if(!topItem) {
-            console.error('menuId may not be complete ', menuId)
-            throw Error('MENU NOT FOUND: '+menuName)
+            throw Error('MENU NOT FOUND')
         }
-        const parts = menuId.split('-');
+        const parts = menuPath.split('-');
         if(!topItem.children) topItem.children = []
         let curMenu = topItem.children
         let parentItem = topItem;
-        let pid = menuName
-        for(let i=1; i<parts.length; i++) {
+        let pid = 'main'
+        for(let i=0; i<parts.length; i++) {
             pid = parts[i]
             for (let c = 0; c < curMenu.length; c++) {
                 let cmitem = curMenu[c]
@@ -134,8 +167,8 @@ export class MenuApi {
 
     /**
      * Returns true if item is targeted for this platform
-     * @param item The item
-     * @param dest names destination menu type: either 'App' or 'Desktop'
+     * @param {MenuItem} item The item
+     * @param {string} dest names destination menu type: either 'App' or 'Desktop'
      */
     limitTarget(item:MenuItem, dest:string) {
 
@@ -181,7 +214,14 @@ export class MenuApi {
         }
         return dest === 'Desktop' ? isMenuBar && included : isAppBar && included
     }
-    limitChildren(item:MenuItem, dest:string) {
+
+    /**
+     * Used as part of platform differentiation during menu construction
+     * @param {MenuItem} item
+     * @param {string} dest
+     * @private
+     */
+    private limitChildren(item:MenuItem, dest:string) {
         const children = item.children || []
         let dirty = true;
         while(dirty) {
@@ -199,20 +239,16 @@ export class MenuApi {
     /**
      * Remove an item from a menu list
      *
-     * @param menuId
-     * @param itemId
+     * @param {string} menuPath 'menu path' identifying submenu location
+     * @param {string} itemId   Identifier of the item to remove
      */
-    deleteMenuItem(menuId:string, itemId:string) {
-        let n = menuId.indexOf('-')
-        if(n === -1) n = menuId.length
-        let menuName = menuId.substring(0, n)
-        let topModel = this.model.getAtPath('menu.'+menuName)
+    deleteMenuItem(menuPath:string, itemId:string) {
+        let topModel = this.model.getAtPath('menu.main')
         if(!topModel) {
-            console.error('menuId may not be complete ', menuId)
-            throw Error('MENU NOT FOUND: '+menuName)
+            throw Error('MENU NOT FOUND')
         }
 
-        const parentItem = this.getSubmenuFromId(menuId)
+        const parentItem = this.getSubmenuFromPath(menuPath)
         const children = parentItem.children || []
         for(let i=0; i<children.length; i++) {
             if(children[i].id === itemId) {
@@ -223,30 +259,26 @@ export class MenuApi {
         parentItem.children = children
 
         // update the full model
-        this.model.setAtPath('menu.'+menuName, topModel, true)
+        this.model.setAtPath('menu.main', topModel, true)
 
-        this.app.ExtMenuApi && this.app.ExtMenuApi && this.app.ExtMenuApi.deleteMenuItem(menuId, itemId)
+        this.app.ExtMenuApi && this.app.ExtMenuApi && this.app.ExtMenuApi.deleteMenuItem(menuPath, itemId)
 
     }
 
     /**
      * Replace an item in the menu list
      *
-     * @param menuId
-     * @param itemId
-     * @param updatedItem
+     * @param {string} menuPath 'menu path' identifying submenu location
+     * @param {string} itemId   Identifier of item to replace
+     * @param {MenuItem} updatedItem    New Item to replace with
      */
-    changeMenuItem(menuId:string, itemId:string, updatedItem:MenuItem) {
-        let n = menuId.indexOf('-')
-        if(n === -1) n = menuId.length
-        let menuName = menuId.substring(0, n)
-        let topModel = this.model.getAtPath('menu.'+menuName)
+    changeMenuItem(menuPath:string, itemId:string, updatedItem:MenuItem) {
+        let topModel = this.model.getAtPath('menu.main')
         if(!topModel) {
-            console.error('menuId may not be complete ', menuId)
-            throw Error('MENU NOT FOUND: '+menuName)
+            throw Error('MENU NOT FOUND')
         }
 
-        const parentItem = this.getSubmenuFromId(menuId)
+        const parentItem = this.getSubmenuFromPath(menuPath)
         const children = parentItem.children || []
         for(let i=0; i<children.length; i++) {
             if(children[i].id === itemId) {
@@ -257,38 +289,37 @@ export class MenuApi {
         parentItem.children = children
 
         // update the full model
-        this.model.setAtPath('menu.'+menuName, topModel, true)
+        this.model.setAtPath('menu.main', topModel, true)
 
-        this.app.ExtMenuApi && this.app.ExtMenuApi.changeMenuItem(menuId, itemId, updatedItem)
+        this.app.ExtMenuApi && this.app.ExtMenuApi.changeMenuItem(menuPath, itemId, updatedItem)
 
     }
 
-    enableMenuItem(menuId:string, itemId:string, enabled: boolean) {
-        let n = menuId.indexOf('-')
-        if(n === -1) n = menuId.length
-        let menuName = menuId.substring(0, n)
-        let topModel = this.model.getAtPath('menu.'+menuName)
-        if(!topModel) {
-            console.error('menuId may not be complete ', menuId)
-            throw Error('MENU NOT FOUND: '+menuName)
-        }
-
-        const parentItem = this.getSubmenuFromId(menuId)
-        const children = parentItem.children || []
-        for(let i=0; i<children.length; i++) {
-            if(children[i].id === itemId) {
-                children[i].disabled = !enabled
-                break;
-            }
-        }
-        parentItem.children = children
+    /**
+     * Enables or disables a menu item.
+     * Disabled items appear grayed out and cannot be selected.
+     *
+     * @param {string} itemId   The menu identifier to enable/disable
+     * @param {boolean} enabled  `true` to enable, `false` to disable.
+     */
+    enableMenuItem(itemId:string, enabled: boolean) {
+        let topModel = this.model.getAtPath('menu.main')
+        const mi:MenuItem|undefined = this.getMenuItem(itemId)
+        if(mi) mi.disabled = !enabled
 
         // update the full model
-        this.model.setAtPath('menu.'+menuName, topModel, true)
-
-        this.app.ExtMenuApi && this.app.ExtMenuApi.enableMenuItem(menuId, itemId, enabled)
+        this.model.setAtPath('menu.main', topModel, true)
+        // echo to system menu
+        this.app.ExtMenuApi && this.app.ExtMenuApi.enableMenuItem(itemId, enabled)
     }
 
+    /**
+     * Sets or unsets the checkmark for a checkbox item
+     * Menu Item must be a checkbox type.
+     *
+     * @param {string} itemId   The menu identifier to check or uncheck.
+     * @param {boolean} checked  `true` to check, `false` to uncheck.
+     */
     checkMenuItem(itemId:string, checked: boolean) {
         let topModel = this.model.getAtPath('menu.main')
         const mi:MenuItem|undefined = this.getMenuItem(itemId)
@@ -304,6 +335,12 @@ export class MenuApi {
         this.app.ExtMenuApi && this.app.ExtMenuApi.checkMenuItem(itemId, checked)
     }
 
+    /**
+     * Find the item by id and return the MenuItem structure for it
+     * @param {string} itemId  The identifier to find
+     *
+     * @return {MenuItem} found item, or undefined
+     */
     getMenuItem(itemId:string):MenuItem|undefined {
         let topModel = this.model.getAtPath('menu.main')
         if(!topModel) {
@@ -338,7 +375,7 @@ export class MenuApi {
             throw Error('MENU NOT FOUND: '+menuName)
         }
 
-        const parentItem = this.getSubmenuFromId(menuId)
+        const parentItem = this.getSubmenuFromPath(menuId)
         parentItem.children = []
 
         // update the full model
@@ -347,9 +384,14 @@ export class MenuApi {
         this.app.ExtMenuApi && this.app.ExtMenuApi.clearMenu(menuId)
     }
 
-    addToolbarItems(name:string, items:ToolItem[]) {
+    /**
+     * Declares a set of toolbar tools
+     *
+     * @param {ToolItem[]} items  The toolbar items array
+     */
+    addToolbarItems(items:ToolItem[]) {
         try {
-            this.app.model.setAtPath('toolbar.' + name, items)
+            this.app.model.setAtPath('toolbar.main', items)
         } catch(e) {
             const props = {}
             // @ts-ignore
@@ -376,9 +418,14 @@ export class MenuApi {
         }
     }
 
-    addIndicatorItems(name:string, items:IndicatorItem[]) {
+    /**
+     * Declares a set of indicators
+     *
+     * @param {ToolItem[]} items  The indicator items array
+     */
+    addIndicatorItems(items:IndicatorItem[]) {
         try {
-            this.app.model.setAtPath('indicators.' + name, items)
+            this.app.model.setAtPath('indicators.main', items)
         } catch(e) {
             const props = {}
             // @ts-ignore

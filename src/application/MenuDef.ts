@@ -273,16 +273,16 @@ function commuteToModel(app:AppCore) {
     if(menuName) {
         // console.log('commuting menu to model')
         for (let i = 0; i < appmenu.length; i++) {
-            app.MenuApi.addMenuItem(menuName, appmenu[i])
+            app.MenuApi.addMenuItem('', appmenu[i])
         }
     }
     if(toolbarName) {
         // console.log('commuting toolbar to model')
-        app.MenuApi.addToolbarItems(toolbarName, appTools)
+        app.MenuApi.addToolbarItems(appTools)
     }
     if(indicatorName) {
         // console.log('commuting indicators to model')
-        app.MenuApi.addIndicatorItems(indicatorName, appIndicators)
+        app.MenuApi.addIndicatorItems(appIndicators)
     }
 }
 
