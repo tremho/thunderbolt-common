@@ -662,8 +662,6 @@ export class AppCore {
             if (!activity) {
                 throw Error('No exported activity for ' + pageId)
             }
-            activity.context = context;
-            activity.app = this
             // console.log('$$$$ Starting page', pageId, context)
             this.startPageLogic(pageId, activity, context)
         }
@@ -819,12 +817,13 @@ export class AppCore {
 
 
     /**
-     * Called by mobile side to start the first activity only ('main')
+     * Called to start the activity
      *
      * @param activity
      * @param context
      */
     public startPageLogic(id:string, activity:any, context?:object) {
+        activity.app = this;
         activity.activityId = id;
         activity.context = context;
         // console.log('>>>>>>>>>>>> setting activity', activity)
