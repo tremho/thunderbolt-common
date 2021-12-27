@@ -509,6 +509,12 @@ declare module "@tremho/jove-common" {
          * @throws {TypeError} if `force` is not true, and new value changes the type, or if the property does not exist.
          */
         setAtPath(path: string, value: any, force?: boolean, noAnnounce?: boolean): void;
+
+        /**
+         * Forces an update for a component bound to this model path without changing the value
+         * @param {string} path dot-form path of section and property of the model value to retrieve ('sect.prop')
+         */
+        forceUpdate(path:string)
     }
 
     class FrameworkBackContext {

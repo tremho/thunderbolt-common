@@ -252,6 +252,19 @@ export class AppModel {
             propObj[prop] = value;
         }
     }
+
+    /**
+     * Forces an update for a component bound to this model path without changing the value
+     * @param {string} path dot-form path of section and property of the model value to retrieve ('sect.prop')
+     */
+    forceUpdate(path:string) {
+        let p = path.split('.')
+        let section = p[0]
+        let prop = p[1]
+        const propObj:any = this.accessSection(path)
+
+        announce(section, prop, propObj[prop])
+    }
 }
 
 // Create ComBinder class  and import into Common
