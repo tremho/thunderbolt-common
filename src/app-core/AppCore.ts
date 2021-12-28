@@ -823,7 +823,11 @@ export class AppCore {
      * @param context
      */
     public startPageLogic(id:string, activity:any, context?:object) {
+        console.log('start Page Logic for '+id)
         activity.app = this;
+        if(!activity.app) {
+            console.error('Activity has no app attachment!!')
+        }
         activity.activityId = id;
         activity.context = context;
         // console.log('>>>>>>>>>>>> setting activity', activity)
