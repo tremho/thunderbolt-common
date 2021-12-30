@@ -412,7 +412,7 @@ let prevIndLine = ''
 function processIndicatorLine(line:string) {
     // console.log('indicator line', line)
     line = line.trim()
-    if(prevIndLine) line = line +' '+prevIndLine;
+    if(prevIndLine) line = prevIndLine + ' '+line
     // console.log('tool line', line)
     let target = ''
     let id = ''
