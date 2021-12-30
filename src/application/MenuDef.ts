@@ -407,9 +407,12 @@ function processToolLine(line:string) {
     }
 }
 
+let prevIndLine = ''
+
 function processIndicatorLine(line:string) {
     // console.log('indicator line', line)
     line = line.trim()
+    if(prevIndLine) line = line +' '+prevIndLine;
     // console.log('tool line', line)
     let target = ''
     let id = ''
@@ -459,7 +462,8 @@ function processIndicatorLine(line:string) {
         if(edi !== -1)  {
             mods = line.substring(di+1, edi).split(',')
         } else {
-            console.error('missing closing > in indicator declaration' +id)
+            prevIndLine = line;
+            // console.error('missing closing > in indicator declaration' +id)
         }
     }
 
