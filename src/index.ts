@@ -182,7 +182,7 @@ export class FrameworkBackContext {
      * @param module
      */
     registerExtensionModule(name:string, module:any) {
-        // console.log('registering: registerExtensionModule(name, module)', registerExtensionModule)
+        console.log('registering: registerExtensionModule(name, module)', registerExtensionModule)
         registerExtensionModule(this, name, module)
     }
 }
