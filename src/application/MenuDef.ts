@@ -463,6 +463,7 @@ function processIndicatorLine(line:string) {
             mods = line.substring(di+1, edi).split(',')
         } else {
             prevIndLine = line;
+            return
             // console.error('missing closing > in indicator declaration' +id)
         }
     }
