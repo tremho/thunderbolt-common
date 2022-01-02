@@ -964,13 +964,15 @@ export class ComCommon {
         for(let p of Object.getOwnPropertyNames(props)) {
             let v = props[p]
             if(v.indexOf('@') !== -1) {
-                let ov = v;
-                v = this.evaluateBindExpression(v).value
-                console.log(`replaced ${ov} with ${v}`)
+                v = (this.evaluateBindExpression(v)?.value) || ''
             }
             out[p] = v
         }
         return out
+    }
+    // expose this utility for converting an image path to a file path from the assets folder
+    baseFromAssets(path:string) {
+        return baseFromAssets(path)
     }
 
     // -------------------------------------------------------------------------------------------------------
