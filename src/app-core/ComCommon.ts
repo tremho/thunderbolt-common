@@ -455,6 +455,8 @@ export class ComCommon {
             throw Error('Not Implemented: ComCommon.setCommonProps')
         }
 
+        props = this.resolveModelProps(props)
+
         let classes = (props.className || props.classname || props.class || '').split(' ')
         classes.forEach((c:string) => {
             if(c) el.classList.add(c)
@@ -955,6 +957,19 @@ export class ComCommon {
             // @ts-ignore
             div.style[key] = value
         })
+    }
+
+    resolveModelProps(props:any) {
+        let out:any = {}
+        for(let p of Object.getOwnPropertyNames(props)) {
+            let v = props[p]
+            if(v.indexOf('@') !== -1) {
+                console.log('>>> This is what we need to do')
+                console.log(`need to replace ${v}`)
+            }
+            out[p] = v
+        }
+        return out
     }
 
     // -------------------------------------------------------------------------------------------------------
