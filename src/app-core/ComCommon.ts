@@ -964,7 +964,7 @@ export class ComCommon {
         for(let p of Object.getOwnPropertyNames(props)) {
             let v = props[p]
             if(v.indexOf('@') !== -1) {
-                v = (this.evaluateBindExpression(v)?.value) || ''
+                v = (this.evaluateBindExpression(v)?.value) || v
             }
             out[p] = v
         }
