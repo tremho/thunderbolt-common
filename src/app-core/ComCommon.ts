@@ -965,8 +965,8 @@ export class ComCommon {
             let v = props[p]
             if(v.indexOf('@') !== -1) {
                 let ov = v;
-                v = this.evaluateBindExpression(v)
-                console.log(`replaced ${ov} with ${v} ( ${JSON.stringify(v)} )`)
+                v = this.evaluateBindExpression(v).value
+                console.log(`replaced ${ov} with ${v}`)
             }
             out[p] = v
         }
