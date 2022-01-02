@@ -966,7 +966,7 @@ export class ComCommon {
             if(v.indexOf('@') !== -1) {
                 let ov = v;
                 v = this.evaluateBindExpression(v)
-                console.log(`replaced ${ov} with ${v}`)
+                console.log(`replaced ${ov} with ${v} ( ${JSON.stringify(v)} )`)
             }
             out[p] = v
         }
