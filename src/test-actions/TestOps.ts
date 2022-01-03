@@ -185,18 +185,21 @@ export async function callPageFunction(funcName:string, parameters:string[] = []
 
 export async function askAHuman(prompt:string, choices:string = 'Okay') {
     console.log('>>>> askAHuman', prompt, choices)
+    const ca = choices.split(',')
     prompt= prompt.trim().replace(/%plus%/g, '+').replace(/\+/g, ' ')
 
     const options = {
         title: `Test Action`,
         message: `${prompt}\n`,
         detail: `follow the instructions and respond\n`,
-        buttons: choices.split(',')
+        buttons: ca
     }
     console.log('>>>> askAHuman options', options)
     let resp = await app.messageBox(options)
-    console.log('>>>> resp', resp)
-    console.log('askAHuman returns', resp)
+    let rstr = ca[resp as number]
+    console.log('>>>> resp', resp, rstr)
+    console.log('askAHuman returns', rstr)
+    return rstr
 }
 
 // perform a menu action
