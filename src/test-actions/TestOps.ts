@@ -183,6 +183,21 @@ export async function callPageFunction(funcName:string, parameters:string[] = []
     }
 }
 
+export async function askAHuman(prompt:string, choices:string = 'Okay') {
+    prompt= prompt.trim()
+    if(prompt.charAt(0) === '"')  {
+        prompt = prompt.substring(1, prompt.length-1)
+    }
+    const options = {
+        title: `Test Action`,
+        message: `${prompt}\n`,
+        detail: `follow the instructions and respond\n`,
+        buttons: choices.split(',')
+    }
+    let resp = app.messageBox(options)
+    console.log('askAHuman returns', resp)
+}
+
 // perform a menu action
 // perform a tool action
 //
