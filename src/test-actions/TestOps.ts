@@ -1,5 +1,6 @@
 import {AppCore} from "../app-core/AppCore";
 import { EventData } from "../app-core/EventData";
+import {timeoutBox} from "../../../thunderbolt-desktop/src/API/DialogAPI";
 
 let app:AppCore
 
@@ -195,12 +196,13 @@ export async function askAHuman(prompt:string, choices:string = 'Okay') {
         buttons: ca
     }
     console.log('>>>> askAHuman options', options)
-    let resp = await app.messageBox(options)
+    let resp = await app.timeoutBox(options)
     let rstr = ca[resp as number]
     console.log('>>>> resp', resp, rstr)
     console.log('askAHuman returns', rstr)
     return rstr
 }
+
 
 // perform a menu action
 // perform a tool action

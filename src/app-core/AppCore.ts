@@ -995,6 +995,9 @@ export class AppCore {
     messageBox(options:any) {
         return Promise.resolve(mainApi && mainApi.openDialog(options))
     }
+    timeoutBox(options:any) {
+        return Promise.resolve(mainApi && mainApi.timeoutBox(options))
+    }
 
 
     connectTestMethods() {
