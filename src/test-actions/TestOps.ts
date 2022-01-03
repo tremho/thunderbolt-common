@@ -185,10 +185,8 @@ export async function callPageFunction(funcName:string, parameters:string[] = []
 
 export async function askAHuman(prompt:string, choices:string = 'Okay') {
     console.log('>>>> askAHuman', prompt, choices)
-    prompt= prompt.trim()
-    if(prompt.charAt(0) === '"')  {
-        prompt = prompt.substring(1, prompt.length-1)
-    }
+    prompt= prompt.trim().replace(/%plus%/g, '+').replace(/\+/g, ' ')
+
     const options = {
         title: `Test Action`,
         message: `${prompt}\n`,
@@ -196,7 +194,7 @@ export async function askAHuman(prompt:string, choices:string = 'Okay') {
         buttons: choices.split(',')
     }
     console.log('>>>> askAHuman options', options)
-    let resp = app.messageBox(options)
+    let resp = await app.messageBox(options)
     console.log('>>>> resp', resp)
     console.log('askAHuman returns', resp)
 }
