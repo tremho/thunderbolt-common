@@ -184,6 +184,7 @@ export async function callPageFunction(funcName:string, parameters:string[] = []
 }
 
 export async function askAHuman(prompt:string, choices:string = 'Okay') {
+    console.log('>>>> askAHuman', prompt, choices)
     prompt= prompt.trim()
     if(prompt.charAt(0) === '"')  {
         prompt = prompt.substring(1, prompt.length-1)
@@ -194,7 +195,9 @@ export async function askAHuman(prompt:string, choices:string = 'Okay') {
         detail: `follow the instructions and respond\n`,
         buttons: choices.split(',')
     }
+    console.log('>>>> askAHuman options', options)
     let resp = app.messageBox(options)
+    console.log('>>>> resp', resp)
     console.log('askAHuman returns', resp)
 }
 
