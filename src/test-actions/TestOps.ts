@@ -190,9 +190,9 @@ export async function askAHuman(prompt:string, choices:string = 'Okay', timeoutS
     prompt= prompt.trim().replace(/%plus%/g, '+').replace(/\+/g, ' ')
 
     const options = {
-        title: `Test Action`,
+        title: `Test Action`, // this does not appear
         message: prompt,
-        detail: ``,
+        detail: `Click to answer, or ignore until timeout dismisses dialog`,
         buttons: ca
     }
     console.log('>>>> askAHuman options and timeout', options, timeoutSeconds)
