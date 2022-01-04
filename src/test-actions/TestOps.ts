@@ -195,7 +195,7 @@ export async function askAHuman(prompt:string, choices:string = 'Okay', timeoutS
         detail: `follow the instructions and respond\n`,
         buttons: ca
     }
-    console.log('>>>> askAHuman options', options)
+    console.log('>>>> askAHuman options and timeout', options, timeoutSeconds)
     let resp = await app.timeoutBox(options, timeoutSeconds)
     let rstr = ca[resp as number]
     console.log('>>>> resp', resp, rstr)
