@@ -184,8 +184,8 @@ export async function callPageFunction(funcName:string, parameters:string[] = []
     }
 }
 
-export async function askAHuman(prompt:string, choices:string = 'Okay') {
-    console.log('>>>> askAHuman', prompt, choices)
+export async function askAHuman(prompt:string, choices:string = 'Okay', timeoutSeconds:number) {
+    console.log('>>>> askAHuman', prompt, choices, timeoutSeconds)
     const ca = choices.split(',')
     prompt= prompt.trim().replace(/%plus%/g, '+').replace(/\+/g, ' ')
 
@@ -196,7 +196,7 @@ export async function askAHuman(prompt:string, choices:string = 'Okay') {
         buttons: ca
     }
     console.log('>>>> askAHuman options', options)
-    let resp = await app.timeoutBox(options)
+    let resp = await app.timeoutBox(options, timeoutSeconds)
     let rstr = ca[resp as number]
     console.log('>>>> resp', resp, rstr)
     console.log('askAHuman returns', rstr)

@@ -995,8 +995,8 @@ export class AppCore {
     messageBox(options:any) {
         return Promise.resolve(mainApi && mainApi.openDialog(options))
     }
-    timeoutBox(options:any) {
-        return Promise.resolve(mainApi && mainApi.timeoutBox(options))
+    timeoutBox(options:any, timeoutSeconds:number) {
+        return Promise.resolve(mainApi && mainApi.timeoutBox(options, timeoutSeconds))
     }
 
 
