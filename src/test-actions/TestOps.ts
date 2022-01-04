@@ -191,8 +191,8 @@ export async function askAHuman(prompt:string, choices:string = 'Okay', timeoutS
 
     const options = {
         title: `Test Action`,
-        message: `${prompt}\n`,
-        detail: `follow the instructions and respond\n`,
+        message: prompt,
+        detail: ``,
         buttons: ca
     }
     console.log('>>>> askAHuman options and timeout', options, timeoutSeconds)
