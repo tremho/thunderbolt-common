@@ -1,6 +1,6 @@
 import {AppCore} from "../app-core/AppCore";
 import { EventData } from "../app-core/EventData";
-import {timeoutBox} from "../../../thunderbolt-desktop/src/API/DialogAPI";
+
 
 let app:AppCore
 
