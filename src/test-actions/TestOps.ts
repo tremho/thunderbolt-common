@@ -61,7 +61,7 @@ export async function readComponentProperty(componentName:string, propName:strin
 
     const comp = componentMap[componentName]
     // console.log('>> TestOp: readComponentProperty ', componentName, propName, comp)
-    const resp = comp && comp.com.getComponentAttribute(comp, propName)
+    const resp = comp && comp.cm.getComponentAttribute(comp, propName)
     // console.log('returning', resp)
     return resp
 }
@@ -95,7 +95,7 @@ export async function triggerAction(componentName:string, action:string) {
     // console.log('> triggerAction', componentName, action)
     const comp = componentMap[componentName]
     if (comp) {
-        const fname = comp.com.getComponentAttribute(comp, action)
+        const fname = comp.cm.getComponentAttribute(comp, action)
         if(fname) {
             // console.log('  fname', fname)
             const ev: EventData = new EventData()
