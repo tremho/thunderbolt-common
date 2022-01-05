@@ -591,7 +591,7 @@ export class AppCore {
                         this.navigateToPage(pageId, context, skipHistory)
                     }
                 })
-            }, 100);
+            }, 1000);
         }
 
         // console.log('continuing with navigate to page')
