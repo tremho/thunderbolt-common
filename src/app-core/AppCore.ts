@@ -1010,7 +1010,13 @@ export class AppCore {
             console.log('callTestRequest', request, params)
             const ops:any = testOps
             const fn = ops[request]
-            const resp =  fn && fn.apply(this, params)
+            let resp;
+            try {
+                resp = fn && fn.apply(this, params)
+            } catch(e) {
+                console.error('error executing test request '+request+' '+params)
+                console.error(e)
+            }
             // console.log('>> callTestRequest in app-core returns ', resp)
             return resp
         }
