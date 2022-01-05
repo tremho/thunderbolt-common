@@ -650,7 +650,8 @@ export class AppCore {
         } else {
             const pageComponent = findPageComponent(pageId)
             if (!pageComponent) {
-                throw Error('No page component for ' + pageId)
+                console.error('No page component for ' + pageId)
+                return
             }
             // console.log('------------------')
             // console.log(' -- Looking at body classes')
