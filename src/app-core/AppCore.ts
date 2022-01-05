@@ -845,7 +845,11 @@ export class AppCore {
             this.attachPageKeyListener()
         }
 
-        activity.pageStart(this, context)
+        if(typeof activity.pageStart === 'function') {
+            activity.pageStart(this, context)
+        } else {
+            console.error('Activity '+id+ ' has no pageStart function exported!!')
+        }
     }
 
     public navigateBack() {
