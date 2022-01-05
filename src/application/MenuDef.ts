@@ -79,19 +79,17 @@ function processDefinition(app:AppCore, line:string) {
             //     menuName = proc.substring(qi, qe)
             // }
         } else if(proc.indexOf(tbtag) !== -1) {
-            toolbarName = 'main'    // Updated in Dec. include or not, only one id = 'main'
-            // let qi = proc.indexOf('"')+1
-            // if(qi) {
-            //     let qe = proc.indexOf('"', qi)
-            //     toolbarName = proc.substring(qi, qe)
-            // }
+            let qi = proc.indexOf('"')+1
+            if(qi) {
+                let qe = proc.indexOf('"', qi)
+                toolbarName = proc.substring(qi, qe)
+            }
         } else if(proc.indexOf(intag) !== -1) {
-            indicatorName = 'main'  // Updated in Dec. include or not, only one id = 'main'
-            // let qi = proc.indexOf('"')+1
-            // if(qi) {
-            //     let qe = proc.indexOf('"', qi)
-            //     indicatorName = proc.substring(qi, qe)
-            // }
+            let qi = proc.indexOf('"')+1
+            if(qi) {
+                let qe = proc.indexOf('"', qi)
+                indicatorName = proc.substring(qi, qe)
+            }
         }
 
     }
