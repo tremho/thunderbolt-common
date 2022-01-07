@@ -195,12 +195,12 @@ export async function askAHuman(prompt:string, choices:string = 'Okay', expect:s
         buttons: ca,
         selectedButtonIndex: ca.indexOf(expect)
     }
-    console.log('>>>> askAHuman options and timeout', options, timeoutSeconds)
-    console.log('----> Calling app.timeoutBox here and now')
+    // console.log('>>>> askAHuman options and timeout', options, timeoutSeconds)
+    // console.log('----> Calling app.timeoutBox here and now')
     let resp = await app.timeoutBox(options, timeoutSeconds)
     let rstr = ca[resp as number]
-    console.log('>>>> resp', resp, rstr)
-    console.log('askAHuman returns', rstr)
+    // console.log('>>>> resp', resp, rstr)
+    // console.log('askAHuman returns', rstr)
     return rstr
 }
 
