@@ -387,15 +387,16 @@ export class MenuApi {
     /**
      * Declares a set of toolbar tools
      *
+     * @param {string} name name (id) of toolbar
      * @param {ToolItem[]} items  The toolbar items array
      */
-    addToolbarItems(items:ToolItem[]) {
+    addToolbarItems(name:string, items:ToolItem[]) {
         try {
-            this.app.model.setAtPath('toolbar.main', items)
+            this.app.model.setAtPath('toolbar.'+name, items)
         } catch(e) {
             const props = {}
             // @ts-ignore
-            props.main = items
+            props[name] = items
             // console.log(">> adding toolbar section")
             this.app.model.addSection('toolbar', props)
         }
@@ -421,15 +422,16 @@ export class MenuApi {
     /**
      * Declares a set of indicators
      *
+     * @param {string} name name (id) of indicators
      * @param {ToolItem[]} items  The indicator items array
      */
-    addIndicatorItems(items:IndicatorItem[]) {
+    addIndicatorItems(name:string, items:IndicatorItem[]) {
         try {
-            this.app.model.setAtPath('indicators.main', items)
+            this.app.model.setAtPath('indicators.'+name, items)
         } catch(e) {
             const props = {}
             // @ts-ignore
-            props.main = items
+            props[name] = items
             this.app.model.addSection('indicators', props)
         }
         try {

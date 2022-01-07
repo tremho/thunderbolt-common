@@ -276,11 +276,11 @@ function commuteToModel(app:AppCore) {
     }
     if(toolbarName) {
         // console.log('commuting toolbar to model')
-        app.MenuApi.addToolbarItems(appTools)
+        app.MenuApi.addToolbarItems(toolbarName, appTools)
     }
     if(indicatorName) {
         // console.log('commuting indicators to model')
-        app.MenuApi.addIndicatorItems(appIndicators)
+        app.MenuApi.addIndicatorItems(indicatorName, appIndicators)
     }
 }
 
