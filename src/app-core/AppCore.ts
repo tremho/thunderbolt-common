@@ -1008,7 +1008,7 @@ export class AppCore {
     connectTestMethods() {
         const callTestRequest = (request:string, params:string[]) => {
             request = request.trim()
-            console.log('callTestRequest', request, params)
+            // console.log('callTestRequest', request, params)
             const ops:any = testOps
             const fn = ops[request]
             let resp;

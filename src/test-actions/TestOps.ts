@@ -188,13 +188,12 @@ export async function askAHuman(prompt:string, choices:string = 'Okay', expect:s
     const ca = choices.split(',')
     prompt= prompt.trim().replace(/%plus%/g, '+').replace(/\+/g, ' ')
 
-    const sel = ca.indexOf('expect')
     const options = {
         title: `Test Action`, // this does not appear
         message: prompt,
         detail: `Click to answer, or ignore until timeout dismisses dialog`,
         buttons: ca,
-        selectedButtonIndex: sel === -1 ? undefined : sel
+        selectedButtonIndex: ca.indexOf(expect)
     }
     console.log('>>>> askAHuman options and timeout', options, timeoutSeconds)
     console.log('----> Calling app.timeoutBox here and now')
