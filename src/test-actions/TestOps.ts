@@ -79,7 +79,6 @@ export async function setComponentProperty(componentName:string, propName:string
         // TODO: Create setComponentAttribute in ComCommon
         // comp.com.setComponentAttribute(comp, propName, propValue)
     }
-
 }
 
 /**
@@ -184,16 +183,18 @@ export async function callPageFunction(funcName:string, parameters:string[] = []
     }
 }
 
-export async function askAHuman(prompt:string, choices:string = 'Okay', timeoutSeconds:number) {
+export async function askAHuman(prompt:string, choices:string = 'Okay', expect:string, timeoutSeconds:number) {
     console.log('>>>> askAHuman', prompt, choices, timeoutSeconds)
     const ca = choices.split(',')
     prompt= prompt.trim().replace(/%plus%/g, '+').replace(/\+/g, ' ')
 
+    const sel = ca.indexOf('expect')
     const options = {
         title: `Test Action`, // this does not appear
         message: prompt,
         detail: `Click to answer, or ignore until timeout dismisses dialog`,
-        buttons: ca
+        buttons: ca,
+        selectedButtonIndex: sel === -1 ? undefined : sel
     }
     console.log('>>>> askAHuman options and timeout', options, timeoutSeconds)
     console.log('----> Calling app.timeoutBox here and now')
