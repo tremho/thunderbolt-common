@@ -83,12 +83,14 @@ function processDefinition(app:AppCore, line:string) {
             if(qi) {
                 let qe = proc.indexOf('"', qi)
                 toolbarName = proc.substring(qi, qe)
+                appTools = []
             }
         } else if(proc.indexOf(intag) !== -1) {
             let qi = proc.indexOf('"')+1
             if(qi) {
                 let qe = proc.indexOf('"', qi)
                 indicatorName = proc.substring(qi, qe)
+                appIndicators = []
             }
         }
 
