@@ -1,3 +1,4 @@
+import {ComCommon} from "./typings/app-core/ComCommon";
 
 declare module "@tremho/jove-common" {
 
@@ -671,6 +672,28 @@ declare module "@tremho/jove-common" {
         setIndicatorState(indId: string, state: string): void;
         registerToolExtension(name: string, extension: ToolExtension): void;
         messageBox(options: any): Promise<any>;
+    }
+    class StdComp {
+        tagName: string;
+        bound: {};
+        cm: ComCommon;
+        com: ComCommon;
+        comNormal: ComNormal;
+        onBeforeMount(props: any, state: any): void;
+        onMounted(props: any, state: any): void;
+        onBeforeUpdate(props: any, state: any): void;
+        onUpdated(props: any, state: any): void;
+        onBeforeUnmount(props: any, state: any): void;
+        onUnmounted(props: any, state: any): void;
+        readonly isIOS: boolean;
+        readonly isAndroid: boolean;
+        readonly isMobile: boolean;
+        getProp(propName: string): any;
+        elementFind(tag: string): any;
+        elementFindAll(tag: string): any[];
+        listenToFor(el: any, pseudoEventTag: string, func: (ed: any) => {}): void;
+        getElementBounds(element: any): any;
+        setStyleProp(el: any, prop: string, value: number | string, unit?: string | undefined): void;
     }
 }
 
