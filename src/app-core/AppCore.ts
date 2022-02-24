@@ -869,7 +869,7 @@ export class AppCore {
             let selector = tagName
             if(prop) {
                 selector += `[${prop}`
-                if(propValue) selector += `=${propValue}`
+                if(propValue) selector += `="${propValue}"`
                 selector += ']'
             }
             const el:HTMLElement|null = document.body.querySelector(selector)
