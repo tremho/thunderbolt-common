@@ -144,7 +144,7 @@ export class ComNormal {
             const comp = this.stdComp.component
             return comp.get(propName)
         } else {
-            const props = this.stdComp.bound || {}
+            const props = this.stdComp.state || this.stdComp.bound || {} // note reference to 'bound' should be obsolete
             return props[propName]
         }
     }
