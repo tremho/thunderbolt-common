@@ -679,6 +679,9 @@ export class AppCore {
             pageId,
             context: reservedContext
         }
+        // forcing a a call to launchActivity here because for some reason onNavigatedTo isn't firing.
+        // If this begins to fire again in the future, then we'll effectively be calling it twice, which is probably okay
+        this.launchActivity(pageId, activity)
         // console.log('set page bindings to ', bindMe)
         return bindMe
     }
