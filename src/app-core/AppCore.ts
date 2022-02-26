@@ -685,6 +685,7 @@ export class AppCore {
     /**
      * Called by mobile page-launch wrapper (onNavigatedTo) to invoke the page logic (activity)
      * This does basically what the navigateToPage code does in the second part for desktop
+     *
      */
     launchActivity(pageId:string, activity:any) {
         this.startPageLogic(pageId, activity, reservedContext)
