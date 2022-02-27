@@ -511,6 +511,20 @@ export class AppCore {
         }
     }
 
+    public callCanvasReady(canvas:any) {
+        // make look like it does in NS
+        let crevt = {
+            name:"ready",
+            object: canvas
+        }
+        if(this.currentActivity) {
+            if(typeof this.currentActivity.canvasReady === 'function') {
+                this.currentActivity.canvasReady(crevt)
+            }
+        }
+
+    }
+
     /**
      * Register a global-scope handler for a menu or a tool action
      * or pass null instead of the handler function to clear it
