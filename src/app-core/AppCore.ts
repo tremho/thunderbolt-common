@@ -693,6 +693,7 @@ export class AppCore {
             pageId,
             context: reservedContext
         }
+        this.currentActivity = activity
         // console.log('set page bindings to ', bindMe)
         return bindMe
     }
