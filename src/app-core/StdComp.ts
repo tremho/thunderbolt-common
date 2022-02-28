@@ -80,7 +80,7 @@ export default {
         // @ts-ignore
         if(this.postStdOnUnmounted) this.postStdOnUnmounted(props, state)
     },
-    listenToPressGestures(el:HTMLElement, action:string = 'action') {
+    listenToAllGestures(el:HTMLElement, action:string = 'action') {
         // @ts-ignore
         this.listenToFor(el, 'up', (ev: any) => {
             this.cm.getApp().callEventHandler(action, ev, 'up')
@@ -117,8 +117,7 @@ export default {
         this.listenToFor(el, 'longpress', (ev: any) => {
             this.cm.getApp().callEventHandler(action, ev, 'longpress')
         })
-    },
-    listenToPRPGestures(el:HTMLElement, action:string = 'motion') {
+
         // @ts-ignore
         this.listenToFor(el, 'pan', (ev:any) => {
             this.cm.getApp().callEventHandler(action, ev,'pan')
