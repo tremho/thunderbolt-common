@@ -149,11 +149,11 @@ export class ComNormal {
         }
     }
 
-    // use to attach only one listener per event type per component, since we can't remove them
-    registerHandler(comp:any, action:string, func:any) {
+    // use to attach only one listener per event type/purpose per component, since we can't remove them
+    registerHandler(comp:any, purpose:string, action:string, func:any) {
         const session = getSessionData(comp)
-        if(session[action] !== func) {
-            session[action] = func
+        if(session[purpose+action] !== func) {
+            session[purpose+action] = func
             if(this.isMobile) {
                 comp.on(action, func)
             } else {
@@ -226,7 +226,7 @@ export class ComNormal {
                         // console.log('mobile handler for '+action+' triggered')
                         mobileHandler(ev, func, this)
                     }
-                    this.registerHandler(el, action, lhndlr)
+                    this.registerHandler(el, pseudoEventTag, action, lhndlr)
                 } else if(handler) {
                     handler(el, h.mode, func, this)
                 }
@@ -265,7 +265,7 @@ export class ComNormal {
                     // const lhndlr = (ev:any) => {
                     //     // console.log('dom handler for ' + action + ' triggered', ev)
                     // }
-                    this.registerHandler(el, action, func)
+                    this.registerHandler(el, pseudoEventTag, action, func)
 
                 } else if(handler) {
                     handler(el, h.mode, func, this)
@@ -424,7 +424,7 @@ function handleSwipe(comp:any, mode:string, cb:any, cn:ComNormal) {
             }
         }
     }
-    cn.registerHandler(comp,'mousemove', hdlMove)
+    cn.registerHandler(comp,'swipe', 'mousemove', hdlMove)
 }
 function handleLongPress(comp:any, mode:string, cb:any, cn:ComNormal) {
     let session:any = getSessionData(comp)
@@ -445,9 +445,9 @@ function handleLongPress(comp:any, mode:string, cb:any, cn:ComNormal) {
     const hdlUp = () => {
         clearTimeout(session.timerId)
     }
-    cn.registerHandler(comp, 'mousedown', hdlDown)
-    cn.registerHandler(comp,'mouseup', hdlUp)
-    cn.registerHandler(comp,'mouseout', hdlUp)
+    cn.registerHandler(comp, 'longpress', 'mousedown', hdlDown)
+    cn.registerHandler(comp, 'longpress', 'mouseup', hdlUp)
+    cn.registerHandler(comp, 'longpress', 'mouseout', hdlUp)
 
 }
 function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
@@ -496,9 +496,9 @@ function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
             }
         }
     }
-    cn.registerHandler(comp, 'mousedown', hdlDown)
-    cn.registerHandler(comp, 'mouseup', hdlUp)
-    cn.registerHandler(comp, 'mousemove', hdlMove)
+    cn.registerHandler(comp, 'pan', 'mousedown', hdlDown)
+    cn.registerHandler(comp, 'pan', 'mouseup', hdlUp)
+    cn.registerHandler(comp, 'pan', 'mousemove', hdlMove)
 }
 function handleRotation(comp:any, mode:string, cb:any, cn:ComNormal) {
     let session:any = getSessionData(comp)
@@ -534,9 +534,9 @@ function handleRotation(comp:any, mode:string, cb:any, cn:ComNormal) {
             session.active = false
         }
     }
-    cn.registerHandler(comp, 'mousedown', hdlDown)
-    cn.registerHandler(comp, 'mouseup', hdlUp)
-    cn.registerHandler(comp, 'mousemove', hdlMove)
+    cn.registerHandler(comp, 'rotation', 'mousedown', hdlDown)
+    cn.registerHandler(comp, 'rotation', 'mouseup', hdlUp)
+    cn.registerHandler(comp, 'rotation', 'mousemove', hdlMove)
 }
 function handlePinch(comp:any, mode:string, cb:any, cn:ComNormal) {
     let session:any = getSessionData(comp)
@@ -579,9 +579,9 @@ function handlePinch(comp:any, mode:string, cb:any, cn:ComNormal) {
             session.active = false
         }
     }
-    cn.registerHandler(comp, 'mousedown', hdlDown)
-    cn.registerHandler(comp, 'mouseup', hdlUp)
-    cn.registerHandler(comp, 'mousemove', hdlMove)
+    cn.registerHandler(comp, 'pinch', 'mousedown', hdlDown)
+    cn.registerHandler(comp, 'pinch', 'mouseup', hdlUp)
+    cn.registerHandler(comp, 'pinch', 'mousemove', hdlMove)
 }
 // -- mobile handler
 function mobileHandler(ev:any, cb:any, cn:ComNormal) {
@@ -673,8 +673,8 @@ function mobilePanHandler(comp:any, mode:string, cb:any, cn:ComNormal) {
             callback(ev, 'drag')
         }
     };
-    cn.registerHandler(comp, 'touch', hdlTouch);
-    cn.registerHandler(comp, 'pan', hdlMove);
+    cn.registerHandler(comp, 'pan', 'touch', hdlTouch);
+    cn.registerHandler(comp, 'pan', 'pan', hdlMove);
 }
 
 /**

@@ -398,7 +398,7 @@ declare module "@tremho/jove-common" {
          * @param propName
          */
         getProp(propName: string): any;
-        registerHandler(comp: any, action: string, func: any): void;
+        registerHandler(comp: any, purpose:string, action: string, func: any): void;
         /**
          * Cross-platform event binder
          *
