@@ -80,6 +80,56 @@ export default {
         // @ts-ignore
         if(this.postStdOnUnmounted) this.postStdOnUnmounted(props, state)
     },
+    listenToAllGestures(el:HTMLElement, action:string) {
+        // @ts-ignore
+        this.listenToFor(el, 'up', (ed:any) => {
+            this.cm.getApp().callEventHandler('up', ed.platEvent, ed.value)
+        })
+        // @ts-ignore
+        this.listenToFor(el, 'down', (ed:any) => {
+            this.cm.getApp().callEventHandler('down', ed.platEvent, ed.value)
+        })
+        // @ts-ignore
+        this.listenToFor(el, 'press', (ed:any) => {
+            this.cm.getApp().callEventHandler('press', ed.platEvent, ed.value)
+        })
+        // @ts-ignore
+        this.listenToFor(el, 'dblpress', (ed:any) => {
+            this.cm.getApp().callEventHandler('dblpress', ed.platEvent, ed.value)
+        })
+        // @ts-ignore
+        this.listenToFor(el, 'swipeup', (ed:any) => {
+            this.cm.getApp().callEventHandler('swipeup', ed.platEvent, ed.value)
+        })
+        // @ts-ignore
+        this.listenToFor(el, 'swipedown', (ed:any) => {
+            this.cm.getApp().callEventHandler('swipedown', ed.platEvent, ed.value)
+        })
+        // @ts-ignore
+        this.listenToFor(el, 'swipeleft', (ed:any) => {
+            this.cm.getApp().callEventHandler('swipeleft', ed.platEvent, ed.value)
+        })
+        // @ts-ignore
+        this.listenToFor(el, 'swiperight', (ed:any) => {
+            this.cm.getApp().callEventHandler('swiperight', ed.platEvent, ed.value)
+        })
+        // @ts-ignore
+        this.listenToFor(el, 'longpress', (ed:any) => {
+            this.cm.getApp().callEventHandler('longpress', ed.platEvent, ed.value)
+        })
+        // @ts-ignore
+        this.listenToFor(el, 'pan', (ed:any) => {
+            this.cm.getApp().callEventHandler('pan', ed.platEvent, ed.value)
+        })
+        // @ts-ignore
+        this.listenToFor(el, 'rotate', (ed:any) => {
+            this.cm.getApp().callEventHandler('rotate', ed.platEvent, ed.value)
+        })
+        // @ts-ignore
+        this.listenToFor(el, 'pinch', (ed:any) => {
+            this.cm.getApp().callEventHandler('pinch', ed.platEvent, ed.value)
+        })
+    },
     // ComNormal implementation
     get isIOS(): boolean { return this.comNormal.isIOS },
     get isAndroid(): boolean { return this.comNormal.isAndroid },
