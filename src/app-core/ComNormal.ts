@@ -592,7 +592,7 @@ function mobileHandler(ev:any, cb:any, cn:ComNormal) {
     ed.platEvent = ev
     ed.sourceComponent = ev.view
 
-    // note: consider recoding as a switch statement for better readability.
+    // note: consider recoding as a switch statement for better readability..
     console.log('mobile handler type', ev.type)
     try {
         if (ev.type === 7 /*'touch'*/ || ev.type === 0 /*'tap'*/ || ev.type === 1 /*dtap*/ || ev.type === 6 /*longpress*/) {
