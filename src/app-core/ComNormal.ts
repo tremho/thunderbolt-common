@@ -467,13 +467,15 @@ function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
             tmy = session.y
             session.startx = session.starty = 0;
         }
-        ed.app = cn.stdComp.cm.getApp()
-        ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
-        ed.tag = 'action'
-        ed.eventType = 'pan'
-        ed.platEvent = ev
-        ed.value = {type, mx, my, tmx, tmy, clientX, clientY}
-        cb(ed)
+        else if(mx || my) { // only report actual movement
+            ed.app = cn.stdComp.cm.getApp()
+            ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
+            ed.tag = 'action'
+            ed.eventType = 'pan'
+            ed.platEvent = ev
+            ed.value = {type, mx, my, tmx, tmy, clientX, clientY}
+            cb(ed)
+        }
     }
     const hdlDown = (ev:MouseEvent) => {
         session.active = true
@@ -518,7 +520,7 @@ function handleRotation(comp:any, mode:string, cb:any, cn:ComNormal) {
                 session.x = x;
                 session.y = y;
                 // compute the angle between startx,y and x,y
-                let angle = 0;
+                let angle = Math.atan2(session.y - session.starty, session.x - session.startx);
                 let ed = new EventData()
                 ed.app = cn.stdComp.cm.getApp()
                 ed.sourceComponent = cn.stdComp.cm.getComponent(comp)

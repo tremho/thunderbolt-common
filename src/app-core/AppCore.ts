@@ -617,77 +617,80 @@ export class AppCore {
         let prevPageId = navInfo.pageId
         let prevContext = navInfo.context
 
+        let leavePromise
         if(this.currentActivity) {
             if(typeof this.currentActivity.pageLeave === 'function') {
-                this.currentActivity.pageLeave(this, prevContext, pageId, context) // app, context we are leaving, pageId we are going to, context we are going to
+                leavePromise = this.currentActivity.pageLeave(this, prevContext, pageId, context) // app, context we are leaving, pageId we are going to, context we are going to
             }
         }
 
-        navInfo.timestamp = Date.now()
-        navInfo.pageId = pageId
-        navInfo.context = context || {}
-        // this switches the page at this point, or at least updates it
-        // Note we must do this before setting the activity because we can't find the activity until the page is realized.
-        // This causes a catch-22 in that components are instantiated on the page change, and if they refer to the activity, they
-        // will get the wrong one until next refresh.
-        this.model.setAtPath('page.navInfo', navInfo)
-        if (prevPageId === pageId && prevContext === context) skipHistory = true;
-        // note that this isn't used on the mobile side, but we record it anyway.
-        // this may be useful later if we have any history-related functionality in common.
-        if (!skipHistory) {
-            this.history.push({
-                pageId: prevPageId,
-                context: prevContext
-            })
-        }
-
-        if (check.mobile) {
-            let pageref = '~/pages/' + pageId + '-page'
-
-            // console.log('>>>>> mobile pageref', pageref)
-
-            const navigationEntry = {
-                moduleName: pageref,
-                backstackVisible: !skipHistory
-            };
-            // console.log('>>> the frame', theFrame)
-            // console.log('>>> navigation Entry', navigationEntry)
-
-            reservedContext = context // pass via this variable
-            theFrame && theFrame.navigate(navigationEntry)
-
-            // apparently, we can pass a function instead of a navigationEntry to construct a Page
-            // which might be something to look at later if we want to work from our own common page definition
-            // instead of writing out {N} syntax files.
-            // Function needs to build full page including the layout stack and any event handlers.
-            // not sure what effect this has on back history, since there's nothing passed for that.
-
-            // console.log('------------------')
-            // console.log(' -- Looking at Frame classes')
-            // console.log('className', theFrame.className)
-            // console.log('cssClasses', theFrame.cssClasses)
-            // console.log('------------------')
-
-
-        } else {
-            const pageComponent = findPageComponent(pageId)
-            if (!pageComponent) {
-                console.error('No page component for ' + pageId)
-                return
+        Promise.resolve(leavePromise).then(() => {
+            navInfo.timestamp = Date.now()
+            navInfo.pageId = pageId
+            navInfo.context = context || {}
+            // this switches the page at this point, or at least updates it
+            // Note we must do this before setting the activity because we can't find the activity until the page is realized.
+            // This causes a catch-22 in that components are instantiated on the page change, and if they refer to the activity, they
+            // will get the wrong one until next refresh.
+            this.model.setAtPath('page.navInfo', navInfo)
+            if (prevPageId === pageId && prevContext === context) skipHistory = true;
+            // note that this isn't used on the mobile side, but we record it anyway.
+            // this may be useful later if we have any history-related functionality in common.
+            if (!skipHistory) {
+                this.history.push({
+                    pageId: prevPageId,
+                    context: prevContext
+                })
             }
-            // console.log('------------------')
-            // console.log(' -- Looking at body classes')
-            // console.log('className', document.body.className)
-            // console.log('classList', document.body.classList)
-            // console.log('------------------')
 
-            const activity = pageComponent.activity;
-            if (!activity) {
-                throw Error('No exported activity for ' + pageId)
+            if (check.mobile) {
+                let pageref = '~/pages/' + pageId + '-page'
+
+                // console.log('>>>>> mobile pageref', pageref)
+
+                const navigationEntry = {
+                    moduleName: pageref,
+                    backstackVisible: !skipHistory
+                };
+                // console.log('>>> the frame', theFrame)
+                // console.log('>>> navigation Entry', navigationEntry)
+
+                reservedContext = context // pass via this variable
+                theFrame && theFrame.navigate(navigationEntry)
+
+                // apparently, we can pass a function instead of a navigationEntry to construct a Page
+                // which might be something to look at later if we want to work from our own common page definition
+                // instead of writing out {N} syntax files.
+                // Function needs to build full page including the layout stack and any event handlers.
+                // not sure what effect this has on back history, since there's nothing passed for that.
+
+                // console.log('------------------')
+                // console.log(' -- Looking at Frame classes')
+                // console.log('className', theFrame.className)
+                // console.log('cssClasses', theFrame.cssClasses)
+                // console.log('------------------')
+
+
+            } else {
+                const pageComponent = findPageComponent(pageId)
+                if (!pageComponent) {
+                    console.error('No page component for ' + pageId)
+                    return
+                }
+                // console.log('------------------')
+                // console.log(' -- Looking at body classes')
+                // console.log('className', document.body.className)
+                // console.log('classList', document.body.classList)
+                // console.log('------------------')
+
+                const activity = pageComponent.activity;
+                if (!activity) {
+                    throw Error('No exported activity for ' + pageId)
+                }
+                // console.log('$$$$ Starting page', pageId, context)
+                this.startPageLogic(pageId, activity, context)
             }
-            // console.log('$$$$ Starting page', pageId, context)
-            this.startPageLogic(pageId, activity, context)
-        }
+        })
     }
 
     /**
