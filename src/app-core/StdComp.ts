@@ -99,36 +99,36 @@ export default {
         })
         // @ts-ignore
         this.listenToFor(el, 'swipeup', (ev: any) => {
-            this.cm.getApp().callEventHandler(action, ev, 'swipeup')
+            this.cm.getApp().callEventHandler(action, 'swipeup', ev, ev.value)
         })
         // @ts-ignore
         this.listenToFor(el, 'swipedown', (ev: any) => {
-            this.cm.getApp().callEventHandler(action, ev, 'swipedown')
+            this.cm.getApp().callEventHandler(action, 'swipedown', ev, ev.value)
         })
         // @ts-ignore
         this.listenToFor(el, 'swipeleft', (ev: any) => {
-            this.cm.getApp().callEventHandler(action, ev, 'swipeleft')
+            this.cm.getApp().callEventHandler(action, 'swipeleft', ev, ev.value)
         })
         // @ts-ignore
         this.listenToFor(el, 'swiperight', (ev: any) => {
-            this.cm.getApp().callEventHandler(action, ev, 'swiperight')
+            this.cm.getApp().callEventHandler(action, 'swiperight', ev, ev.value)
         })
         // @ts-ignore
         this.listenToFor(el, 'longpress', (ev: any) => {
-            this.cm.getApp().callEventHandler(action, ev, 'longpress')
+            this.cm.getApp().callEventHandler(action, 'longpress', ev, ev.value)
         })
 
         // @ts-ignore
         this.listenToFor(el, 'pan', (ev:any) => {
-            this.cm.getApp().callEventHandler(action, ev,'pan')
+            this.cm.getApp().callEventHandler(action, 'pan', ev, ev.value)
         })
         // @ts-ignore
         this.listenToFor(el, 'rotate', (ev:any) => {
-            this.cm.getApp().callEventHandler(action, ev,'rotate')
+            this.cm.getApp().callEventHandler(action, 'rotate', ev, ev.value)
         })
         // @ts-ignore
         this.listenToFor(el, 'pinch', (ev:any) => {
-            this.cm.getApp().callEventHandler(action, ev,'pinch')
+            this.cm.getApp().callEventHandler(action, 'pinch', ev, ev.value)
         })
     },
     // ComNormal implementation

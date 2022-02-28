@@ -917,10 +917,12 @@ export class AppCore {
     /**
      * Dispatch an event to the current activity by name
      *
-     * @param name
-     * @param domEvent
+     * @param tag  - the property that holds the function name (e.g. 'action')
+     * @param eventName - name of the psuedo event that triggered this (e.g. 'down')
+     * @param platEvent - the full object of the platform native event
+     * @param [value] - some events return a value with more info
      */
-    public callEventHandler(tag:string, platEvent:any, value?:any) {
+    public callEventHandler(tag:string, eventName:string, platEvent:any, value?:any) {
         const act = this.currentActivity;
         let ed
         // platEvent might be a Dom Event or it could be EventData
@@ -942,7 +944,7 @@ export class AppCore {
             name = (ed.sourceComponent && ed.sourceComponent.state[tag]) || 'onAnonymousEvent'
         }
         ed.tag = tag
-        ed.value = value
+        ed.eventName = eventName
         if(act && typeof act[name] === 'function') {
             act[name](ed)
         } else {
