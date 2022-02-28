@@ -80,54 +80,54 @@ export default {
         // @ts-ignore
         if(this.postStdOnUnmounted) this.postStdOnUnmounted(props, state)
     },
-    listenToAllGestures(el:HTMLElement, action:string) {
+    listenToAllGestures(el:HTMLElement, action:string = 'action') {
         // @ts-ignore
         this.listenToFor(el, 'up', (ev:any) => {
-            this.cm.getApp().callEventHandler('up', ev)
+            this.cm.getApp().callEventHandler(action, ev, 'up')
         })
         // @ts-ignore
         this.listenToFor(el, 'down', (ev:any) => {
-            this.cm.getApp().callEventHandler('down', ev)
+            this.cm.getApp().callEventHandler(action, ev,'down')
         })
         // @ts-ignore
         this.listenToFor(el, 'press', (ev:any) => {
-            this.cm.getApp().callEventHandler('press', ev)
+            this.cm.getApp().callEventHandler(action, ev, 'press')
         })
         // @ts-ignore
         this.listenToFor(el, 'dblpress', (ev:any) => {
-            this.cm.getApp().callEventHandler('dblpress', ev)
+            this.cm.getApp().callEventHandler(action, ev,'dblpress')
         })
         // @ts-ignore
         this.listenToFor(el, 'swipeup', (ev:any) => {
-            this.cm.getApp().callEventHandler('swipeup', ev)
+            this.cm.getApp().callEventHandler(action, ev,'swipeup')
         })
         // @ts-ignore
         this.listenToFor(el, 'swipedown', (ev:any) => {
-            this.cm.getApp().callEventHandler('swipedown', ev)
+            this.cm.getApp().callEventHandler(action, ev,'swipedown')
         })
         // @ts-ignore
         this.listenToFor(el, 'swipeleft', (ev:any) => {
-            this.cm.getApp().callEventHandler('swipeleft', ev)
+            this.cm.getApp().callEventHandler(action, ev,'swipeleft')
         })
         // @ts-ignore
         this.listenToFor(el, 'swiperight', (ev:any) => {
-            this.cm.getApp().callEventHandler('swiperight', ev)
+            this.cm.getApp().callEventHandler(action, ev,'swiperight')
         })
         // @ts-ignore
         this.listenToFor(el, 'longpress', (ev:any) => {
-            this.cm.getApp().callEventHandler('longpress', ev)
+            this.cm.getApp().callEventHandler(action, ev,'longpress')
         })
         // @ts-ignore
         this.listenToFor(el, 'pan', (ev:any) => {
-            this.cm.getApp().callEventHandler('pan', ev)
+            this.cm.getApp().callEventHandler(action, ev,'pan')
         })
         // @ts-ignore
         this.listenToFor(el, 'rotate', (ev:any) => {
-            this.cm.getApp().callEventHandler('rotate', ev)
+            this.cm.getApp().callEventHandler(action, ev,'rotate')
         })
         // @ts-ignore
         this.listenToFor(el, 'pinch', (ev:any) => {
-            this.cm.getApp().callEventHandler('pinch', ev)
+            this.cm.getApp().callEventHandler(action, ev,'pinch')
         })
     },
     // ComNormal implementation
