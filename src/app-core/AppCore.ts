@@ -612,9 +612,17 @@ export class AppCore {
         // set the page in the model.  For Riot, this forces the page to change on update
         // for mobile, we need to do that through native navigation, but we still want the model to be the same
         // console.log('$$$$$$$$$$ navigate to page ' + pageId)
+
         const navInfo = this.model.getAtPath('page.navInfo')
         let prevPageId = navInfo.pageId
         let prevContext = navInfo.context
+
+        if(this.currentActivity) {
+            if(typeof this.currentActivity.pageLeave === 'function') {
+                this.currentActivity.pageLeave(this, prevContext, pageId, context) // app, context we are leaving, pageId we are going to, context we are going to
+            }
+        }
+
         navInfo.timestamp = Date.now()
         navInfo.pageId = pageId
         navInfo.context = context || {}
@@ -862,10 +870,10 @@ export class AppCore {
             this.attachPageKeyListener()
         }
 
-        if(typeof activity.pageStart === 'function') {
-            activity.pageStart(this, context)
+        if(typeof activity.pageEnter === 'function') {
+            activity.pageEnter(this, context)
         } else {
-            console.error('Activity '+id+ ' has no pageStart function exported!!')
+            console.error('Activity '+id+ ' has no pageEnter function exported!!')
         }
     }
 
