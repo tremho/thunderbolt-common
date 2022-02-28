@@ -616,11 +616,14 @@ function mobileHandler(ev:any, cb:any, cn:ComNormal) {
         } else if (ev.type === 2 /*'pinch'*/) {
             ed.value = ev.scale
         }
+        else {
+            return // unrecognized action type ignored
+        }
+        cb(ed)
+
     } catch(e) {
         console.log(e)
     }
-
-    cb(ed)
 
 }
 
