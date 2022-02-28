@@ -83,19 +83,19 @@ export default {
     listenToAllGestures(el:HTMLElement, action:string = 'action') {
         // @ts-ignore
         this.listenToFor(el, 'up', (ev: any) => {
-            this.cm.getApp().callEventHandler(action, ev, 'up')
+            this.cm.getApp().callEventHandler(action, 'up', ev)
         })
         // @ts-ignore
         this.listenToFor(el, 'down', (ev: any) => {
-            this.cm.getApp().callEventHandler(action, ev, 'down')
+            this.cm.getApp().callEventHandler(action, 'down', ev)
         })
         // @ts-ignore
         this.listenToFor(el, 'press', (ev: any) => {
-            this.cm.getApp().callEventHandler(action, ev, 'press')
+            this.cm.getApp().callEventHandler(action, 'press', ev)
         })
         // @ts-ignore
         this.listenToFor(el, 'dblpress', (ev: any) => {
-            this.cm.getApp().callEventHandler(action, ev, 'dblpress')
+            this.cm.getApp().callEventHandler(action, 'dblpress', ev)
         })
         // @ts-ignore
         this.listenToFor(el, 'swipeup', (ev: any) => {
