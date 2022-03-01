@@ -584,6 +584,7 @@ function handlePinch(comp:any, mode:string, cb:any, cn:ComNormal) {
     cn.registerHandler(comp, 'pinch', 'mousemove', hdlMove)
 }
 // -- mobile handler
+let tmx = 0, tmy = 0;
 function mobileHandler(ev:any, cb:any, cn:ComNormal) {
     const ed = new EventData()
     ed.tag = 'action'
@@ -596,6 +597,8 @@ function mobileHandler(ev:any, cb:any, cn:ComNormal) {
     console.log('mobile handler type', ev.type)
     try {
         if (ev.type === 7 /*'touch'*/ || ev.type === 0 /*'tap'*/ || ev.type === 1 /*dtap*/ || ev.type === 6 /*longpress*/) {
+            tmx = ev.getX();
+            tmy = ev.getY();
             ed.value = {
                 clientX: ev.getX(),
                 clientY: ev.getY(),
@@ -616,6 +619,13 @@ function mobileHandler(ev:any, cb:any, cn:ComNormal) {
             ed.value = ev.rotation
         } else if (ev.type === 2 /*'pinch'*/) {
             ed.value = ev.scale
+        }
+        else if(ev.type === 128) {
+            // touch / move [pan]
+            ed.value = {
+                mx: ev.getX() - tmx,
+                my: ev.getY() - tmy
+            }
         }
         else {
             return // unrecognized action type ignored
