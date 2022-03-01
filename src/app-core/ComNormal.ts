@@ -622,7 +622,7 @@ function mobileHandler(ev:any, cb:any, cn:ComNormal) {
         }
         // callback with the event
         cb(ed)
-        
+
     } catch(e) {
         console.log(e)
     }
