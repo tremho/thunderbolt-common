@@ -152,8 +152,8 @@ export class ComNormal {
     // use to attach only one listener per event type/purpose per component, since we can't remove them
     registerHandler(comp:any, purpose:string, action:string, func:any) {
         const session = getSessionData(comp)
-        if(session[purpose+action] !== func) {
-            session[purpose+action] = func
+        if(session[/*purpos+*/action] !== func) {
+            session[/*purpose+*/action] = func
             if(this.isMobile) {
                 comp.on(action, func)
             } else {
