@@ -620,8 +620,9 @@ function mobileHandler(ev:any, cb:any, cn:ComNormal) {
         else {
             return // unrecognized action type ignored
         }
+        // callback with the event
         cb(ed)
-
+        
     } catch(e) {
         console.log(e)
     }
