@@ -588,7 +588,7 @@ function mobileHandler(ev:any, cb:any, cn:ComNormal) {
     const ed = new EventData()
     ed.tag = 'action'
     ed.app = cn.stdComp.cm.getApp()
-    ed.eventType = ev.type.toString()
+    ed.eventType = (ev.type && ev.type.toString()) || '?type?'
     ed.platEvent = ev
     ed.sourceComponent = ev.view
 
@@ -602,7 +602,7 @@ function mobileHandler(ev:any, cb:any, cn:ComNormal) {
                 buttons: 1 // ev.getPointerCount() -- crash
             }
         } else if (ev.type === 4 /*'swipe'*/) {
-            ed.value = ev.direction.toString()
+            ed.value = (ev.direction && ev.direction.toString()) || '?dir?'
         } else if (ev.type === 3 /*'pan'*/) {
             ed.value = {
                 mx: ev.deltaX,
