@@ -41,6 +41,7 @@ function getSessionData(comp:any) {
 
 export class ComNormal {
     stdComp:any
+    util:any = null
 
     /**
      * Create the API implementation handler with reference to the Component that owns it
@@ -56,7 +57,7 @@ export class ComNormal {
      * @returns true if we're running on an iOS device
      */
     get isIOS(): boolean {
-        return (this.stdComp.component && this.stdComp.component.ios)
+        return ((this.util?.ios) || (this.stdComp.component && this.stdComp.component.ios))
     }
 
     /**
@@ -64,7 +65,7 @@ export class ComNormal {
      * @returns true if we're running on an Android device
      */
     get isAndroid(): boolean {
-        return (this.stdComp.component && this.stdComp.component.android)
+        return ((this.util?.android) || (this.stdComp.component && this.stdComp.component.android))
     }
 
     /**
@@ -73,6 +74,14 @@ export class ComNormal {
      */
     get isMobile(): boolean {
         return this.isAndroid || this.isIOS
+    }
+
+    /**
+     * Returns true if this comNormal object is part of a mobile ComponentBase that was constructed
+     * as a utility class for helping non-ComponentBase controls. (see ComponentBase constructor and stack-layout component)
+     */
+    get isUtil(): boolean {
+        return !!this.util
     }
 
     /**
