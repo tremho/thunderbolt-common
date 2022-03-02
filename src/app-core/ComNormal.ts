@@ -657,13 +657,15 @@ function mobilePanHandler(comp:any, mode:string, cb:any, cn:ComNormal) {
             session.y = clientY = tmy = ev.getY()
             session.startx = session.starty = 0;
         }
-        ed.app = cn.stdComp.cm.getApp();
-        ed.sourceComponent = cn.stdComp.cm.getComponent(comp);
-        ed.tag = 'action';
-        ed.eventType = 'pan';
-        ed.platEvent = ev;
-        ed.value = { type, mx, my, tmx, tmy, clientX, clientY };
-        cb(ed);
+        if(mx || my) { // only report movement
+            ed.app = cn.stdComp.cm.getApp();
+            ed.sourceComponent = cn.stdComp.cm.getComponent(comp);
+            ed.tag = 'action';
+            ed.eventType = 'pan';
+            ed.platEvent = ev;
+            ed.value = {type, mx, my, tmx, tmy, clientX, clientY};
+            cb(ed);
+        }
     };
     const hdlDown = (ev:any) => {
         session.active = true;
