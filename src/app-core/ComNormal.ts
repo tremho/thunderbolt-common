@@ -236,8 +236,8 @@ export class ComNormal {
                         mobileHandler(ev, func, this)
                     }
                     this.registerHandler(el, pseudoEventTag, action, lhndlr)
-                } else if(handler) {
-                    handler(el, h.mode, func, this)
+                // } else if(handler) {
+                //     handler(el, h.mode, func, this)
                 }
             }
 
