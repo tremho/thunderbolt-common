@@ -41,7 +41,7 @@ function getSessionData(comp:any) {
 
 export class ComNormal {
     stdComp:any
-    util:any = null
+    public util:any = null
 
     /**
      * Create the API implementation handler with reference to the Component that owns it
