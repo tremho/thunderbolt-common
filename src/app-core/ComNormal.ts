@@ -232,7 +232,7 @@ export class ComNormal {
                 let {action, handler} = h
                 if(action) {
                     const lhndlr = (ev:any) => {
-                        console.log('mobile handler for '+action+' triggered')
+                        // console.log('mobile handler for '+action+' triggered')
                         mobileHandler(ev, func, this)
                     }
                     this.registerHandler(el, pseudoEventTag, action, lhndlr)
@@ -602,7 +602,7 @@ function mobileHandler(ev:any, cb:any, cn:ComNormal) {
     ed.sourceComponent = ev.view
 
     // note: consider recoding as a switch statement for better readability..
-    console.log('mobile handler type', ev.type)
+    // console.log('mobile handler type', ev.type)
     try {
         if (ev.type === 7 /*'touch'*/ || ev.type === 0 /*'tap'*/ || ev.type === 1 /*dtap*/ || ev.type === 6 /*longpress*/) {
             ed.value = {
