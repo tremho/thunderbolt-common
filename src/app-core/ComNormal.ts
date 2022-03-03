@@ -798,9 +798,6 @@ function mobileDoubleTapHandler(ev:any) {
 }
 function mobileLongPressHandler(ev:any) {
     let comp = ev.view
-    let x = ev.getX()
-    let y = ev.getY()
-    let c = ev.getPointerCount()
     let session:any = getSessionData(comp)
     let cb = session.longpress
     const longPressInterval = lastTouchDown && (Date.now() - lastTouchDown)
