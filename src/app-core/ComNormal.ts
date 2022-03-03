@@ -844,7 +844,7 @@ function mobilePinchHandler(ev:any) {
 function mobileRotationHandler(ev:any) {
     let comp = ev.view
     let session:any = getSessionData(comp)
-    let cb = session.rotate
+    let cb = session.rotation
     const ed = new EventData()
     ed.tag = 'action'
     ed.value = ev.rotation
