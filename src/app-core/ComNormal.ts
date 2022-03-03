@@ -544,7 +544,12 @@ function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
             ed.tag = 'action'
             ed.eventType = 'pan'
             ed.platEvent = ev
-            ed.value = {type, mx, my, tmx, tmy, clientX, clientY}
+            // ed.value = {type, mx, my, tmx, tmy, clientX, clientY}
+            // align with mobile version
+            ed.value = {
+                mx:tmx,
+                my:tmy
+            }
             cb(ed)
         }
     }
