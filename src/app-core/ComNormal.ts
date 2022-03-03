@@ -733,7 +733,7 @@ function mobileTouchHandler(ev:any) {
         ed.platEvent = ev;
         cb(ed);
     };
-    callback(ev)
+    if(cb) callback(ev)
 }
 function mobileTapHandler(ev:any) {
     let comp = ev.view
@@ -757,7 +757,7 @@ function mobileTapHandler(ev:any) {
         ed.platEvent = ev;
         cb(ed);
     };
-    callback(ev)
+    if(cb) callback(ev)
 }
 function mobileDoubleTapHandler(ev:any) {
     let comp = ev.view
@@ -781,7 +781,7 @@ function mobileDoubleTapHandler(ev:any) {
         ed.platEvent = ev;
         cb(ed);
     };
-    callback(ev)
+    if(cb) callback(ev)
 }
 function mobileLongPressHandler(ev:any) {
     let comp = ev.view
@@ -799,7 +799,7 @@ function mobileLongPressHandler(ev:any) {
             ed.app = self.stdComp.cm.getApp()
             ed.platEvent = ev
             ed.sourceComponent = self.stdComp.cm.getComponent(comp)
-            cb(ed)
+            if(cb) cb(ed)
         }, longPressInterval)
     }
     else if(action === 'up') {
@@ -818,7 +818,7 @@ function mobileSwipeHandler(ev:any) {
     ed.app = self.stdComp.cm.getApp()
     ed.platEvent = ev
     ed.sourceComponent = self.stdComp.cm.getComponent(comp)
-    cb(ed)
+    if(cb) cb(ed)
 }
 function mobilePinchHandler(ev:any) {
     let comp = ev.view
@@ -831,7 +831,7 @@ function mobilePinchHandler(ev:any) {
     ed.app = self.stdComp.cm.getApp()
     ed.platEvent = ev
     ed.sourceComponent = self.stdComp.cm.getComponent(comp)
-    cb(ed)
+    if(cb) cb(ed)
 }
 function mobileRotationHandler(ev:any) {
     let comp = ev.view
@@ -844,7 +844,7 @@ function mobileRotationHandler(ev:any) {
     ed.app = self.stdComp.cm.getApp()
     ed.platEvent = ev
     ed.sourceComponent = self.stdComp.cm.getComponent(comp)
-    cb(ed)
+    if(cb) cb(ed)
 }
 function mobilePanHandler(ev:any) {
     let comp = ev.view
@@ -859,7 +859,7 @@ function mobilePanHandler(ev:any) {
     ed.app = self.stdComp.cm.getApp()
     ed.platEvent = ev
     ed.sourceComponent = self.stdComp.cm.getComponent(comp)
-    cb(ed)
+    if(cb) cb(ed)
 }
 
 
