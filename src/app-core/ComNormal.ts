@@ -727,17 +727,25 @@ function mobileHandler(ev:any, cb:any, cn:ComNormal) {
 //     cn.registerHandler(comp, 'pan', 'pan', hdlMove);
 // }
 
+let lastTouchDown:number|undefined
+
 function mobileTouchHandler(ev:any) {
     let comp = ev.view
     let x = ev.getX()
     let y = ev.getY()
     let c = ev.getPointerCount()
+    let mode = ev.action
+    if(mode === 'down') {
+        lastTouchDown = Date.now()
+    } else {
+        lastTouchDown = undefined
+    }
     let session:any = getSessionData(comp);
     let cb = session.touch;
-    if(cb) {
+    if(cb && mode !== 'move') {
         let ed = new EventData();
         ed.value = {
-            mode: ev.action,
+            mode,
             clientX: x,
             clientY: y,
             buttons: c
@@ -775,18 +783,11 @@ function mobileTapHandler(ev:any) {
 }
 function mobileDoubleTapHandler(ev:any) {
     let comp = ev.view
-    let x = ev.getX()
-    let y = ev.getY()
-    let c = ev.getPointerCount()
     let session:any = getSessionData(comp);
     let cb = session['doubletap'];
     if(cb) {
         let ed = new EventData();
-        ed.value = {
-            clientX: x,
-            clientY: y,
-            buttons: c
-        }
+        ed.value =
         ed.app = self.stdComp.cm.getApp();
         ed.sourceComponent = self.stdComp.cm.getComponent(comp);
         ed.tag = 'action';
@@ -802,14 +803,10 @@ function mobileLongPressHandler(ev:any) {
     let c = ev.getPointerCount()
     let session:any = getSessionData(comp)
     let cb = session.longpress
-    const longPressInterval = 750
+    const longPressInterval = lastTouchDown && (Date.now() - lastTouchDown)
     if(cb) {
         let ed = new EventData();
-        ed.value = {
-            clientX: x,
-            clientY: y,
-            buttons: c
-        }
+        ed.value = longPressInterval
         ed.app = self.stdComp.cm.getApp();
         ed.sourceComponent = self.stdComp.cm.getComponent(comp);
         ed.tag = 'action';
