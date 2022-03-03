@@ -444,7 +444,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
             clientX: ev.clientX,
             clientY: ev.clientY
         }
-        ed.eventType = 'mousedown'
+        ed.eventType = 'mouse'+mode
         ed.app = cn.stdComp.cm.getApp()
         ed.platEvent = ev
         ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
