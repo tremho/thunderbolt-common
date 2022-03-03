@@ -337,7 +337,7 @@ declare module "@tremho/jove-common" {
         app: any;
         sourceComponent: any;
         eventType: string | undefined;
-        public eventName: string | undefined;
+        eventName: string | undefined;
         tag: string | undefined;
         value?: any;
         platEvent: any;
