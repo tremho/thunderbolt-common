@@ -172,6 +172,16 @@ export class ComNormal {
                 comp.addEventListener(action, func)
             }
         }
+    }
+    // do this a little different for mobile at this point:
+    // send in both the handler and the callback.
+    // The handler will process and normalize before calling the callback at the app level
+    registerMobileHandler(comp:any, action:string, handler:any, callback:any) {
+        const session = getSessionData(comp)
+        if(session[action] !== callback) {
+            session[action] = callback
+            comp.on(action, handler)
+        }
 
     }
 
@@ -245,7 +255,7 @@ export class ComNormal {
                 if(h.aka) h = mappedEvents[h.aka]
                 let handler = actionHandlers[h.action]
                 if(handler) {
-                    this.registerHandler(el, pseudoEventTag, h.action, handler)
+                    this.registerMobileHandler(el, h.action, handler, func)
                 }
             }
 
