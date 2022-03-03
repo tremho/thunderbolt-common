@@ -731,7 +731,7 @@ function mobileTapHandler(ev:any) {
     let x = ev.getX()
     let y = ev.getY()
     let session:any = getSessionData(comp);
-    let cb = session.press;
+    let cb = session.tap;
     const callback = (ev:any) => {
         let ed = new EventData();
         ed.value = {
