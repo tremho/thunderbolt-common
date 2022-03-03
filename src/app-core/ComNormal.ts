@@ -216,31 +216,40 @@ export class ComNormal {
     listenToFor(el:any, pseudoEventTag:string, func:(ed:any)=>{}) {
         if(this.isMobile) {
             const mappedEvents = {
-                'down': {action: 'touch', mode: 'down'},
-                'mousedown': {aka: 'down'},
-                'up': {action: 'touch', mode: 'up'},
-                'mouseup': {aka: 'up'},
+                'touch': {action:'touch'},
+                    'up': {aka: 'touch'},
+                    'down': {aka: 'touch'},
+                    'mouseup': {aka: 'touch'},
+                    'mousedown': {aka: 'touch'},
+
                 'press': {action:'tap'},
-                'tap': {aka:'press'},
-                'click': {aka: 'press'},
-                'dblpress' : {action: 'double tap'},
-                'dblclick' : {aka: 'dblpress'},
-                'dbltap' : {aka: 'dblpress'},
-                'swipeleft' : {action: 'swipe', mode: 'left'},
-                'swiperight' : {action: 'swipe', mode: 'right'},
-                'swipeup' : {action: 'swipe', mode: 'up'},
-                'swipedown' : {action: 'swipe', mode: 'down'},
+                    'tap': {aka:'press'},
+                    'click': {aka: 'press'},
+
+                'dblpress' : {action: 'doubletap'},
+                    'dblclick' : {aka: 'dblpress'},
+                    'dbltap' : {aka: 'dblpress'},
+
+                'swipe' : {action: 'swipe'},
+                    'swipeleft' : {aka:'swipe'},
+                    'swiperight' : {aka:'swipe'},
+                    'swipeup' : {aka:'swipe'},
+                    'swipedown' : {aka:'swipe'},
+
                 'longpress' : {action: 'longpress'},
-                'pan' : {handler: mobilePanHandler}, // this one is special. needs multi-event trapping, unlike others.
-                'drag': {aka: 'pan'},
+
+                'pan' : {action: 'pan'},
+                    'drag': {aka: 'pan'},
+
                 'rotation': {action: 'rotation'},
-                'rotate': {aka: 'rotation'},
+                    'rotate': {aka: 'rotation'},
+
                 'pinch' : {action: 'pinch'}
             }
             const actionHandlers:any = {
                 touch: mobileTouchHandler,
                 tap: mobileTapHandler,
-                dbltap: mobileDoubleTapHandler,
+                doubletap: mobileDoubleTapHandler,
                 longpress: mobileLongPressHandler,
                 swipe: mobileSwipeHandler,
                 pan: mobilePanHandler,
@@ -271,6 +280,7 @@ export class ComNormal {
                 'dblpress' : {action: 'dblclick'},
                 'dblclick' : {aka: 'dblpress'},
                 'dbltap' : {aka: 'dblpress'},
+                'swipe' : {handler: handleSwipe},
                 'swipeleft' : {handler:handleSwipe, mode: 'left'},
                 'swiperight' : {handler:handleSwipe, mode: 'right'},
                 'swipeup' : {handler:handleSwipe, mode: 'up'},
@@ -439,8 +449,14 @@ function handleSwipe(comp:any, mode:string, cb:any, cn:ComNormal) {
             const threshold = 50
             let mx = ev.movementX
             let my = ev.movementY
+
+            if(!mode) {
+                if(mx > threshold) mode = 'right'
+                else if(mx < -threshold) mode = 'left'
+                else if(my > threshold) mode = 'down'
+                else if(my < -threshold) mode = 'up'
+            }
             if(mode === 'left' && mx < -threshold) {
-                // todo: need a canonical form of callback
                 callback(ev)
             } else if(mode === 'right' && mx > threshold) {
                 callback(ev)
@@ -713,18 +729,18 @@ function mobileHandler(ev:any, cb:any, cn:ComNormal) {
 
 function mobileTouchHandler(ev:any) {
     let comp = ev.view
-    let action = ev.action
     let x = ev.getX()
     let y = ev.getY()
+    let c = ev.getPointerCount()
     let session:any = getSessionData(comp);
     let cb = session.touch;
-    const callback = (ev:any) => {
+    if(cb) {
         let ed = new EventData();
         ed.value = {
-            action,
+            mode: ev.action,
             clientX: x,
             clientY: y,
-            buttons: 1
+            buttons: c
         }
         ed.app = self.stdComp.cm.getApp();
         ed.sourceComponent = self.stdComp.cm.getComponent(comp);
@@ -732,23 +748,21 @@ function mobileTouchHandler(ev:any) {
         ed.eventType = 'touch';
         ed.platEvent = ev;
         cb(ed);
-    };
-    if(cb) callback(ev)
+    }
 }
 function mobileTapHandler(ev:any) {
     let comp = ev.view
-    let action = ev.action
     let x = ev.getX()
     let y = ev.getY()
+    let c = ev.getPointerCount()
     let session:any = getSessionData(comp);
     let cb = session.tap;
     const callback = (ev:any) => {
         let ed = new EventData();
         ed.value = {
-            action,
             clientX: x,
             clientY: y,
-            buttons: 1
+            buttons: c
         }
         ed.app = self.stdComp.cm.getApp();
         ed.sourceComponent = self.stdComp.cm.getComponent(comp);
@@ -761,18 +775,17 @@ function mobileTapHandler(ev:any) {
 }
 function mobileDoubleTapHandler(ev:any) {
     let comp = ev.view
-    let action = ev.action
     let x = ev.getX()
     let y = ev.getY()
+    let c = ev.getPointerCount()
     let session:any = getSessionData(comp);
-    let cb = session['double tap'];
-    const callback = (ev:any) => {
+    let cb = session['doubletap'];
+    if(cb) {
         let ed = new EventData();
         ed.value = {
-            action,
             clientX: x,
             clientY: y,
-            buttons: 1
+            buttons: c
         }
         ed.app = self.stdComp.cm.getApp();
         ed.sourceComponent = self.stdComp.cm.getComponent(comp);
@@ -780,30 +793,29 @@ function mobileDoubleTapHandler(ev:any) {
         ed.eventType = 'dblpress';
         ed.platEvent = ev;
         cb(ed);
-    };
-    if(cb) callback(ev)
+    }
 }
 function mobileLongPressHandler(ev:any) {
     let comp = ev.view
-    let action = ev.action
+    let x = ev.getX()
+    let y = ev.getY()
+    let c = ev.getPointerCount()
     let session:any = getSessionData(comp)
     let cb = session.longpress
     const longPressInterval = 750
-    if(action === 'down') {
-        clearTimeout(session.timerId)
-        session.timerId = setTimeout(() => {
-            const ed = new EventData()
-            ed.tag = 'action'
-            ed.value = longPressInterval
-            ed.eventType = 'longpress'
-            ed.app = self.stdComp.cm.getApp()
-            ed.platEvent = ev
-            ed.sourceComponent = self.stdComp.cm.getComponent(comp)
-            if(cb) cb(ed)
-        }, longPressInterval)
-    }
-    else if(action === 'up') {
-        clearTimeout(session.timerId)
+    if(cb) {
+        let ed = new EventData();
+        ed.value = {
+            clientX: x,
+            clientY: y,
+            buttons: c
+        }
+        ed.app = self.stdComp.cm.getApp();
+        ed.sourceComponent = self.stdComp.cm.getComponent(comp);
+        ed.tag = 'action';
+        ed.eventType = 'dblpress';
+        ed.platEvent = ev;
+        cb(ed);
     }
 
 }
@@ -811,14 +823,16 @@ function mobileSwipeHandler(ev:any) {
     let comp = ev.view
     let session:any = getSessionData(comp)
     let cb = session.swipe
-    const ed = new EventData()
-    ed.tag = 'action'
-    ed.value = ev.direction.toString()
-    ed.eventType = 'swipe'
-    ed.app = self.stdComp.cm.getApp()
-    ed.platEvent = ev
-    ed.sourceComponent = self.stdComp.cm.getComponent(comp)
-    if(cb) cb(ed)
+    if(cb) {
+        const ed = new EventData()
+        ed.tag = 'action'
+        ed.value = ev.direction.toString()
+        ed.eventType = 'swipe'
+        ed.app = self.stdComp.cm.getApp()
+        ed.platEvent = ev
+        ed.sourceComponent = self.stdComp.cm.getComponent(comp)
+        cb(ed)
+    }
 }
 function mobilePinchHandler(ev:any) {
     let comp = ev.view
@@ -827,7 +841,7 @@ function mobilePinchHandler(ev:any) {
     const ed = new EventData()
     ed.tag = 'action'
     ed.value = ev.scale
-    ed.eventType = 'swipe'
+    ed.eventType = 'pinch'
     ed.app = self.stdComp.cm.getApp()
     ed.platEvent = ev
     ed.sourceComponent = self.stdComp.cm.getComponent(comp)
@@ -840,7 +854,7 @@ function mobileRotationHandler(ev:any) {
     const ed = new EventData()
     ed.tag = 'action'
     ed.value = ev.rotation
-    ed.eventType = 'swipe'
+    ed.eventType = 'rotation'
     ed.app = self.stdComp.cm.getApp()
     ed.platEvent = ev
     ed.sourceComponent = self.stdComp.cm.getComponent(comp)
@@ -855,7 +869,7 @@ function mobilePanHandler(ev:any) {
     const ed = new EventData()
     ed.tag = 'action'
     ed.value = {mx, my}
-    ed.eventType = 'swipe'
+    ed.eventType = 'pan'
     ed.app = self.stdComp.cm.getApp()
     ed.platEvent = ev
     ed.sourceComponent = self.stdComp.cm.getComponent(comp)
