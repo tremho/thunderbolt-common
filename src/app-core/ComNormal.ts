@@ -270,26 +270,27 @@ export class ComNormal {
 
         } else {
             const mappedEvents = {
-                'mousedown': {action: 'mousedown'},
-                'down': {aka: 'mousedown'},
-                'mouseup': {action: 'mouseup'},
-                'up': {aka: 'mouseup'},
+                'touch' : {handler: handleTouch},
+                    'mousedown': {action: 'mousedown'},
+                    'down': {aka: 'mousedown'},
+                    'mouseup': {action: 'mouseup'},
+                    'up': {aka: 'mouseup'},
                 'press': {action:'click'},
-                'tap': {aka:'press'},
-                'click': {aka: 'press'},
+                    'tap': {aka:'press'},
+                    'click': {aka: 'press'},
                 'dblpress' : {action: 'dblclick'},
-                'dblclick' : {aka: 'dblpress'},
-                'dbltap' : {aka: 'dblpress'},
+                    'dblclick' : {aka: 'dblpress'},
+                    'dbltap' : {aka: 'dblpress'},
                 'swipe' : {handler: handleSwipe},
-                'swipeleft' : {handler:handleSwipe, mode: 'left'},
-                'swiperight' : {handler:handleSwipe, mode: 'right'},
-                'swipeup' : {handler:handleSwipe, mode: 'up'},
-                'swipedown' : {handler:handleSwipe, mode: 'down'},
+                    'swipeleft' : {handler:handleSwipe, mode: 'left'},
+                    'swiperight' : {handler:handleSwipe, mode: 'right'},
+                    'swipeup' : {handler:handleSwipe, mode: 'up'},
+                    'swipedown' : {handler:handleSwipe, mode: 'down'},
                 'longpress' : {handler:handleLongPress},
                 'pan' : {handler:handlePan},
-                'drag': {aka: 'pan'},
+                    'drag': {aka: 'pan'},
                 'rotation': {handler:handleRotation},
-                'rotate': {aka: 'rotation'},
+                    'rotate': {aka: 'rotation'},
                 'pinch' : {handler:handlePinch}
             }
             // @ts-ignore
@@ -433,6 +434,33 @@ export class ComNormal {
 }
 
 // -- DOM event gesture handling
+function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
+    let session:any = getSessionData(comp)
+    const callback = (ev:MouseEvent, mode:string) => {
+        const ed = new EventData()
+        ed.tag = 'action'
+        ed.value = {
+            mode,
+            clientX: ev.clientX,
+            clientY: ev.clientY
+        }
+        ed.eventType = 'mousedown'
+        ed.app = cn.stdComp.cm.getApp()
+        ed.platEvent = ev
+        ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
+        cb(ed)
+    }
+    const hdlDown = (ev:any) => {
+        callback(ev, 'down')
+    }
+    const hdlUp = (ev:any) => {
+        callback(ev, 'up')
+    }
+    cn.registerHandler(comp, 'touch', 'mousedown', hdlDown)
+    cn.registerHandler(comp, 'touch', 'mouseup', hdlUp)
+
+}
+
 function handleSwipe(comp:any, mode:string, cb:any, cn:ComNormal) {
     const callback = (ev:any) => {
         const ed = new EventData()

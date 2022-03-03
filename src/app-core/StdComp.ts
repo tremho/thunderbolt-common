@@ -82,12 +82,8 @@ export default {
     },
     listenToAllGestures(el:HTMLElement, action:string = 'action') {
         // @ts-ignore
-        this.listenToFor(el, 'up', (ev: any) => {
-            this.cm.getApp().callEventHandler(action, 'up', ev)
-        })
-        // @ts-ignore
-        this.listenToFor(el, 'down', (ev: any) => {
-            this.cm.getApp().callEventHandler(action, 'down', ev)
+        this.listenToFor(el, 'touch', (ev: any) => {
+            this.cm.getApp().callEventHandler(action, 'touch', ev)
         })
         // @ts-ignore
         this.listenToFor(el, 'press', (ev: any) => {
@@ -98,26 +94,13 @@ export default {
             this.cm.getApp().callEventHandler(action, 'dblpress', ev)
         })
         // @ts-ignore
-        this.listenToFor(el, 'swipeup', (ev: any) => {
-            this.cm.getApp().callEventHandler(action, 'swipeup', ev, ev.value)
-        })
-        // @ts-ignore
-        this.listenToFor(el, 'swipedown', (ev: any) => {
-            this.cm.getApp().callEventHandler(action, 'swipedown', ev, ev.value)
-        })
-        // @ts-ignore
-        this.listenToFor(el, 'swipeleft', (ev: any) => {
-            this.cm.getApp().callEventHandler(action, 'swipeleft', ev, ev.value)
-        })
-        // @ts-ignore
-        this.listenToFor(el, 'swiperight', (ev: any) => {
-            this.cm.getApp().callEventHandler(action, 'swiperight', ev, ev.value)
-        })
-        // @ts-ignore
         this.listenToFor(el, 'longpress', (ev: any) => {
             this.cm.getApp().callEventHandler(action, 'longpress', ev, ev.value)
         })
-
+        // @ts-ignore
+        this.listenToFor(el, 'swipe', (ev: any) => {
+            this.cm.getApp().callEventHandler(action, 'swipe', ev, ev.value)
+        })
         // @ts-ignore
         this.listenToFor(el, 'pan', (ev:any) => {
             this.cm.getApp().callEventHandler(action, 'pan', ev, ev.value)
