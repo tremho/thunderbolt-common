@@ -14,6 +14,8 @@ These apis should be called from same-contract methods on the 'Component' for bo
 
  */
 
+let self:ComNormal;
+
 class Bounds {
     x:number = 0
     y:number = 0
@@ -49,6 +51,7 @@ export class ComNormal {
      */
     constructor(stdComp:any) {
         this.stdComp = stdComp
+        self = this;
     }
 
 
@@ -224,20 +227,25 @@ export class ComNormal {
                 'rotate': {aka: 'rotation'},
                 'pinch' : {action: 'pinch'}
             }
+            const actionHandlers:any = {
+                touch: mobileTouchHandler,
+                tap: mobileTapHandler,
+                dbltap: mobileDoubleTapHandler,
+                longpress: mobileLongPressHandler,
+                swipe: mobileSwipeHandler,
+                pan: mobilePanHandler,
+                rotation: mobileRotationHandler,
+                pinch:mobilePinchHandler
+            }
+
             // @ts-ignore
             let h = mappedEvents[pseudoEventTag]
             if(h) {
                 // @ts-ignore
                 if(h.aka) h = mappedEvents[h.aka]
-                let {action, handler} = h
-                if(action) {
-                    const lhndlr = (ev:any) => {
-                        // console.log('mobile handler for '+action+' triggered')
-                        mobileHandler(ev, func, this)
-                    }
-                    this.registerHandler(el, pseudoEventTag, action, lhndlr)
-                // } else if(handler) {
-                //     handler(el, h.mode, func, this)
+                let handler = actionHandlers[h.action]
+                if(handler) {
+                    this.registerHandler(el, pseudoEventTag, h.action, handler)
                 }
             }
 
@@ -640,58 +648,210 @@ function mobileHandler(ev:any, cb:any, cn:ComNormal) {
 
 // we have to do a multi-event trap to make pan work the way we want
 // this is basically the same as the DOM version
-function mobilePanHandler(comp:any, mode:string, cb:any, cn:ComNormal) {
-    let session = getSessionData(comp);
-    const callback = (ev:any, type:string) => {
+// function mobilePanHandler(comp:any, mode:string, cb:any, cn:ComNormal) {
+//     let session = getSessionData(comp);
+//     const callback = (ev:any, type:string) => {
+//         let ed = new EventData();
+//         let mx = ev.deltaX - session.x
+//         let my = ev.deltaY - session.y
+//         let tmx = session.x - session.startx;
+//         let tmy = session.y - session.starty;
+//         let clientX = session.x
+//         let clientY = session.y;
+//         if (type === 'start') {
+//             mx = 0;
+//             my = 0;
+//             session.x = clientX = tmx = ev.getX();
+//             session.y = clientY = tmy = ev.getY()
+//             session.startx = session.starty = 0;
+//         }
+//         if(mx || my) { // only report movement
+//             ed.app = cn.stdComp.cm.getApp();
+//             ed.sourceComponent = cn.stdComp.cm.getComponent(comp);
+//             ed.tag = 'action';
+//             ed.eventType = 'pan';
+//             ed.platEvent = ev;
+//             ed.value = {type, mx, my, tmx, tmy, clientX, clientY};
+//             cb(ed);
+//         }
+//     };
+//     const hdlDown = (ev:any) => {
+//         session.active = true;
+//         callback(ev, 'start')
+//     };
+//     const hdlUp = () => {
+//         session.active = false;
+//     };
+//     const hdlTouch = (ev:any) => {
+//         if (ev.action === 'down')
+//             return hdlDown(ev);
+//         else if (ev.action === 'up')
+//             return hdlUp();
+//         else {
+//             session.x = ev.getX();
+//             session.y = ev.getY();
+//         }
+//     };
+//     const hdlMove = (ev:any) => {
+//         if (session.active) {
+//             callback(ev, 'drag')
+//         }
+//     };
+//     cn.registerHandler(comp, 'pan', 'touch', hdlTouch);
+//     cn.registerHandler(comp, 'pan', 'pan', hdlMove);
+// }
+
+function mobileTouchHandler(ev:any) {
+    let comp = ev.view
+    let action = ev.action
+    let x = ev.getX()
+    let y = ev.getY()
+    let session:any = getSessionData(comp);
+    let cb = session.touch;
+    const callback = (ev:any) => {
         let ed = new EventData();
-        let mx = ev.deltaX - session.x
-        let my = ev.deltaY - session.y
-        let tmx = session.x - session.startx;
-        let tmy = session.y - session.starty;
-        let clientX = session.x
-        let clientY = session.y;
-        if (type === 'start') {
-            mx = 0;
-            my = 0;
-            session.x = clientX = tmx = ev.getX();
-            session.y = clientY = tmy = ev.getY()
-            session.startx = session.starty = 0;
+        ed.value = {
+            action,
+            clientX: x,
+            clientY: y,
+            buttons: 1
         }
-        if(mx || my) { // only report movement
-            ed.app = cn.stdComp.cm.getApp();
-            ed.sourceComponent = cn.stdComp.cm.getComponent(comp);
-            ed.tag = 'action';
-            ed.eventType = 'pan';
-            ed.platEvent = ev;
-            ed.value = {type, mx, my, tmx, tmy, clientX, clientY};
-            cb(ed);
-        }
+        ed.app = self.stdComp.cm.getApp();
+        ed.sourceComponent = self.stdComp.cm.getComponent(comp);
+        ed.tag = 'action';
+        ed.eventType = 'touch';
+        ed.platEvent = ev;
+        cb(ed);
     };
-    const hdlDown = (ev:any) => {
-        session.active = true;
-        callback(ev, 'start')
-    };
-    const hdlUp = () => {
-        session.active = false;
-    };
-    const hdlTouch = (ev:any) => {
-        if (ev.action === 'down')
-            return hdlDown(ev);
-        else if (ev.action === 'up')
-            return hdlUp();
-        else {
-            session.x = ev.getX();
-            session.y = ev.getY();
-        }
-    };
-    const hdlMove = (ev:any) => {
-        if (session.active) {
-            callback(ev, 'drag')
-        }
-    };
-    cn.registerHandler(comp, 'pan', 'touch', hdlTouch);
-    cn.registerHandler(comp, 'pan', 'pan', hdlMove);
+    callback(ev)
 }
+function mobileTapHandler(ev:any) {
+    let comp = ev.view
+    let action = ev.action
+    let x = ev.getX()
+    let y = ev.getY()
+    let session:any = getSessionData(comp);
+    let cb = session.press;
+    const callback = (ev:any) => {
+        let ed = new EventData();
+        ed.value = {
+            action,
+            clientX: x,
+            clientY: y,
+            buttons: 1
+        }
+        ed.app = self.stdComp.cm.getApp();
+        ed.sourceComponent = self.stdComp.cm.getComponent(comp);
+        ed.tag = 'action';
+        ed.eventType = 'press';
+        ed.platEvent = ev;
+        cb(ed);
+    };
+    callback(ev)
+}
+function mobileDoubleTapHandler(ev:any) {
+    let comp = ev.view
+    let action = ev.action
+    let x = ev.getX()
+    let y = ev.getY()
+    let session:any = getSessionData(comp);
+    let cb = session['double tap'];
+    const callback = (ev:any) => {
+        let ed = new EventData();
+        ed.value = {
+            action,
+            clientX: x,
+            clientY: y,
+            buttons: 1
+        }
+        ed.app = self.stdComp.cm.getApp();
+        ed.sourceComponent = self.stdComp.cm.getComponent(comp);
+        ed.tag = 'action';
+        ed.eventType = 'dblpress';
+        ed.platEvent = ev;
+        cb(ed);
+    };
+    callback(ev)
+}
+function mobileLongPressHandler(ev:any) {
+    let comp = ev.view
+    let action = ev.action
+    let session:any = getSessionData(comp)
+    let cb = session.longpress
+    const longPressInterval = 750
+    if(action === 'down') {
+        clearTimeout(session.timerId)
+        session.timerId = setTimeout(() => {
+            const ed = new EventData()
+            ed.tag = 'action'
+            ed.value = longPressInterval
+            ed.eventType = 'longpress'
+            ed.app = self.stdComp.cm.getApp()
+            ed.platEvent = ev
+            ed.sourceComponent = self.stdComp.cm.getComponent(comp)
+            cb(ed)
+        }, longPressInterval)
+    }
+    else if(action === 'up') {
+        clearTimeout(session.timerId)
+    }
+
+}
+function mobileSwipeHandler(ev:any) {
+    let comp = ev.view
+    let session:any = getSessionData(comp)
+    let cb = session.swipe
+    const ed = new EventData()
+    ed.tag = 'action'
+    ed.value = ev.direction.toString()
+    ed.eventType = 'swipe'
+    ed.app = self.stdComp.cm.getApp()
+    ed.platEvent = ev
+    ed.sourceComponent = self.stdComp.cm.getComponent(comp)
+    cb(ed)
+}
+function mobilePinchHandler(ev:any) {
+    let comp = ev.view
+    let session:any = getSessionData(comp)
+    let cb = session.swipe
+    const ed = new EventData()
+    ed.tag = 'action'
+    ed.value = ev.scale
+    ed.eventType = 'swipe'
+    ed.app = self.stdComp.cm.getApp()
+    ed.platEvent = ev
+    ed.sourceComponent = self.stdComp.cm.getComponent(comp)
+    cb(ed)
+}
+function mobileRotationHandler(ev:any) {
+    let comp = ev.view
+    let session:any = getSessionData(comp)
+    let cb = session.swipe
+    const ed = new EventData()
+    ed.tag = 'action'
+    ed.value = ev.rotation
+    ed.eventType = 'swipe'
+    ed.app = self.stdComp.cm.getApp()
+    ed.platEvent = ev
+    ed.sourceComponent = self.stdComp.cm.getComponent(comp)
+    cb(ed)
+}
+function mobilePanHandler(ev:any) {
+    let comp = ev.view
+    let mx = ev.deltaX
+    let my = ev.deltaY
+    let session:any = getSessionData(comp)
+    let cb = session.swipe
+    const ed = new EventData()
+    ed.tag = 'action'
+    ed.value = {mx, my}
+    ed.eventType = 'swipe'
+    ed.app = self.stdComp.cm.getApp()
+    ed.platEvent = ev
+    ed.sourceComponent = self.stdComp.cm.getComponent(comp)
+    cb(ed)
+}
+
 
 /**
  * Use to get the anchor point of a DOM element
