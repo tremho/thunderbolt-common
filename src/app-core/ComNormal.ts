@@ -787,7 +787,6 @@ function mobileDoubleTapHandler(ev:any) {
     let cb = session['doubletap'];
     if(cb) {
         let ed = new EventData();
-        ed.value =
         ed.app = self.stdComp.cm.getApp();
         ed.sourceComponent = self.stdComp.cm.getComponent(comp);
         ed.tag = 'action';
@@ -820,7 +819,7 @@ function mobileSwipeHandler(ev:any) {
     if(cb) {
         const ed = new EventData()
         ed.tag = 'action'
-        ed.value = ev.direction.toString()
+        ed.value = (<any>{1:'right', 2:'left', 4:'up', 8:'down'})[ev.direction]
         ed.eventType = 'swipe'
         ed.app = self.stdComp.cm.getApp()
         ed.platEvent = ev
