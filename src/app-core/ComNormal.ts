@@ -831,7 +831,7 @@ function mobileSwipeHandler(ev:any) {
 function mobilePinchHandler(ev:any) {
     let comp = ev.view
     let session:any = getSessionData(comp)
-    let cb = session.swipe
+    let cb = session.pinch
     const ed = new EventData()
     ed.tag = 'action'
     ed.value = ev.scale
@@ -844,7 +844,7 @@ function mobilePinchHandler(ev:any) {
 function mobileRotationHandler(ev:any) {
     let comp = ev.view
     let session:any = getSessionData(comp)
-    let cb = session.swipe
+    let cb = session.rotate
     const ed = new EventData()
     ed.tag = 'action'
     ed.value = ev.rotation
@@ -859,7 +859,7 @@ function mobilePanHandler(ev:any) {
     let mx = ev.deltaX
     let my = ev.deltaY
     let session:any = getSessionData(comp)
-    let cb = session.swipe
+    let cb = session.pan
     const ed = new EventData()
     ed.tag = 'action'
     ed.value = {mx, my}
