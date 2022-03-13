@@ -942,7 +942,7 @@ export class AppCore {
         }
         let name:string
         if(check.mobile) {
-            name = (ed.sourceComponent && ed.sourceComponent.get(tag)) || 'onAnonymousEvent'
+            name = (ed.sourceComponent && (ed.sourceComponent.get(tag) || ed.sourceComponent.parentNode.get(tag))) || 'onAnonymousEvent'
         } else {
             name = (ed.sourceComponent && ed.sourceComponent.state[tag]) || 'onAnonymousEvent'
         }
