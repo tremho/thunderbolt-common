@@ -758,6 +758,7 @@ function mobileHandler(ev:any, cb:any, cn:ComNormal) {
 // }
 
 let lastTouchDown:number|undefined
+let touchX:any, touchY:any, touchC:any
 
 function mobileTouchHandler(ev:any) {
     let comp = ev.view
@@ -766,6 +767,9 @@ function mobileTouchHandler(ev:any) {
     let c = ev.getPointerCount()
     let mode = ev.action
     if(mode === 'down') {
+        touchX = x;
+        touchY = y;
+        touchC = c
         lastTouchDown = Date.now()
     } else {
         lastTouchDown = undefined
@@ -790,9 +794,16 @@ function mobileTouchHandler(ev:any) {
 }
 function mobileTapHandler(ev:any) {
     let comp = ev.view
-    let x = ev.getX()
-    let y = ev.getY()
-    let c = ev.getPointerCount()
+    let x:any, y:any, c:any
+    if(ev.getX) {
+        x = ev.getX()
+        y = ev.getY()
+        c = ev.getPointerCount()
+    } else {
+        x = touchX
+        y = touchY
+        c = touchC
+    }
     let session:any = getSessionData(comp);
     let cb = session.tap;
     const callback = (ev:any) => {
