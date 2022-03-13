@@ -793,7 +793,7 @@ function mobileTouchHandler(ev:any) {
     }
 }
 function mobileTapHandler(ev:any) {
-    let comp = ev.view
+    let comp = ev.view || ev.object
     let x:any, y:any, c:any
     if(ev.getX) {
         x = ev.getX()
@@ -823,7 +823,7 @@ function mobileTapHandler(ev:any) {
     if(cb) callback(ev)
 }
 function mobileDoubleTapHandler(ev:any) {
-    let comp = ev.view
+    let comp = ev.view || ev.object
     let session:any = getSessionData(comp);
     let cb = session['doubletap'];
     if(cb) {
@@ -837,7 +837,7 @@ function mobileDoubleTapHandler(ev:any) {
     }
 }
 function mobileLongPressHandler(ev:any) {
-    let comp = ev.view
+    let comp = ev.view || ev.object
     let session:any = getSessionData(comp)
     let cb = session.longpress
     const longPressInterval = lastTouchDown && (Date.now() - lastTouchDown)
@@ -854,7 +854,7 @@ function mobileLongPressHandler(ev:any) {
 
 }
 function mobileSwipeHandler(ev:any) {
-    let comp = ev.view
+    let comp = ev.view || ev.object
     let session:any = getSessionData(comp)
     let cb = session.swipe
     if(cb) {
@@ -869,7 +869,7 @@ function mobileSwipeHandler(ev:any) {
     }
 }
 function mobilePinchHandler(ev:any) {
-    let comp = ev.view
+    let comp = ev.view || ev.object
     let session:any = getSessionData(comp)
     let cb = session.pinch
     const ed = new EventData()
@@ -882,7 +882,7 @@ function mobilePinchHandler(ev:any) {
     if(cb) cb(ed)
 }
 function mobileRotationHandler(ev:any) {
-    let comp = ev.view
+    let comp = ev.view || ev.object
     let session:any = getSessionData(comp)
     let cb = session.rotation
     const ed = new EventData()
@@ -895,7 +895,7 @@ function mobileRotationHandler(ev:any) {
     if(cb) cb(ed)
 }
 function mobilePanHandler(ev:any) {
-    let comp = ev.view
+    let comp = ev.view || ev.object
     let mx = ev.deltaX
     let my = ev.deltaY
     let session:any = getSessionData(comp)
