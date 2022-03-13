@@ -176,6 +176,7 @@ export class ComNormal {
         const session = getSessionData(comp)
         if(session[action] !== callback) {
             session[action] = callback
+            console.log('registering '+action+' handler '+handler.constructor.name ||'(anon)'+' => '+callback.constructor.name || '(anon)')
             comp.on(action, handler)
         }
 
