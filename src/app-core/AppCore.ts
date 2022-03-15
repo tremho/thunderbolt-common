@@ -675,6 +675,7 @@ export class AppCore {
 
 
             } else {
+                if(pageId === 'splash') return; // skip for splash, which has internal logic
                 const pageComponent = findPageComponent(pageId)
                 if (!pageComponent) {
                     console.error('No page component for ' + pageId)
