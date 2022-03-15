@@ -114,6 +114,7 @@ export class AppCore {
      rootPath:string = ''
      menuApi:MenuApi;
      activeMenu:any
+    appFront:any = null;
      currentActivity:any = null
      history:HistoryRecord[] = []
      _pathUtils: PathUtils|undefined
@@ -204,6 +205,8 @@ export class AppCore {
 
     public setupUIElements(appFront:any) {
         // console.log('>>> setupUIElements >>>')
+
+        this.appFront = appFront // record this
 
         this.checkForTest()
 
@@ -918,6 +921,24 @@ export class AppCore {
     }
 
     /**
+     * Handle the details of a splash page
+     * (Electron Only)
+     *
+     * @param splash - The splash riot component that calls us on mount
+     */
+    public splashDance(splash:any) {
+        let p
+        if(this.appFront && typeof this.appFront.splashWait === 'function') {
+            p = this.appFront.splashWait(this)
+        }
+        Promise.resolve(p).then(()=> {
+            this.navigateToPage('main')
+        })
+
+
+    }
+
+    /**
      * Dispatch an event to the current activity by name
      *
      * @param tag  - the property that holds the function name (e.g. 'action')
@@ -1062,6 +1083,11 @@ export class AppCore {
             // console.log('connected callTestRequest to window at ', gwindow.callTestRequest)
         }
 
+    }
+
+    // Find a page by id. Returns page component.
+    findPage(pageId:string) {
+        return findPageComponent(pageId)
     }
 
 }
