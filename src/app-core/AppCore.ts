@@ -928,8 +928,8 @@ export class AppCore {
      */
     public splashDance() {
         let p
-        let splash = this.findPage('splash')
         if(!this.isMobile()) { // this only runs on desktop anyway...
+            let splash = this.findPage('splash')
             let ht  = '' + (window.innerHeight-17)
             ht += 'px'
             console.log('setting height to ', ht)
@@ -940,7 +940,7 @@ export class AppCore {
             if(cdiv) cdiv.style.position = 'fixed'
         } else {
             // we are called by mobile here
-            console.log('mobile splash dance', splash)
+            console.log('mobile splash dance')
         }
 
         if(this.appFront && typeof this.appFront.splashWait === 'function') {
