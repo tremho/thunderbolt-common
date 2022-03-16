@@ -925,10 +925,10 @@ export class AppCore {
      * Handle the details of a splash page
      * (Electron Only)
      *
-     * @param splash - The splash riot component that calls us on mount
      */
-    public splashDance(splash:any) {
+    public splashDance() {
         let p
+        let splash = this.findPage('splash-page')
         if(!this.isMobile()) { // this only runs on desktop anyway...
             let ht  = '' + (window.innerHeight-17)
             ht += 'px'
