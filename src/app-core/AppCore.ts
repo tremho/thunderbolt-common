@@ -928,7 +928,7 @@ export class AppCore {
      */
     public splashDance() {
         let p
-        let splash = this.findPage('splash-page')
+        let splash = this.findPage('splash')
         if(!this.isMobile()) { // this only runs on desktop anyway...
             let ht  = '' + (window.innerHeight-17)
             ht += 'px'
