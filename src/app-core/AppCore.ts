@@ -933,7 +933,8 @@ export class AppCore {
             let ht  = '' + (window.innerHeight-17)
             ht += 'px'
             console.log('setting height to ', ht)
-            splash.root.style.height = ht
+            let bdiv = splash.root.firstChild
+            bdiv.style.height = ht
             let content = this.findComponent('.splash-content')
             let cdiv = content?.root.firstChild;
             if(cdiv) cdiv.style.position = 'fixed'
