@@ -929,6 +929,16 @@ export class AppCore {
      */
     public splashDance(splash:any) {
         let p
+        if(!this.isMobile()) { // this only runs on desktop anyway...
+            let ht  = '' + (window.innerHeight-17)
+            ht += 'px'
+            console.log('setting height to ', ht)
+            splash.root.style.height = ht
+            let content = this.findComponent('.splash-content')
+            let cdiv = content?.root.firstChild;
+            if(cdiv) cdiv.style.position = 'fixed'
+        }
+
         if(this.appFront && typeof this.appFront.splashWait === 'function') {
             p = this.appFront.splashWait(this)
         }
