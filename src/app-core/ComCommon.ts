@@ -25,9 +25,11 @@ export class ComCommon {
 
     constructor(arg:any) {
 
-        if(check.mobile) this.rootComponent = arg;
-        else this.riot = arg;
-        arg.b = this.evalBinding.bind(this)
+        if(arg) {
+            if (check.mobile) this.rootComponent = arg;
+            else this.riot = arg;
+            arg.b = this.evalBinding.bind(this)
+        }
         this.fits = []
         this.fitNum = 0;
         this._app = this.getApp()
