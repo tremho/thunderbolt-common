@@ -938,6 +938,9 @@ export class AppCore {
             let content = this.findComponent('.splash-content')
             let cdiv = content?.root.firstChild;
             if(cdiv) cdiv.style.position = 'fixed'
+        } else {
+            // we are called by mobile here
+            console.log('mobile splash dance', splash)
         }
 
         if(this.appFront && typeof this.appFront.splashWait === 'function') {
