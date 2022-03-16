@@ -923,10 +923,11 @@ export class AppCore {
 
     /**
      * Handle the details of a splash page
-     * (Electron Only)
+     *
+     * param mobilComp - only passed for mobile. Is the splash page content StackLayout background
      *
      */
-    public splashDance() {
+    public splashDance(mobileComp:any) {
         let p
         if(!this.isMobile()) { // this only runs on desktop anyway...
             let splash = this.findPage('splash')
@@ -941,6 +942,9 @@ export class AppCore {
         } else {
             // we are called by mobile here
             console.log('mobile splash dance')
+            let splash = mobileComp
+            let ht = '1000'
+            splash.set('height', ht)
         }
 
         if(this.appFront && typeof this.appFront.splashWait === 'function') {
