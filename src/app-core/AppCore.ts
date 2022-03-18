@@ -21,6 +21,8 @@ import {ComNormal} from "./ComNormal";
 
 import * as testOps from "../test-actions/TestOps"
 
+const {TEST_ENABLED} = require("~/tbd/settings/enabled")
+
 const gwindow:any = typeof window !== 'undefined' ? window : {}
 let mainApi = check.mobile ? null : gwindow.api;
 
@@ -144,6 +146,10 @@ export class AppCore {
         if(mainApi) {
             console.log('looking for ~dotest file ')
             this.runTest = await mainApi.fileExists('~dotest')
+            if(!TEST_ENABLED && this.runTest) {
+                throw Error("Test requested, but test support is not enabled")
+                this.runTest = false
+            }
             if(this.runTest) {
                 this.connectTestMethods()
                 this.testDisposition = await mainApi.readFileText('~dotest')
