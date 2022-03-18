@@ -21,7 +21,7 @@ import {ComNormal} from "./ComNormal";
 
 import * as testOps from "../test-actions/TestOps"
 
-const {TEST_ENABLED} = require("../Settings")
+const TEST_ENABLED = false // TODO: This value should be portable to other modules
 
 const gwindow:any = typeof window !== 'undefined' ? window : {}
 let mainApi = check.mobile ? null : gwindow.api;
