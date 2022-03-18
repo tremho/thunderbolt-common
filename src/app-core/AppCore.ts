@@ -22,7 +22,7 @@ import {ComNormal} from "./ComNormal";
 import * as testOps from "../test-actions/TestOps"
 
 // @ts-ignore
-import {TEST_ENABLED} from "`~/tbd/settings/enabled"
+import {TEST_ENABLED} from "`/Users/sohmert/tbd/settings/enabled"
 
 const gwindow:any = typeof window !== 'undefined' ? window : {}
 let mainApi = check.mobile ? null : gwindow.api;
