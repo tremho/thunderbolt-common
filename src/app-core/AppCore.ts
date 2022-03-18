@@ -21,7 +21,7 @@ import {ComNormal} from "./ComNormal";
 
 import * as testOps from "../test-actions/TestOps"
 
-const {TEST_ENABLED} = require("~/tbd/settings/enabled")
+const {TEST_ENABLED} = require( '../../../../settings/enabled')
 
 const gwindow:any = typeof window !== 'undefined' ? window : {}
 let mainApi = check.mobile ? null : gwindow.api;
