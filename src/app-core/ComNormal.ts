@@ -300,7 +300,16 @@ export class ComNormal {
                     // const lhndlr = (ev:any) => {
                     //     // console.log('dom handler for ' + action + ' triggered', ev)
                     // }
-                    this.registerHandler(el, pseudoEventTag, action, func)
+                    this.registerHandler(el, pseudoEventTag, action, (ed) => {
+                        if(!ed.value || !ed.value.clientX) {
+                            ed.value = {
+                                mode: action,
+                                clientX: ed.platEvent.clientX,
+                                clientY: ed.platEvent.clientY
+                            }
+                        }
+                        func(ed)
+                    })
 
                 } else if(handler) {
                     handler(el, h.mode, func, this)
