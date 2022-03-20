@@ -982,6 +982,12 @@ export class AppCore {
                 ed.platEvent = platEvent
                 ed.sourceComponent = this.getComponent(platEvent.target as HTMLElement)
                 ed.eventType = (platEvent as Event).type
+                ed.value = {
+                    mode: ed.eventType,
+                    clientX: platEvent.clientX,
+                    clientY: platEvent.clientY,
+                    buttons: platEvent.buttons
+                }
             }
         } else {
             ed = (platEvent as EventData)
