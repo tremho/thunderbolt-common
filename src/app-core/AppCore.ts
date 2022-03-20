@@ -418,19 +418,35 @@ export class AppCore {
 
     // Return properties of screen; follows NativeScript ScreenMetrics object definition.
     getScreenMetrics() {
+        let screenMetrics:any = {}
         if(mobileInjections.nscore) {
-            let screenMetrics = mobileInjections.nscore.Screen.mainScreen
-            return screen;
+            let cm = mobileInjections.nscore.Screen.mainScreen
+            screenMetrics.heightDIPs = cm.heightDIPs
+            screenMetrics.heightPixels = cm.heightPixels
+            screenMetrics.widthDIPs = cm.widthDIPs
+            screenMetrics.widthPixels = cm.widthPixels;
+            screenMetrics.scale = cm.scale
+            screenMetrics.metrics = {
+                density: cm.metrics.density,
+                densityDpi: cm.metrics.densityDpi,
+                heightPixels: cm.metrics.heightPixels,
+                widthPixels: cm.metrics.widthPixels,
+                scaledDensity: cm.metrics.scaledDensity,
+                xdpi: cm.metrics.xdpi,
+                ydpi: cm.metrics.ydpi
+            }
         } else {
             const bodSize = document.body.getBoundingClientRect()
-            let screenMetrics = {
+            screenMetrics = {
                 heightDIPs: bodSize.height,
                 heightPixels: bodSize.height,
                 widthDIPs: bodSize.width,
                 widthPixels: bodSize.width,
                 scale: 1
+                // no metrics detail here (we could, but it's silly at this point)
             }
         }
+        return screenMetrics
     }
 
     setupMenu(menuPath:string) {
