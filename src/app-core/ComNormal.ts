@@ -301,13 +301,7 @@ export class ComNormal {
                     //     // console.log('dom handler for ' + action + ' triggered', ev)
                     // }
                     this.registerHandler(el, pseudoEventTag, action, (ed:EventData) => {
-                        if(!ed.value || !ed.value.clientX) {
-                            ed.value = {
-                                mode: action,
-                                clientX: ed.platEvent.clientX,
-                                clientY: ed.platEvent.clientY
-                            }
-                        }
+                        // look here and decorate?
                         func(ed)
                     })
 
