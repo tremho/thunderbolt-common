@@ -416,6 +416,22 @@ export class AppCore {
         return Promise.resolve()
     }
 
+    // Return properties of screen; follows NativeScript ScreenMetrics object definition.
+    getScreenMetrics() {
+        if(mobileInjections.nscore) {
+            let screenMetrics = mobileInjections.nscore.Screen.mainScreen
+            return screen;
+        } else {
+            const bodSize = document.body.getBoundingClientRect()
+            let screenMetrics = {
+                heightDIPs: bodSize.height,
+                heightPixels: bodSize.height,
+                widthDIPs: bodSize.width,
+                widthPixels: bodSize.width,
+                scale: 1
+            }
+        }
+    }
 
     setupMenu(menuPath:string) {
         // console.log('%%%%%%%%%%%%%%%%%% setupMenu has been called')

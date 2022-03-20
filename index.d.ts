@@ -587,6 +587,7 @@ declare module "@tremho/jove-common" {
         waitReady(): Promise<unknown>;
         setupUIElements(appFront: any): Promise<unknown>;
         setPlatformClass(env: any): void;
+        getScreenMetrics(): any;
         setPathUtilInfo(env: any): any;
         setupMenu(menuPath: string): Promise<any>;
         setActiveMenu(menuComp: any): void;
