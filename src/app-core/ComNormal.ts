@@ -523,6 +523,7 @@ function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
     const callback = (ev:MouseEvent, type:string) => {
         let ed = new EventData()
         ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
+        ed.platEvent = ev
         let mx = ev.movementX || 0
         let my = ev.movementY || 0
         session.x += mx;
