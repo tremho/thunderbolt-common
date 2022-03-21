@@ -522,6 +522,7 @@ function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
     let session:any = getSessionData(comp)
     const callback = (ev:MouseEvent, type:string) => {
         let ed = new EventData()
+        ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
         let mx = ev.movementX || 0
         let my = ev.movementY || 0
         session.x += mx;
@@ -548,7 +549,6 @@ function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
         }
         else if(mx || my) { // only report actual movement
             ed.app = cn.stdComp.cm.getApp()
-            ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
             ed.tag = 'action'
             ed.eventType = 'pan'
             ed.platEvent = ev
