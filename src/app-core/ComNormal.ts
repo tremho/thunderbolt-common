@@ -534,6 +534,17 @@ function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
             tmx = session.x
             tmy = session.y
             session.startx = session.starty = 0;
+            ed.value = {
+                type,
+                clientX,
+                clientY
+            }
+        } else if(type === 'end') {
+            ed.value = {
+                type,
+                clientX,
+                clientY
+            }
         }
         else if(mx || my) { // only report actual movement
             ed.app = cn.stdComp.cm.getApp()
@@ -544,11 +555,12 @@ function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
             // ed.value = {type, mx, my, tmx, tmy, clientX, clientY}
             // align with mobile version
             ed.value = {
+                type,
                 mx:tmx,
                 my:tmy
             }
-            cb(ed)
         }
+        cb(ed)
     }
     const hdlDown = (ev:MouseEvent) => {
         session.active = true
@@ -557,13 +569,14 @@ function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
         session.starty = session.y = ev.clientY - offY
         callback(ev, 'start');
     }
-    const hdlUp =  () => {
+    const hdlUp =  (ev:MouseEvent) => {
         session.active = false
+        callback(ev, 'end')
     }
     const hdlMove = (ev:MouseEvent) => {
         if (session.active) {
             if (ev.buttons) {
-                callback(ev, 'drag')
+                callback(ev, 'change')
             } else {
                 session.active = session.started = false
             }
@@ -659,6 +672,7 @@ function handlePinch(comp:any, mode:string, cb:any, cn:ComNormal) {
 
 let lastTouchDown:number|undefined
 let touchX:any, touchY:any, touchC:any
+let onUpCb:any
 
 function mobileTouchHandler(ev:any) {
     let comp = ev.view
@@ -673,6 +687,7 @@ function mobileTouchHandler(ev:any) {
         lastTouchDown = Date.now()
     } else {
         lastTouchDown = undefined
+        if(onUpCb) onUpCb(x, y)
     }
     let session:any = getSessionData(comp);
     let cb = session.touch;
@@ -802,12 +817,28 @@ function mobilePanHandler(ev:any) {
     let cb = session.pan
     const ed = new EventData()
     ed.tag = 'action'
-    ed.value = {mx, my}
+    session.state = session.state || 'start'
+    let type = session.state
+    let clientX = touchX
+    let clientY = touchY
+    ed.value = (type === 'change') ? {type, mx, my} : {type, clientX, clientY}
     ed.eventType = 'pan'
     ed.app = self.stdComp.cm.getApp()
     ed.platEvent = ev
     ed.sourceComponent = self.stdComp.cm.getComponent(comp)
     if(cb) cb(ed)
+    if(type === 'start') {
+        // register a callback for when we get a touch 'up' event
+        onUpCb = (clientX:number, clientY:number) => {
+            // use this to single pan end
+            const ed = new EventData()
+            ed.tag = 'action'
+            ed.value = {type:'end', clientX, clientY}
+            if(cb) cb(ed)
+        }
+    }
+    session.state = 'change'
+
 }
 
 
