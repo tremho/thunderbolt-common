@@ -818,8 +818,7 @@ function mobilePanHandler(ev:any) {
     let cb = session.pan
     const ed = new EventData()
     ed.tag = 'action'
-    session.state = session.state || 'start'
-    let type = session.state
+    let type = { 1:'start', 2:'change', 3:'end'}[ev.state]
     let clientX = touchX
     let clientY = touchY
     ed.value = (type === 'change') ? {type, mx, my} : {type, clientX, clientY}
@@ -838,7 +837,6 @@ function mobilePanHandler(ev:any) {
             if(cb) cb(ed)
         }
     }
-    session.state = 'change'
 
 }
 
