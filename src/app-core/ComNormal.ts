@@ -814,14 +814,16 @@ function mobilePanHandler(ev:any) {
     let comp = ev.view || ev.object
     let mx = ev.deltaX
     let my = ev.deltaY
+    if(ev.state === 3 && !mx && !my) return // change with no change is not reported
     let session:any = getSessionData(comp)
     let cb = session.pan
     const ed = new EventData()
     ed.tag = 'action'
+    // @ts-ignore
     let type = { 1:'start', 2:'change', 3:'end'}[ev.state]
     let clientX = touchX
     let clientY = touchY
-    ed.value = (type === 'change') ? {type, mx, my} : {type, clientX, clientY}
+    ed.value = (type === 'change') ? {type, mx:touchX-mx, my:touchY-my} : {type, clientX, clientY}
     ed.eventType = 'pan'
     ed.app = self.stdComp.cm.getApp()
     ed.platEvent = ev
