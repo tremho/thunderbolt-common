@@ -130,6 +130,8 @@ export class AppCore {
      pageUpdates:any = {}
      runTest:boolean = false
      testDisposition:string = ''
+     _isMac:boolean = false
+     _isWindows:boolean = false
 
     constructor() {
         this.menuApi = new MenuApi(this)
@@ -178,6 +180,27 @@ export class AppCore {
 
     public isMobile():boolean {
         return check.mobile
+    }
+    public isMac(): boolean {
+        return (!check.mobile && this._isMac)
+    }
+    public isWindows(): boolean {
+        return (!check.mobile && this._isWindows)
+    }
+    public isLinux(): boolean {
+        return (!check.mobile && !this.isMac() && !this.isWindows())
+    }
+    public isAndroid():boolean {
+        if(check.mobile) {
+            if(mobileInjections.nsapplication?.android) return true
+        }
+        return false
+    }
+    public isIOS():boolean {
+        if(check.mobile) {
+            if(mobileInjections.nsapplication?.ios) return true
+        }
+        return false
     }
 
     // Used by mobile
@@ -375,8 +398,10 @@ export class AppCore {
             let platClass
             if(env.runtime.platform.name === 'darwin') {
                 platClass = 'macos'
+                this._isMac = true;
             } else if(env.runtime.platform.name === 'win32') {
                 platClass = 'windows'
+                this._isWindows = true;
             } else {
                 platClass = 'linux'
             }
@@ -448,6 +473,8 @@ export class AppCore {
         }
         return screenMetrics
     }
+
+
 
     setupMenu(menuPath:string) {
         // console.log('%%%%%%%%%%%%%%%%%% setupMenu has been called')
