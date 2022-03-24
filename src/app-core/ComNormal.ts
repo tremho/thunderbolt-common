@@ -558,7 +558,9 @@ function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
             ed.value = {
                 type,
                 mx:tmx,
-                my:tmy
+                my:tmy,
+                dx:mx,      // we now include the delta after all
+                dy:my
             }
         }
         cb(ed)
@@ -823,7 +825,12 @@ function mobilePanHandler(ev:any) {
     let type = { 1:'start', 2:'change', 3:'end'}[ev.state]
     let clientX = touchX
     let clientY = touchY
-    ed.value = (type === 'change') ? {type, mx:touchX-mx, my:touchY-my} : {type, clientX, clientY}
+    if(type === 'end') {
+        clientX -= mx;  // final position on end
+        clientY -= my;
+    }
+    // we now include the delta after all
+    ed.value = (type === 'change') ? {type, mx:touchX-mx, my:touchY-my, dx:mx, dy:my} : {type, clientX, clientY}
     ed.eventType = 'pan'
     ed.app = self.stdComp.cm.getApp()
     ed.platEvent = ev
