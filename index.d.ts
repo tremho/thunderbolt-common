@@ -580,6 +580,11 @@ declare module "@tremho/jove-common" {
         get Api(): any;
         get ExtMenuApi(): any;
         isMobile(): boolean;
+        isMac(): boolean;
+        isWindows():boolean;
+        isLinux():boolean;
+        isAndroid():boolean;
+        isIOS():boolean;
         static getTheApp(): any;
         static setTheApp(app: any, frame: any): void;
         waitForModel(): Promise<unknown>;
