@@ -823,14 +823,14 @@ function mobilePanHandler(ev:any) {
     ed.tag = 'action'
     // @ts-ignore
     let type = { 1:'start', 2:'change', 3:'end'}[ev.state]
-    let clientX = touchX
-    let clientY = touchY
+    let clientX = ev.getX ? ev.getX() : touchX
+    let clientY = ev.getY ? ev.getY() : touchY
     if(type === 'end') {
-        clientX = touchX+mx;  // final position on end
-        clientY = touchY+my;
+        clientX = ev.getX? ev.getX() : touchX+mx;  // final position on end
+        clientY = ev.getY? ev.getY() : touchY+my;
     }
     // we now include the delta after all
-    ed.value = (type === 'change') ? {type, mx:touchX+mx, my:touchY+my, dx:mx, dy:my} : {type, clientX, clientY}
+    ed.value = (type === 'change') ? {type, clientX, clientY, mx:touchX+mx, my:touchY+my, dx:mx, dy:my} : {type, clientX, clientY}
     ed.eventType = 'pan'
     ed.app = self.stdComp.cm.getApp()
     ed.platEvent = ev
