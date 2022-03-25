@@ -826,8 +826,8 @@ function mobilePanHandler(ev:any) {
     let clientX = touchX
     let clientY = touchY
     if(type === 'end') {
-        clientX -= mx;  // final position on end
-        clientY -= my;
+        clientX = touchX-mx;  // final position on end
+        clientY = touchY-my;
     }
     // we now include the delta after all
     ed.value = (type === 'change') ? {type, mx:touchX-mx, my:touchY-my, dx:mx, dy:my} : {type, clientX, clientY}
