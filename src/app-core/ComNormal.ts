@@ -827,10 +827,10 @@ function mobilePanHandler(ev:any) {
     let clientY = touchY
     if(type === 'end') {
         clientX = touchX+mx;  // final position on end
-        clientY = touchY+my; // not sure why we hace + here but - below,  but hey.
+        clientY = touchY+my;
     }
     // we now include the delta after all
-    ed.value = (type === 'change') ? {type, mx:touchX-mx, my:touchY-my, dx:mx, dy:my} : {type, clientX, clientY}
+    ed.value = (type === 'change') ? {type, mx:touchX+mx, my:touchY+my, dx:mx, dy:my} : {type, clientX, clientY}
     ed.eventType = 'pan'
     ed.app = self.stdComp.cm.getApp()
     ed.platEvent = ev
