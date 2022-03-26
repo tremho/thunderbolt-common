@@ -681,11 +681,13 @@ function mobileTouchHandler(ev:any) {
     let comp = ev.view
     let x = ev.getX()
     let y = ev.getY()
+    if(comp.android) y += 24
+    // if(comp.ios) ??? TODO: ios adjust
     let c = ev.getPointerCount()
     let mode = ev.action
     if(mode === 'down') {
         touchX = x;
-        touchY = y + (ev.view || ev.object)?.android? 24 : 0 // adjust for size of system bar TODO: ios
+        touchY = y;
         touchC = c
         lastTouchDown = Date.now()
     } else {
