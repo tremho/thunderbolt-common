@@ -685,7 +685,7 @@ function mobileTouchHandler(ev:any) {
     let mode = ev.action
     if(mode === 'down') {
         touchX = x;
-        touchY = y;
+        touchY = y + (ev.view || ev.object)?.android? 24 : 0 // adjust for size of system bar TODO: ios
         touchC = c
         lastTouchDown = Date.now()
     } else {
@@ -830,7 +830,7 @@ function mobilePanHandler(ev:any) {
         clientY = ev.getY? ev.getY() : touchY+my;
     }
     // we now include the delta after all
-    ed.value = (type === 'change') ? {type, clientX, clientY, mx:touchX+mx, my:touchY+my, dx:mx, dy:my} : {type, clientX, clientY}
+    ed.value = (type === 'change') ? {type, mx:touchX+mx, my:touchY+my, dx:mx, dy:my} : {type, clientX, clientY}
     ed.eventType = 'pan'
     ed.app = self.stdComp.cm.getApp()
     ed.platEvent = ev
