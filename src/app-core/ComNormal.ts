@@ -437,7 +437,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         const ed = new EventData()
         ed.tag = 'action'
         ed.value = {
-            mode,
+            type:mode,
             clientX: ev.clientX,
             clientY: ev.clientY
         }
@@ -681,7 +681,9 @@ function mobileTouchHandler(ev:any) {
     let comp = ev.view
     let x = ev.getX()
     let y = ev.getY()
-    if(comp.android) y += 24
+    if(comp.android) {
+        y += 24
+    }
     // if(comp.ios) ??? TODO: ios adjust
     let c = ev.getPointerCount()
     let mode = ev.action
@@ -699,7 +701,7 @@ function mobileTouchHandler(ev:any) {
     if(cb && mode !== 'move') {
         let ed = new EventData();
         ed.value = {
-            mode,
+            type:mode,
             clientX: x,
             clientY: y,
             buttons: c
