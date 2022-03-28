@@ -723,6 +723,10 @@ function mobileTapHandler(ev:any) {
     if(ev.getX) {
         x = ev.getX()
         y = ev.getY()
+        if(comp.ios) {
+            x *= 3
+            y *= 3
+        }
         c = ev.getPointerCount()
     } else {
         x = touchX
@@ -759,6 +763,10 @@ function mobileDoubleTapHandler(ev:any) {
         ed.eventType = 'dblpress';
         let x = ev.getX ? ev.getX() : touchX
         let y = ev.getY ? ev.getY() : touchY
+        if(comp.ios && ev.getX) {
+            x *= 3
+            y *= 3
+        }
         ed.value = {
             clientX: x,
             clientY: y,
@@ -780,6 +788,10 @@ function mobileLongPressHandler(ev:any) {
         ed.tag = 'action';
         let x = ev.getX ? ev.getX() : touchX
         let y = ev.getY ? ev.getY() : touchY
+        if(comp.ios && ev.getX) {
+            x *= 3
+            y *= 3
+        }
         ed.value = {
             clientX: x,
             clientY: y,
