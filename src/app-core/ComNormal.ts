@@ -688,11 +688,6 @@ function mobileTouchHandler(ev:any) {
     if(comp.android) {
         y += 24
     }
-    if(comp.ios) {
-        // x, y are in device coords, but we want them in dips
-        x /=3 // we could/(should?) use screenMetrics, but this is the value
-        y /=3
-    }
     let c = ev.getPointerCount()
     let mode = ev.action
     if(mode === 'down') {
@@ -840,10 +835,6 @@ function mobilePanHandler(ev:any) {
     let comp = ev.view || ev.object
     let mx = ev.deltaX
     let my = ev.deltaY
-    if(comp.ios) {
-        mx /=3
-        my /=3
-    }
     if(ev.state === 3 && !mx && !my) return // change with no change is not reported
     let session:any = getSessionData(comp)
     let cb = session.pan
@@ -853,17 +844,9 @@ function mobilePanHandler(ev:any) {
     let type = { 1:'start', 2:'change', 3:'end'}[ev.state]
     let clientX = ev.getX ? ev.getX() : touchX
     let clientY = ev.getY ? ev.getY() : touchY
-    if(comp.ios && !ev.getX) {
-        clientX /=3
-        clientY /=3
-    }
     if(type === 'end') {
         clientX = ev.getX? ev.getX() : touchX+mx;  // final position on end
         clientY = ev.getY? ev.getY() : touchY+my;
-        if(comp.ios && !ev.getX) {
-            clientX /=3
-            clientY /=3
-        }
     }
     // we now include the delta after all
     ed.value = (type === 'change') ? {type, mx:touchX+mx, my:touchY+my, dx:mx, dy:my} : {type, clientX, clientY}
