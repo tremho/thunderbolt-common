@@ -728,10 +728,6 @@ function mobileTapHandler(ev:any) {
     if(ev.getX) {
         x = ev.getX()
         y = ev.getY()
-        if(comp.ios) {
-            x/=3 //dips
-            y/=3
-        }
         c = ev.getPointerCount()
     } else {
         x = touchX
