@@ -451,15 +451,6 @@ export class AppCore {
             screenMetrics.widthDIPs = cm.widthDIPs
             screenMetrics.widthPixels = cm.widthPixels;
             screenMetrics.scale = cm.scale
-            screenMetrics.metrics = {
-                density: cm.metrics.density,
-                densityDpi: cm.metrics.densityDpi,
-                heightPixels: cm.metrics.heightPixels,
-                widthPixels: cm.metrics.widthPixels,
-                scaledDensity: cm.metrics.scaledDensity,
-                xdpi: cm.metrics.xdpi,
-                ydpi: cm.metrics.ydpi
-            }
         } else {
             const bodSize = document.body.getBoundingClientRect()
             screenMetrics = {
@@ -468,7 +459,6 @@ export class AppCore {
                 widthDIPs: bodSize.width,
                 widthPixels: bodSize.width,
                 scale: 1
-                // no metrics detail here (we could, but it's silly at this point)
             }
         }
         return screenMetrics

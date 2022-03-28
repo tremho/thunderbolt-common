@@ -502,7 +502,13 @@ function handleLongPress(comp:any, mode:string, cb:any, cn:ComNormal) {
         session.timerId = setTimeout(() => {
             const ed = new EventData()
             ed.tag = 'action'
-            ed.value = longPressInterval
+            let clientX = ev.clientX
+            let clientY = ev.clientY
+            ed.value = {
+                interval: longPressInterval,
+                clientX,
+                clientY
+            }
             ed.eventType = 'longpress'
             ed.app = cn.stdComp.cm.getApp()
             ed.platEvent = ev
@@ -533,8 +539,6 @@ function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
         let clientX = ev.clientX
         let clientY = ev.clientY
         if(type === 'start') {
-            tmx = session.x
-            tmy = session.y
             session.startx = session.starty = 0;
             ed.value = {
                 type,
@@ -684,7 +688,11 @@ function mobileTouchHandler(ev:any) {
     if(comp.android) {
         y += 24
     }
-    // if(comp.ios) ??? TODO: ios adjust
+    if(comp.ios) {
+        // x, y are in device coords, but we want them in dips
+        x /=3 // we could/(should?) use screenMetrics, but this is the value
+        y /=3
+    }
     let c = ev.getPointerCount()
     let mode = ev.action
     if(mode === 'down') {
@@ -720,6 +728,10 @@ function mobileTapHandler(ev:any) {
     if(ev.getX) {
         x = ev.getX()
         y = ev.getY()
+        if(comp.ios) {
+            x/=3 //dips
+            y/=3
+        }
         c = ev.getPointerCount()
     } else {
         x = touchX
@@ -754,6 +766,16 @@ function mobileDoubleTapHandler(ev:any) {
         ed.sourceComponent = self.stdComp.cm.getComponent(comp);
         ed.tag = 'action';
         ed.eventType = 'dblpress';
+        let x = ev.getX ? ev.getX() : touchX
+        let y = ev.getY ? ev.getY() : touchY
+        if(ev.view.ios && !ev.getX) {
+            x/=3
+            y/=3
+        }
+        ed.value = {
+            clientX: x,
+            clientY: y,
+        }
         ed.platEvent = ev;
         cb(ed);
     }
@@ -769,6 +791,16 @@ function mobileLongPressHandler(ev:any) {
         ed.app = self.stdComp.cm.getApp();
         ed.sourceComponent = self.stdComp.cm.getComponent(comp);
         ed.tag = 'action';
+        let x = ev.getX ? ev.getX() : touchX
+        let y = ev.getY ? ev.getY() : touchY
+        if(ev.view.ios && !ev.getX) {
+            x/=3
+            y/=3
+        }
+        ed.value = {
+            clientX: x,
+            clientY: y,
+        }
         ed.eventType = 'dblpress';
         ed.platEvent = ev;
         cb(ed);
@@ -820,6 +852,10 @@ function mobilePanHandler(ev:any) {
     let comp = ev.view || ev.object
     let mx = ev.deltaX
     let my = ev.deltaY
+    if(comp.ios) {
+        mx /=3
+        my /=3
+    }
     if(ev.state === 3 && !mx && !my) return // change with no change is not reported
     let session:any = getSessionData(comp)
     let cb = session.pan
@@ -829,9 +865,17 @@ function mobilePanHandler(ev:any) {
     let type = { 1:'start', 2:'change', 3:'end'}[ev.state]
     let clientX = ev.getX ? ev.getX() : touchX
     let clientY = ev.getY ? ev.getY() : touchY
+    if(comp.ios && !ev.getX) {
+        clientX /=3
+        clientY /=3
+    }
     if(type === 'end') {
         clientX = ev.getX? ev.getX() : touchX+mx;  // final position on end
         clientY = ev.getY? ev.getY() : touchY+my;
+        if(comp.ios && !ev.getX) {
+            clientX /=3
+            clientY /=3
+        }
     }
     // we now include the delta after all
     ed.value = (type === 'change') ? {type, mx:touchX+mx, my:touchY+my, dx:mx, dy:my} : {type, clientX, clientY}
