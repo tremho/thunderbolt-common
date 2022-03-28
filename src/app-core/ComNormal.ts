@@ -764,10 +764,6 @@ function mobileDoubleTapHandler(ev:any) {
         ed.eventType = 'dblpress';
         let x = ev.getX ? ev.getX() : touchX
         let y = ev.getY ? ev.getY() : touchY
-        if(ev.view.ios && !ev.getX) {
-            x/=3
-            y/=3
-        }
         ed.value = {
             clientX: x,
             clientY: y,
@@ -789,10 +785,6 @@ function mobileLongPressHandler(ev:any) {
         ed.tag = 'action';
         let x = ev.getX ? ev.getX() : touchX
         let y = ev.getY ? ev.getY() : touchY
-        if(ev.view.ios && !ev.getX) {
-            x/=3
-            y/=3
-        }
         ed.value = {
             clientX: x,
             clientY: y,
