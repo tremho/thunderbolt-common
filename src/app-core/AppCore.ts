@@ -984,7 +984,7 @@ export class AppCore {
      */
     public splashDance(mobileComp:any) {
         let p
-        if(!this.isMobile()) { // this only runs on desktop anyway...
+        if(!this.isMobile()) {
             let splash = this.findPage('splash')
             let ht  = '' + (window.innerHeight-17)
             ht += 'px'
@@ -1005,7 +1005,9 @@ export class AppCore {
         if(this.appFront && typeof this.appFront.splashWait === 'function') {
             p = this.appFront.splashWait(this)
         }
+        console.log('appcore waiting for splash')
         Promise.resolve(p).then(()=> {
+            console.log('appcore navigating to main')
             this.navigateToPage('main')
         })
 
