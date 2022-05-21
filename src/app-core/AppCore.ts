@@ -659,7 +659,7 @@ export class AppCore {
                         mainApi.appExit(0)
                     } else if(this.testDisposition.substring(0,3) === 'run') {
                         const pi = this.testDisposition.substring(4).trim()
-                        if(pi) {pageId = pi; context = undefined; skipHistory = undefined}
+                        if(pi) {pageId = pi; context = undefined; skipHistory = true}
                         this.navigateToPage(pageId, context, skipHistory)
                     }
                 })
@@ -711,7 +711,7 @@ export class AppCore {
                     backstackVisible: !skipHistory
                 };
                 // console.log('>>> the frame', theFrame)
-                // console.log('>>> navigation Entry', navigationEntry)
+                console.log('>>> navigation Entry', navigationEntry)
 
                 reservedContext = context // pass via this variable
                 theFrame && theFrame.navigate(navigationEntry)
@@ -1007,7 +1007,7 @@ export class AppCore {
         }
         console.log('appcore waiting for splash')
         Promise.resolve(p).then(()=> {
-            console.log('appcore navigating to main')
+            console.log('appcore navigating to main, no history')
             this.navigateToPage('main', undefined, true) // we're never coming back!
         })
     }
