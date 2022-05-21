@@ -1008,10 +1008,8 @@ export class AppCore {
         console.log('appcore waiting for splash')
         Promise.resolve(p).then(()=> {
             console.log('appcore navigating to main')
-            this.navigateToPage('main')
+            this.navigateToPage('main', undefined, true) // we're never coming back!
         })
-
-
     }
 
     /**
