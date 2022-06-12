@@ -273,24 +273,24 @@ export class AppCore {
                             // @ts-ignore
                             env = mergeEnvironmentData(env, data, this._riotVersion)
                             this.model.setAtPath('environment', env)
-                            // console.log('===================')
-                            // console.log('environment', env)
-                            // console.log('===================')
+                            console.log('===================')
+                            console.log('environment', env)
+                            console.log('===================')
                             setEnvironment(env) // for check
                             this.setPlatformClass(env)
                             this.setPathUtilInfo(env).then(() => {
-                                // console.log('Setting up models annd menus')
+                                console.log('Setting up models annd menus')
                                 // Set up app models and menus
                                 this.model.addSection('menu', {})
                                 if (appFront && appFront.appStart) { // appStart in tbFrontApp will likely create its own menu
-                                    // console.log('Starting app')
+                                    console.log('Starting app')
                                     Promise.resolve(appFront.appStart(this)).then(() => {
-                                        // console.log("Clearing model gate")
+                                        console.log("Clearing model gate")
                                         this.modelGateResolver()
                                     })
                                 } else {
                                     // no front app, or no appStart, so we are just vanilla default
-                                    // console.log("Clearing model gate with no app")
+                                    console.log("Clearing model gate with no app")
                                     this.modelGateResolver()
                                 }
                             })
@@ -1208,9 +1208,9 @@ function findPageComponent(pageId:string) {
 function mergeEnvironmentData(env:any, data:any, riotVersion?:string) {
 
     // debug
-    // console.log('-------env merge')
-    // console.log('env, data ', env, data)
-    // console.log('riot version ', riotVersion)
+    console.log('-------env merge')
+    console.log('env, data ', env, data)
+    console.log('riot version ', riotVersion)
 
     try {
         // merges the sometimes differently formatted environment info from
