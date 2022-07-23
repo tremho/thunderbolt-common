@@ -384,7 +384,7 @@ export class ComNormal {
             }
             el.set(prop, sv)
         } else {
-            el.style[prop] = value+(unit || '')
+            if (el) el.style[prop] = value+(unit || '')
         }
     }
 
