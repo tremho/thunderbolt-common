@@ -203,14 +203,15 @@ export class ComCommon {
         if(check.riot) {
             tag = (tag && tag.toUpperCase())
             while (comp) {
-                const root = comp.root ?? comp; // get to the element (we may already be one)
+                let root = comp.root ?? comp; // get to the element (we may already be one)
                 comp = root.parentElement; // up to parent
                 if(!comp) return null
                 if (!tag || comp.root.tagName === tag) {
                     // This looks like a hack, but it's actually needed because
                     // we can have an out-of scope and unmounted cond-sect that is not attached to a parent
                     // any longer, so it's dom may be invalid.  This finds such cases and declares "that's all folks" instead.
-                    if(ocomp.root.tagName === 'COND-SECT') {
+                    root = ocomp.root ?? ocomp;
+                    if(root.tagName === 'COND-SECT') {
                         const pel = comp.root
                         const kids = pel.children
                         let found = false;
