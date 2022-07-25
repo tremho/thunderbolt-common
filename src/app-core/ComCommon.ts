@@ -203,11 +203,8 @@ export class ComCommon {
         if(check.riot) {
             tag = (tag && tag.toUpperCase())
             while (comp) {
-                if(comp.root) {
-                    comp = comp.root.parentElement && this.getComponent(comp.root.parentElement)
-                } else {
-                    comp = comp.parent; // if comp is an element
-                }
+                const root = comp.root ?? comp; // get to the element (we may already be one)
+                comp = root.parent; // up to parent
                 if(!comp) return null
                 if (!tag || comp.root.tagName === tag) {
                     // This looks like a hack, but it's actually needed because
