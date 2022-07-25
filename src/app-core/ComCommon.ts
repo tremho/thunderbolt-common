@@ -204,7 +204,7 @@ export class ComCommon {
             tag = (tag && tag.toUpperCase())
             while (comp) {
                 const root = comp.root ?? comp; // get to the element (we may already be one)
-                comp = root.parent; // up to parent
+                comp = root.parentElement; // up to parent
                 if(!comp) return null
                 if (!tag || comp.root.tagName === tag) {
                     // This looks like a hack, but it's actually needed because
