@@ -206,7 +206,7 @@ export class ComCommon {
                 let root = comp.root ?? comp; // get to the element (we may already be one)
                 comp = root.parentElement; // up to parent
                 if(!comp) return null
-                if (!tag || comp.root.tagName === tag) {
+                if (!tag || root.tagName === tag) {
                     // This looks like a hack, but it's actually needed because
                     // we can have an out-of scope and unmounted cond-sect that is not attached to a parent
                     // any longer, so it's dom may be invalid.  This finds such cases and declares "that's all folks" instead.
@@ -216,7 +216,7 @@ export class ComCommon {
                         const kids = pel.children
                         let found = false;
                         for (let i = 0; i < kids.length; i++) {
-                            if (kids[i] === ocomp.root) {
+                            if (kids[i] === root) {
                                 found = true;
                                 break;  // parent is valid
                             }
