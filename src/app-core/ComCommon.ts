@@ -314,7 +314,8 @@ export class ComCommon {
         }
         // @ts-ignore
         if(!riot) riot = this.riot;
-        return riot.root.firstElementChild
+        const root = riot.root ?? riot; // may be element
+        return root.firstElementChild
     }
 
     /**
