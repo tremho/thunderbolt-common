@@ -268,7 +268,31 @@ export class ComCommon {
      */
     getComponentChild(comp:any, tag:string = '', ordinal:number = 1) {
         if(check.mobile) {
-            throw Error('Not Implemented: ComCommon.getComponentChild')
+            const found:any[] = []
+            const parts = tag.split('.')
+            let name = pascalCase(parts[0]) // to match primary class name as assigned by ComponentBase
+            const className = parts[1]
+            const childFinder = (parent:any) => {
+                let count = (parent.getChildrenCount && parent.getChildrenCount()) || 0
+                for(let i=0; i<count; i++) {
+                    const child = parent.getChildAt(i)
+                    const kname = child.className
+                    let hit = (kname === name) // pascal case compare
+                    if(name) {
+                        name = name.toLowerCase() // we'll do ci compares now
+                        let tn = (child.tagName || '').toLowerCase()
+                        hit = hit || (tn === name)
+                        hit = hit || !!(kname && kname.toLowerCase().indexOf(name) === 0)
+                    }
+                    hit = hit || !!(kname && className && kname.indexOf(className) !== -1)
+                    if(hit) {
+                        // console.log('found ', child)
+                        found.push(child)
+                    }
+                    if (child.getChildrenCount && child.getChildrenCount()) childFinder(child)
+                }
+            }
+            childFinder(comp)
         }
         const root = comp.root ?? comp // element
         const results = root.querySelectorAll(tag)
@@ -1473,4 +1497,15 @@ function baseFromAssets(url = '') {
         if(isURL) p = 'url("'+p+'")'
     }
     return p;
+}
+function pascalCase(name:string) {
+    let out = ''
+    name.split('-').forEach(p => {
+        out += p.charAt(0).toUpperCase()+p.substring(1).toLowerCase()
+    })
+    return out
+}
+function camelCase(name:string) {
+    let pc = pascalCase(name)
+    return pc.charAt(0).toLowerCase()+pc.substring(1)
 }
