@@ -270,7 +270,8 @@ export class ComCommon {
         if(check.mobile) {
             throw Error('Not Implemented: ComCommon.getComponentChild')
         }
-        const results = comp.$$(tag)
+        const root = comp.root ?? comp // element
+        const results = root.querySelectorAll(tag)
         const pick = ordinal - 1
         return this.getComponent(results[pick])
     }
