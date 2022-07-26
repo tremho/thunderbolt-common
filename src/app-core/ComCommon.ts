@@ -273,7 +273,8 @@ export class ComCommon {
         const root = comp.root ?? comp // element
         const results = root.querySelectorAll(tag)
         const pick = ordinal - 1
-        return this.getComponent(results[pick])
+        const pel = results[pick]
+        return pel && this.getComponent(pel)
     }
 
     /**
