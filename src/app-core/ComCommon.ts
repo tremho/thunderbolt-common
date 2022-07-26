@@ -293,6 +293,9 @@ export class ComCommon {
                 }
             }
             childFinder(comp)
+            const pick = ordinal - 1
+            return found[pick]
+
         }
         const root = comp.root ?? comp // element
         const results = root.querySelectorAll(tag)
