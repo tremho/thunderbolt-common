@@ -152,6 +152,7 @@ export class ComNormal {
      * @param propName
      */
     getProp(propName:string) {
+        propName = camelCase(propName).toLowerCase()
         if(this.isMobile) {
             const comp = this.stdComp.component
             return comp.get(propName)
