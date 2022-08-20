@@ -131,6 +131,9 @@ export class ComNormal {
                         let tn = (child.tagName || '').toLowerCase()
                         hit = hit || (tn === name)
                         hit = hit || !!(kname && kname.toLowerCase().indexOf(name) === 0)
+                        if(!hit && name.charAt(0) == '#') {
+                            hit = (child.id || '').toLowerCase() == name.substring(1).toLowerCase()
+                        }
                     }
                     hit = hit || !!(kname && className && kname.indexOf(className) !== -1)
                     if(hit) {
