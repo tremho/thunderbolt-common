@@ -705,6 +705,7 @@ function mobileTouchDiscriminator(ev:any) {
     const msLongPress = 750
 
     let eventInterval = timeNow - (session.lastDownAt ?? timeNow)
+    console.log('event '+comp.tag+' '+mode+' interval='+eventInterval, session)
 
     let ed = new EventData();
     ed.app = self.stdComp.cm.getApp();
