@@ -765,6 +765,7 @@ function mobileTouchDiscriminator(ev:any) {
         }
     }
     const emitPress = () => {
+        console.log('- emitting press-')
         const cb = session.tap
         if(cb) {
             ed.eventType = 'press'
@@ -800,8 +801,10 @@ function mobileTouchDiscriminator(ev:any) {
             console.log('- within dpinterval, emitting ------')
             return emitDblPress()
         }
-        console.log('- Not within dpinterval, resetting timer.')
-        resetTimer();
+        if(eventInterval) {
+            console.log('- Not within dpinterval, resetting timer.')
+            resetTimer();
+        }
     }
 
     if(mode === 'up') {
