@@ -731,7 +731,7 @@ function mobileTouchDiscriminator(ev:any) {
             type,
             clientX: x,
             clientY: y,
-            buttons: ev.getPointerCount()
+            buttons: ev.getPointerCount ? ev.getPointerCount() : 1
         }
         const cb = session.touch
         if(cb) cb(ed);
@@ -769,7 +769,7 @@ function mobileTouchDiscriminator(ev:any) {
             ed.value = {
                 clientX: x,
                 clientY: y,
-                buttons: ev.getPointerCount()
+                buttons: ev.getPointerCount ? ev.getPointerCount() : 1
             }
             cb(ed);
         }
@@ -780,7 +780,7 @@ function mobileTouchDiscriminator(ev:any) {
             type: 'up',
             clientX: x,
             clientY: y,
-            buttons: ev.getPointerCount()
+            buttons: ev.getPointerCount ? ev.getPointerCount() : 1
         }
         const cb = session.longpress
         if(cb) cb(ed)
