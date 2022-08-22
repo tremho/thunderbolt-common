@@ -773,26 +773,30 @@ function mobileTouchDiscriminator(ev:any) {
         if(cb) cb(ed)
 
     }
-    // Timer --
-    // start on down with an interval of 250
-    // record the counts of up and down events
-    // if we have more downs than ups, emit a dblpress (w/#repeats?)
-    // otherwise emit a press or long press, depending on hit number
-    // if have no ups, simple count the timerEvent number
-    session.timeout = setTimeout(() => {
-        const {downCount, upCount, processCount} = session
-        if(downCount > 1) {
-            emitDblPress(downCount - upCount)
-        } else {
-            if(upCount) {
-                return processCount ? emitLongPress() : emitPress()
-            } else {
-                session.processCount = processCount + 1
+    const startTimer = () => {
+        clearTimeout(session.timeout)
+        // Timer --
+        // start on down with an interval of 250
+        // record the counts of up and down events
+        // if we have more downs than ups, emit a dblpress (w/#repeats?)
+        // otherwise emit a press or long press, depending on hit number
+        // if have no ups, simple count the timerEvent number
+        session.timeout = setTimeout(() => {
+            const {downCount, upCount, processCount} = session
+            console.log('session values at timer', {downCount, upCount, processCount})
+            if (downCount > 1) {
+                emitDblPress(downCount - upCount)
+            } else if(downCount) {
+                if (upCount) {
+                    return processCount ? emitLongPress() : emitPress()
+                } else {
+                    session.processCount = processCount + 1
+                    startTimer()
+                }
             }
-        }
 
-
-    }, 250)
+        }, 250)
+    }
 
     console.log('---- process event ----')
     if(mode === 'down') {
