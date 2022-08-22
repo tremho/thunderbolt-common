@@ -775,6 +775,7 @@ function mobileTouchDiscriminator(ev:any) {
         }
     }
     const emitLongPress = () => {
+        console.log('WTF? ', typeof ev.getPointerCount)
         ed.eventType = 'longpress'
         ed.value = {
             type: 'up',
