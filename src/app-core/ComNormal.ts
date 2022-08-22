@@ -693,19 +693,13 @@ let onUpCb:any
 function mobileTouchDiscriminator(ev:any) {
     let comp = ev.view
     let session:any = getSessionData(comp);
+    session.downCount = session.upCount = session.processCount = 0
     let x = ev.getX ? ev.getX() : session.touchX ?? -4361
     let y = ev.getY ? ev.getY() : session.touchY ?? -4361
     if(comp.android) {
         y += 24
     }
-    let c = ev.getPointerCount()
     let mode = ev.action
-    let timeNow = Date.now()
-    const msDblTap = 300
-    const msLongPress = 750
-
-    let eventInterval = timeNow - (session.lastDownAt ?? timeNow)
-    // console.log('event '+comp.tag+' '+mode+' interval='+eventInterval, session)
 
     let ed = new EventData();
     ed.app = self.stdComp.cm.getApp();
@@ -713,19 +707,6 @@ function mobileTouchDiscriminator(ev:any) {
     ed.tag = 'action';
     ed.platEvent = ev;
 
-    const clearTimer = () => {
-        clearTimeout(session.timeout)
-        delete session.timeout
-        delete session.lastDownAt
-    }
-    const resetTimer = () => {
-        clearTimeout(session.timeout)
-        session.lastDownAt = timeNow;
-        session.timeout = setTimeout(() => {
-            clearTimer()
-            emitLongPress()
-        }, msLongPress)
-    }
     const emitTouch = (type:string) => {
         ed.eventType = 'touch'
         ed.value = {
@@ -745,7 +726,7 @@ function mobileTouchDiscriminator(ev:any) {
     const emitUp = () => {
         return emitTouch('up')
     }
-    const emitDblPress = () => {
+    const emitDblPress = (count:number) => {
         console.log('- emitting dbl press-')
         ed.eventType = 'dblpress'
         let cb = session.doubletap
@@ -759,6 +740,7 @@ function mobileTouchDiscriminator(ev:any) {
             ed.value = {
                 clientX: x,
                 clientY: y,
+                count,
             }
             ed.platEvent = ev;
             cb(ed);
@@ -791,32 +773,36 @@ function mobileTouchDiscriminator(ev:any) {
         if(cb) cb(ed)
 
     }
+    // Timer --
+    // start on down with an interval of 250
+    // record the counts of up and down events
+    // if we have more downs than ups, emit a dblpress (w/#repeats?)
+    // otherwise emit a press or long press, depending on hit number
+    // if have no ups, simple count the timerEvent number
+    session.timeout = setTimeout(() => {
+        const {downCount, upCount, processCount} = session
+        if(downCount - upCount > 0) {
+            emitDblPress(downCount - upCount)
+        } else {
+            if(upCount) {
+                return processCount ? emitLongPress() : emitPress()
+            } else {
+                session.processCount = processCount + 1
+            }
+        }
+
+
+    }, 250)
 
     console.log('---- process event ----')
     if(mode === 'down') {
         emitDown()
-        console.log('- down, with interval', eventInterval)
-        // if we had a timer, this is a doublepress if within time
-        if (eventInterval && eventInterval <= msDblTap) {
-            console.log('- within dpinterval, emitting ------')
-            return emitDblPress()
-        }
-        if(eventInterval) {
-            console.log('- Not within dpinterval, resetting timer.')
-            resetTimer();
-        }
+        session.downCount++
     }
 
     if(mode === 'up') {
-        console.log('- up, clear lp timer -')
-        clearTimer()
         emitUp()
-        if(eventInterval && eventInterval > msDblTap) {
-            console.log('- past dbclick time, emit press -')
-            return emitPress()
-        } else {
-            console.log(' - up within dp time, ignore -')
-        }
+        session.upCount++
     }
 
 }
