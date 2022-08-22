@@ -248,10 +248,10 @@ export class ComNormal {
                 'pinch' : {action: 'pinch'}
             }
             const actionHandlers:any = {
-                touch: mobileTouchHandler,
-                tap: mobileTapHandler,
-                doubletap: mobileDoubleTapHandler,
-                longpress: mobileLongPressHandler,
+                touch: mobileTouchDiscriminator,
+                tap: mobileTouchDiscriminator,
+                doubletap: mobileTouchDiscriminator,
+                longpress: mobileTouchDiscriminator,
                 swipe: mobileSwipeHandler,
                 pan: mobilePanHandler,
                 rotation: mobileRotationHandler,
@@ -685,8 +685,14 @@ let lastTouchDown:number|undefined
 let touchX:any, touchY:any, touchC:any
 let onUpCb:any
 
-function mobileTouchHandler(ev:any) {
+/**
+ * Touch handler for mobile that will analyze the event and
+ * and recast it as touch, press, doublepress, or longpress
+ * @param ev
+ */
+function mobileTouchDiscriminator(ev:any) {
     let comp = ev.view
+    let session:any = getSessionData(comp);
     let x = ev.getX()
     let y = ev.getY()
     if(comp.android) {
@@ -694,118 +700,112 @@ function mobileTouchHandler(ev:any) {
     }
     let c = ev.getPointerCount()
     let mode = ev.action
+    let timeNow = Date.now()
+    const msDblTap = 100
+    const msLongPress = 500
+
+    let eventInterval = timeNow - (session.lastDownAt ?? timeNow)
+
+    let ed = new EventData();
+    ed.app = self.stdComp.cm.getApp();
+    ed.sourceComponent = self.stdComp.cm.getComponent(comp);
+    ed.tag = 'action';
+    ed.platEvent = ev;
+
+    const clearTimer = () => {
+        clearTimeout(session.timeout)
+        delete session.timeout
+        delete session.lastDownAt
+    }
+    const resetTimer = () => {
+        clearTimeout(session.timeout)
+        session.lastDownAt = timeNow;
+        session.timeout = setTimeout(() => {
+            clearTimer()
+            emitLongPress()
+        }, msLongPress)
+    }
+    const emitTouch = (type:string) => {
+        ed.eventType = 'touch'
+        ed.value = {
+            type,
+            clientX: x,
+            clientY: y,
+            buttons: ev.getPointerCount()
+        }
+        const cb = session.touch
+        if(cb) cb(ed);
+    }
+    const emitDown = () => {
+        session.touchX = x
+        session.touchY = y
+        return emitTouch('down')
+    }
+    const emitUp = () => {
+        return emitTouch('up')
+    }
+    const emitDblPress = () => {
+        ed.eventType = 'dblpress'
+        let cb = session['doubletap'];
+        if(cb) {
+            let x = ev.getX ? ev.getX() : session.touchX
+            let y = ev.getY ? ev.getY() : session.touchY
+            if(comp.ios && ev.getX) {
+                x *= 3
+                y *= 3
+            }
+            ed.value = {
+                clientX: x,
+                clientY: y,
+            }
+            ed.platEvent = ev;
+            cb(ed);
+        }
+    }
+    const emitPress = () => {
+        const cb = session.press
+        if(cb) {
+            ed.eventType = 'press'
+            ed.value = {
+                clientX: x,
+                clientY: y,
+                buttons: ev.getPointerCount()
+            }
+            cb(ed);
+        }
+    }
+    const emitLongPress = () => {
+        ed.eventType = 'longpress'
+        ed.value = {
+            type: 'up',
+            clientX: x,
+            clientY: y,
+            buttons: ev.getPointerCount()
+        }
+        const cb = session.longpress
+        if(cb) cb(ed)
+
+    }
+
     if(mode === 'down') {
-        touchX = x;
-        touchY = y;
-        touchC = c
-        lastTouchDown = Date.now()
-    } else {
-        lastTouchDown = undefined
-        if(onUpCb) onUpCb(x, y)
+        emitDown()
+        // if we had a timer, this is a doublepress if within time
+        if (eventInterval && eventInterval <= msDblTap) {
+            return emitDblPress()
+        }
+        resetTimer();
     }
-    let session:any = getSessionData(comp);
-    let cb = session.touch;
-    if(cb && mode !== 'move') {
-        let ed = new EventData();
-        ed.value = {
-            type:mode,
-            clientX: x,
-            clientY: y,
-            buttons: c
+
+    if(mode === 'up') {
+        emitUp()
+        if(eventInterval && eventInterval > msDblTap) {
+            clearTimer()
+            return emitPress()
         }
-        ed.app = self.stdComp.cm.getApp();
-        ed.sourceComponent = self.stdComp.cm.getComponent(comp);
-        ed.tag = 'action';
-        ed.eventType = 'touch';
-        ed.platEvent = ev;
-        cb(ed);
-    }
-}
-function mobileTapHandler(ev:any) {
-    let comp = ev.view || ev.object
-    let x:any, y:any, c:any
-    if(ev.getX) {
-        x = ev.getX()
-        y = ev.getY()
-        if(comp.ios) {
-            x *= 3
-            y *= 3
-        }
-        c = ev.getPointerCount()
-    } else {
-        x = touchX
-        y = touchY
-        c = touchC
-    }
-    let session:any = getSessionData(comp);
-    let cb = session.tap;
-    const callback = (ev:any) => {
-        let ed = new EventData();
-        ed.value = {
-            clientX: x,
-            clientY: y,
-            buttons: c
-        }
-        ed.app = self.stdComp.cm.getApp();
-        ed.sourceComponent = self.stdComp.cm.getComponent(comp);
-        ed.tag = 'action';
-        ed.eventType = 'press';
-        ed.platEvent = ev;
-        cb(ed);
-    };
-    if(cb) callback(ev)
-}
-function mobileDoubleTapHandler(ev:any) {
-    let comp = ev.view || ev.object
-    let session:any = getSessionData(comp);
-    let cb = session['doubletap'];
-    if(cb) {
-        let ed = new EventData();
-        ed.app = self.stdComp.cm.getApp();
-        ed.sourceComponent = self.stdComp.cm.getComponent(comp);
-        ed.tag = 'action';
-        ed.eventType = 'dblpress';
-        let x = ev.getX ? ev.getX() : touchX
-        let y = ev.getY ? ev.getY() : touchY
-        if(comp.ios && ev.getX) {
-            x *= 3
-            y *= 3
-        }
-        ed.value = {
-            clientX: x,
-            clientY: y,
-        }
-        ed.platEvent = ev;
-        cb(ed);
-    }
-}
-function mobileLongPressHandler(ev:any) {
-    let comp = ev.view || ev.object
-    let session:any = getSessionData(comp)
-    let cb = session.longpress
-    const longPressInterval = lastTouchDown && (Date.now() - lastTouchDown)
-    if(cb) {
-        let ed = new EventData();
-        ed.value = longPressInterval
-        ed.app = self.stdComp.cm.getApp();
-        ed.sourceComponent = self.stdComp.cm.getComponent(comp);
-        ed.tag = 'action';
-        let x = ev.getX ? ev.getX() : touchX
-        let y = ev.getY ? ev.getY() : touchY
-        if(comp.ios && ev.getX) {
-            x *= 3
-            y *= 3
-        }
-        ed.value = {
-            clientX: x,
-            clientY: y,
-        }
-        ed.eventType = 'dblpress';
-        ed.platEvent = ev;
-        cb(ed);
     }
 
 }
+
 function mobileSwipeHandler(ev:any) {
     let comp = ev.view || ev.object
     let session:any = getSessionData(comp)
