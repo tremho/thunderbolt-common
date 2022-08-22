@@ -82,9 +82,9 @@ export default {
     },
     listenToAllGestures(el:HTMLElement, action:string = 'action') {
         // @ts-ignore
-        // this.listenToFor(el, 'touch', (ev: any) => {
-        //     this.cm.getApp().callEventHandler(action, 'touch', ev)
-        // })
+        this.listenToFor(el, 'touch', (ev: any) => {
+            this.cm.getApp().callEventHandler(action, 'touch', ev)
+        })
         // @ts-ignore
         this.listenToFor(el, 'press', (ev: any) => {
             this.cm.getApp().callEventHandler(action, 'press', ev)
