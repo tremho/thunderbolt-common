@@ -237,7 +237,7 @@ export class ComNormal {
                     'swipeup' : {aka:'swipe'},
                     'swipedown' : {aka:'swipe'},
 
-                'longpress' : {action: 'longpress'},
+                'longpress' : {action: 'longtap'},
 
                 'pan' : {action: 'pan'},
                     'drag': {aka: 'pan'},
@@ -784,7 +784,7 @@ function mobileTouchDiscriminator(ev:any) {
             clientY: y,
             buttons: ev.getPointerCount ? ev.getPointerCount() : 1
         }
-        const cb = session.longpress
+        const cb = session.longtap
         if(cb) cb(ed)
 
     }
