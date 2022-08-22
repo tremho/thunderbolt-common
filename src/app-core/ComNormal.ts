@@ -705,7 +705,7 @@ function mobileTouchDiscriminator(ev:any) {
     const msLongPress = 750
 
     let eventInterval = timeNow - (session.lastDownAt ?? timeNow)
-    console.log('event '+comp.tag+' '+mode+' interval='+eventInterval, session)
+    // console.log('event '+comp.tag+' '+mode+' interval='+eventInterval, session)
 
     let ed = new EventData();
     ed.app = self.stdComp.cm.getApp();
@@ -746,8 +746,9 @@ function mobileTouchDiscriminator(ev:any) {
         return emitTouch('up')
     }
     const emitDblPress = () => {
+        console.log('- emitting dbl press-')
         ed.eventType = 'dblpress'
-        let cb = session['doubletap'];
+        let cb = session.doubletap
         if(cb) {
             let x = ev.getX ? ev.getX() : session.touchX
             let y = ev.getY ? ev.getY() : session.touchY
@@ -776,6 +777,7 @@ function mobileTouchDiscriminator(ev:any) {
         }
     }
     const emitLongPress = () => {
+        console.log('- emitting long press-')
         console.log('WTF? ', typeof ev.getPointerCount)
         ed.eventType = 'longpress'
         ed.value = {
@@ -789,20 +791,28 @@ function mobileTouchDiscriminator(ev:any) {
 
     }
 
+    console.log('---- process event ----')
     if(mode === 'down') {
         emitDown()
+        console.log('- down, with interval', eventInterval)
         // if we had a timer, this is a doublepress if within time
         if (eventInterval && eventInterval <= msDblTap) {
+            console.log('- within dpinterval, emitting ------')
             return emitDblPress()
         }
+        console.log('- Not within dpinterval, resetting timer.')
         resetTimer();
     }
 
     if(mode === 'up') {
+        console.log('- up, clear lp timer -')
+        clearTimer()
         emitUp()
         if(eventInterval && eventInterval > msDblTap) {
-            clearTimer()
+            console.log('- past dbclick time, emit press -')
             return emitPress()
+        } else {
+            console.log(' - up within dp time, ignore -')
         }
     }
 
