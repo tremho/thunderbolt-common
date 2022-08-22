@@ -781,7 +781,7 @@ function mobileTouchDiscriminator(ev:any) {
     // if have no ups, simple count the timerEvent number
     session.timeout = setTimeout(() => {
         const {downCount, upCount, processCount} = session
-        if(downCount - upCount > 0) {
+        if(downCount > 1) {
             emitDblPress(downCount - upCount)
         } else {
             if(upCount) {
