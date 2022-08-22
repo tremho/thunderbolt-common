@@ -763,7 +763,7 @@ function mobileTouchDiscriminator(ev:any) {
         }
     }
     const emitPress = () => {
-        const cb = session.press
+        const cb = session.tap
         if(cb) {
             ed.eventType = 'press'
             ed.value = {
