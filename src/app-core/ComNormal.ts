@@ -701,8 +701,8 @@ function mobileTouchDiscriminator(ev:any) {
     let c = ev.getPointerCount()
     let mode = ev.action
     let timeNow = Date.now()
-    const msDblTap = 100
-    const msLongPress = 500
+    const msDblTap = 300
+    const msLongPress = 750
 
     let eventInterval = timeNow - (session.lastDownAt ?? timeNow)
 
