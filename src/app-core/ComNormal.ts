@@ -693,8 +693,8 @@ let onUpCb:any
 function mobileTouchDiscriminator(ev:any) {
     let comp = ev.view
     let session:any = getSessionData(comp);
-    let x = ev.getX()
-    let y = ev.getY()
+    let x = ev.getX ? ev.getX() : session.touchX ?? -4361
+    let y = ev.getY ? ev.getY() : session.touchY ?? -4361
     if(comp.android) {
         y += 24
     }
