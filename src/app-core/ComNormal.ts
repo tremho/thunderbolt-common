@@ -789,13 +789,10 @@ function mobileTouchDiscriminator(ev:any) {
             } else if(downCount) {
                 if (upCount) {
                     return processCount ? emitLongPress() : emitPress()
-                } else {
-                    session.processCount = processCount + 1
-                    startTimer()
                 }
             }
 
-        }, 250)
+        }, 500)
     }
 
     console.log('---- process event ----')
@@ -808,6 +805,9 @@ function mobileTouchDiscriminator(ev:any) {
         emitUp()
         session.upCount++
     }
+
+    session.processCount++
+    startTimer()
 
 }
 
