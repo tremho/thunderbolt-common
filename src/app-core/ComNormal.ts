@@ -781,6 +781,9 @@ function mobileTouchDiscriminator(ev:any) {
             session.touchX = x
             session.touchY = y
             session.isDouble = false
+            setTimeout(() => {
+                session.isDouble = false
+            }, dblTime*2)
         }
         emitDown()
         session.downCount++
