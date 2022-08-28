@@ -726,7 +726,7 @@ function mobileTouchDiscriminator(ev:any) {
     const emitUp = () => {
         return emitTouch('up')
     }
-    const emitDblPress = (count:number) => {
+    const emitDblPress = () => {
         // console.log('- emitting dbl press-')
         ed.eventType = 'dblpress'
         let cb = session.doubletap
@@ -739,8 +739,7 @@ function mobileTouchDiscriminator(ev:any) {
             }
             ed.value = {
                 clientX: x,
-                clientY: y,
-                count,
+                clientY: y
             }
             ed.platEvent = ev;
             cb(ed);
@@ -772,30 +771,7 @@ function mobileTouchDiscriminator(ev:any) {
         if(cb) cb(ed)
 
     }
-    // const startTimer = () => {
-    //     // Timer --
-    //     // start on down with an interval window
-    //     // record the counts of up and down events
-    //     // if we have more downs than ups, emit a dblpress (w/#repeats?)
-    //     // otherwise emit a press or long press, depending on hit number
-    //     // if have no ups, simple count the timerEvent number
-    //     session.startTime = Date.now()
-    //     session.timeout = setTimeout(() => {
-    //         delete session.timeout
-    //         const {downCount, upCount, processCount} = session
-    //         console.log('session values at timer', {downCount, upCount, processCount})
-    //         if (downCount > 1) {
-    //             emitDblPress(downCount - upCount)
-    //         } else if(downCount) {
-    //             if (upCount) {
-    //                 return processCount ? emitLongPress() : emitPress()
-    //             }
-    //         }
-    //
-    //     }, 750)
-    // }
 
-    // console.log('---- process event ----')
     if(mode === 'down') {
         if(!session.startTime) {
             session.startTime = Date.now()
@@ -816,7 +792,8 @@ function mobileTouchDiscriminator(ev:any) {
         } else {
             session.startTime = 0
             if(session.isDouble) {
-                return emitDblPress(session.downCount)
+                session.isDouble = false
+                return emitDblPress()
             }
             if (elapsed >= longTime) {
                 emitLongPress()
