@@ -180,7 +180,7 @@ export class ComNormal {
         const session = getSessionData(comp)
         if(session[action] !== callback) {
             session[action] = callback
-            console.log('registering '+action+' handler '+handler.constructor.name ||'(anon)'+' => '+callback.constructor.name || '(anon)')
+            // console.log('registering '+action+' handler '+handler.constructor.name ||'(anon)'+' => '+callback.constructor.name || '(anon)')
             comp.on(action, handler)
         }
 
@@ -727,7 +727,7 @@ function mobileTouchDiscriminator(ev:any) {
         return emitTouch('up')
     }
     const emitDblPress = (count:number) => {
-        console.log('- emitting dbl press-')
+        // console.log('- emitting dbl press-')
         ed.eventType = 'dblpress'
         let cb = session.doubletap
         if(cb) {
@@ -747,7 +747,7 @@ function mobileTouchDiscriminator(ev:any) {
         }
     }
     const emitPress = () => {
-        console.log('- emitting press-')
+        // console.log('- emitting press-')
         const cb = session.tap
         if(cb) {
             ed.eventType = 'press'
@@ -760,8 +760,7 @@ function mobileTouchDiscriminator(ev:any) {
         }
     }
     const emitLongPress = () => {
-        console.log('- emitting long press-')
-        console.log('WTF? ', typeof ev.getPointerCount)
+        // console.log('- emitting long press-')
         ed.eventType = 'longpress'
         ed.value = {
             type: 'up',
@@ -796,7 +795,7 @@ function mobileTouchDiscriminator(ev:any) {
     //     }, 750)
     // }
 
-    console.log('---- process event ----')
+    // console.log('---- process event ----')
     if(mode === 'down') {
         if(!session.startTime) {
             session.startTime = Date.now()
@@ -811,24 +810,20 @@ function mobileTouchDiscriminator(ev:any) {
     if(mode === 'up') {
         emitUp()
         session.upCount++
-        console.log('√ 1')
         const elapsed = Date.now() - (session.startTime ?? 0)
         if(elapsed < dblTime) {
-            console.log(`double @ ${elapsed} < ${dblTime}`)
             session.isDouble = true
         } else {
             session.startTime = 0
             if(session.isDouble) {
-                emitDblPress(session.downCount)
+                return emitDblPress(session.downCount)
             }
             if (elapsed >= longTime) {
-                console.log(`long @ ${elapsed} >= ${longTime}`)
                 emitLongPress()
             } else {
                 emitPress()
             }
         }
-        console.log('√ 2')
     }
 }
 
