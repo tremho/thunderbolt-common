@@ -706,8 +706,9 @@ function mobileTouchDiscriminator(ev:any) {
     ed.tag = 'action';
     ed.platEvent = ev;
 
+    // TODO: Make these configurable
     const dblTime = 150
-    const longTime = 250
+    const longTime = 500
 
     const emitTouch = (type:string) => {
         ed.eventType = 'touch'
