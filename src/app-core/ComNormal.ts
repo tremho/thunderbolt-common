@@ -727,9 +727,9 @@ function mobileTouchDiscriminator(ev:any) {
         return emitTouch('up')
     }
     const emitDblPress = () => {
-        console.log('- emitting dbl press-')
+        console.log('- emitting double press-')
         ed.eventType = 'dblpress'
-        session.startTime = 0;
+        session.isDouble = false
         let cb = session.doubletap
         if(cb) {
             let x = ev.getX ? ev.getX() : session.touchX
@@ -749,7 +749,7 @@ function mobileTouchDiscriminator(ev:any) {
     const emitPress = () => {
         console.log('- emitting press-')
         const cb = session.tap
-        session.startTime = 0;
+        session.isDouble = false
         if(cb) {
             ed.eventType = 'press'
             ed.value = {
@@ -762,6 +762,7 @@ function mobileTouchDiscriminator(ev:any) {
     }
     const emitLongPress = () => {
         console.log('- emitting long press-')
+        session.isDouble = false
         ed.eventType = 'longpress'
         session.startTime = 0;
         ed.value = {
@@ -776,11 +777,10 @@ function mobileTouchDiscriminator(ev:any) {
     }
 
     if(mode === 'down') {
-        if(!session.startTime) {
+        if(!session.isDouble) {
             session.startTime = Date.now()
             session.touchX = x
             session.touchY = y
-            session.isDouble = false
             setTimeout(() => {
                 session.isDouble = false
             }, dblTime*2)
