@@ -693,7 +693,6 @@ let onUpCb:any
 function mobileTouchDiscriminator(ev:any) {
     let comp = ev.view
     let session:any = getSessionData(comp);
-    session.downCount = session.upCount = session.processCount = 0
     let x = ev.getX ? ev.getX() : session.touchX ?? -4361
     let y = ev.getY ? ev.getY() : session.touchY ?? -4361
     if(comp.android) {
@@ -707,6 +706,9 @@ function mobileTouchDiscriminator(ev:any) {
     ed.tag = 'action';
     ed.platEvent = ev;
 
+    const dblTime = 150
+    const longTime = 250
+
     const emitTouch = (type:string) => {
         ed.eventType = 'touch'
         ed.value = {
@@ -719,8 +721,6 @@ function mobileTouchDiscriminator(ev:any) {
         if(cb) cb(ed);
     }
     const emitDown = () => {
-        session.touchX = x
-        session.touchY = y
         return emitTouch('down')
     }
     const emitUp = () => {
@@ -773,30 +773,37 @@ function mobileTouchDiscriminator(ev:any) {
         if(cb) cb(ed)
 
     }
-    const startTimer = () => {
-        // Timer --
-        // start on down with an interval window
-        // record the counts of up and down events
-        // if we have more downs than ups, emit a dblpress (w/#repeats?)
-        // otherwise emit a press or long press, depending on hit number
-        // if have no ups, simple count the timerEvent number
-        session.timeout = setTimeout(() => {
-            delete session.timeout
-            const {downCount, upCount, processCount} = session
-            console.log('session values at timer', {downCount, upCount, processCount})
-            if (downCount > 1) {
-                emitDblPress(downCount - upCount)
-            } else if(downCount) {
-                if (upCount) {
-                    return processCount ? emitLongPress() : emitPress()
-                }
-            }
-
-        }, 750)
-    }
+    // const startTimer = () => {
+    //     // Timer --
+    //     // start on down with an interval window
+    //     // record the counts of up and down events
+    //     // if we have more downs than ups, emit a dblpress (w/#repeats?)
+    //     // otherwise emit a press or long press, depending on hit number
+    //     // if have no ups, simple count the timerEvent number
+    //     session.startTime = Date.now()
+    //     session.timeout = setTimeout(() => {
+    //         delete session.timeout
+    //         const {downCount, upCount, processCount} = session
+    //         console.log('session values at timer', {downCount, upCount, processCount})
+    //         if (downCount > 1) {
+    //             emitDblPress(downCount - upCount)
+    //         } else if(downCount) {
+    //             if (upCount) {
+    //                 return processCount ? emitLongPress() : emitPress()
+    //             }
+    //         }
+    //
+    //     }, 750)
+    // }
 
     console.log('---- process event ----')
     if(mode === 'down') {
+        if(!session.touchX) {
+            session.startTime = Date.now()
+            session.touchX = x
+            session.touchY = y
+            session.isDouble = false
+        }
         emitDown()
         session.downCount++
     }
@@ -804,11 +811,19 @@ function mobileTouchDiscriminator(ev:any) {
     if(mode === 'up') {
         emitUp()
         session.upCount++
+        const elapsed = Date.now() - (session.startTime() ?? 0)
+        if(elapsed < dblTime) {
+            console.log(`double @ ${elapsed} < ${dblTime}`)
+            session.isDouble = true
+        } else {
+            if (elapsed >= longTime) {
+                console.log(`long @ ${elapsed} >= ${longTime}`)
+                emitLongPress()
+            } else {
+                emitPress()
+            }
+        }
     }
-
-    session.processCount++
-    if(!session.timeout) startTimer()
-
 }
 
 function mobileSwipeHandler(ev:any) {
