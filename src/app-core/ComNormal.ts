@@ -789,7 +789,8 @@ function mobileTouchDiscriminator(ev:any) {
     if(mode === 'up') {
         emitUp()
         session.upCount++
-        const elapsed = Date.now() - (session.startTime ?? 0)
+        const elapsed = Date.now() - (session.startTime ?? dblTime)
+        console.log('elapsed', elapsed)
         if(elapsed < dblTime) {
             session.isDouble = true
             return
@@ -798,7 +799,6 @@ function mobileTouchDiscriminator(ev:any) {
             session.isDouble = false
             return emitDblPress()
         }
-        session.startTime = 0
         if (elapsed >= longTime) {
             emitLongPress()
         } else {
