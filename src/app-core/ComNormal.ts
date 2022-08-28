@@ -811,7 +811,7 @@ function mobileTouchDiscriminator(ev:any) {
     if(mode === 'up') {
         emitUp()
         session.upCount++
-        const elapsed = Date.now() - (session.startTime() ?? 0)
+        const elapsed = Date.now() - (session.startTime ?? 0)
         if(elapsed < dblTime) {
             console.log(`double @ ${elapsed} < ${dblTime}`)
             session.isDouble = true
