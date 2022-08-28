@@ -251,7 +251,7 @@ export class ComNormal {
                 touch: mobileTouchDiscriminator,
                 tap: mobileTouchDiscriminator,
                 doubletap: mobileTouchDiscriminator,
-                longpress: mobileTouchDiscriminator,
+                longtap: mobileTouchDiscriminator,
                 swipe: mobileSwipeHandler,
                 pan: mobilePanHandler,
                 rotation: mobileRotationHandler,
