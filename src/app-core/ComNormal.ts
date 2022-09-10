@@ -860,8 +860,8 @@ function mobilePanHandler(ev:any) {
 
     if(!ev.getX) {
         if(ev.android?.current?.getX) {
-            touchX = ev.android.current.getX();
-            touchY = ev.android.current.getY();
+            touchX = ev.android.current.getX() / 4;
+            touchY = ev.android.current.getY() / 4;
         }
     }
 
