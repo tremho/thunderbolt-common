@@ -860,8 +860,8 @@ function mobilePanHandler(ev:any) {
 
     if(!ev.getX) {
         if(ev.android?.current?.getX) {
-            touchX = ev.android.current.getX() / 4;
-            touchY = ev.android.current.getY() / 4;
+            touchX = ev.android.current.getX() / 7.2; // empirically derived magic conversion value
+            touchY = ev.android.current.getY() / 7.2; // probably not a good method.
         }
     }
 
