@@ -857,6 +857,14 @@ function mobilePanHandler(ev:any) {
     let mx = ev.deltaX
     let my = ev.deltaY
     if(ev.state === 3 && !mx && !my) return // change with no change is not reported
+
+    if(!ev.getX) {
+        if(ev.android?.current?.getX) {
+            touchX = ev.android.current.getX();
+            touchY = ev.android.current.getY();
+        }
+    }
+
     let session:any = getSessionData(comp)
     let cb = session.pan
     const ed = new EventData()
