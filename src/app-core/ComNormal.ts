@@ -699,6 +699,7 @@ function mobileTouchDiscriminator(ev:any) {
         y += 24
     }
     let mode = ev.action
+    console.log('MTD:',ev.action, ev.android?.getAction())
 
     let ed = new EventData();
     ed.app = self.stdComp.cm.getApp();
