@@ -186,14 +186,12 @@ export class ComNormal {
 
     }
 
-    sanityEventTest(comp:any, action:string, callback:any) {
-        comp.addEventListener(action ?? 'touch', (ev) => {
-            console.log('>>>  SANITY EVENT TEST')
-            if(callback) callback(ev)
-        }, this)
-
-
-    }
+    // sanityEventTest(comp:any, action:string, callback:any) {
+    //     comp.addEventListener(action ?? 'touch', (ev) => {
+    //         console.log('>>>  SANITY EVENT TEST')
+    //         if(callback) callback(ev)
+    //     }, this)
+    // }
 
     /**
      * Cross-platform event binder
@@ -708,7 +706,6 @@ function mobileTouchDiscriminator(ev:any) {
         y += 24
     }
     let mode = ev.action
-    console.log('MTD:',ev.action, ev.android?.getAction())
 
     let ed = new EventData();
     ed.app = self.stdComp.cm.getApp();
@@ -777,13 +774,13 @@ function mobileTouchDiscriminator(ev:any) {
         ed.eventType = 'longpress'
         session.startTime = 0;
         ed.value = {
-            type: 'up',
             clientX: x,
             clientY: y,
             buttons: ev.getPointerCount ? ev.getPointerCount() : 1
         }
         const cb = session.longtap
         if(cb) cb(ed)
+        delete session.longtap;
 
     }
 
@@ -795,6 +792,9 @@ function mobileTouchDiscriminator(ev:any) {
             setTimeout(() => {
                 if(session.isDouble)  emitPress(); // it was a quick single
             }, dblTime*2)
+            setTimeout(() => {
+                if(session.longTap) emitLongPress();
+            }, longTime)
         }
         emitDown()
         session.downCount++
