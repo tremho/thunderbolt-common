@@ -186,6 +186,15 @@ export class ComNormal {
 
     }
 
+    sanityEventTest(comp:any, action:string, callback:any) {
+        comp.addEventListener(action ?? 'touch', (ev) => {
+            console.log('>>>  SANITY EVENT TEST')
+            if(callback) callback(ev)
+        })
+
+
+    }
+
     /**
      * Cross-platform event binder
      *
@@ -266,12 +275,6 @@ export class ComNormal {
                 let handler = actionHandlers[h.action]
                 if(handler) {
                     this.registerMobileHandler(el, h.action, handler, func)
-
-                    el.addEventListener('touch', (ev) => {
-                        console.log('>>>  SANITY TOUCH TEST')
-                    })
-
-
                 }
             }
 
