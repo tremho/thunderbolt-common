@@ -190,7 +190,7 @@ export class ComNormal {
         comp.addEventListener(action ?? 'touch', (ev) => {
             console.log('>>>  SANITY EVENT TEST')
             if(callback) callback(ev)
-        })
+        }, this)
 
 
     }
