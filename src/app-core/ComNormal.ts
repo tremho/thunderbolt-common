@@ -719,6 +719,7 @@ function mobileTouchDiscriminator(ev:any) {
 
     const emitTouch = (type:string) => {
         ed.eventType = 'touch'
+        ed.eventName = camelCase('touch'+'-'+type)
         ed.value = {
             type,
             clientX: x,
@@ -737,6 +738,7 @@ function mobileTouchDiscriminator(ev:any) {
     const emitDblPress = () => {
         console.log('- emitting double press-')
         ed.eventType = 'dblpress'
+        ed.eventName = 'press'
         session.isDouble = false
         let cb = session.doubletap
         if(cb) {
@@ -760,6 +762,7 @@ function mobileTouchDiscriminator(ev:any) {
         session.isDouble = false
         if(cb) {
             ed.eventType = 'press'
+            ed.eventName = 'press'
             ed.value = {
                 clientX: x,
                 clientY: y,
@@ -771,6 +774,7 @@ function mobileTouchDiscriminator(ev:any) {
     const emitLongPress = () => {
         console.log('- emitting long press-')
         session.isDouble = false
+        ed.eventName = 'press'
         ed.eventType = 'longpress'
         session.startTime = 0;
         ed.value = {
