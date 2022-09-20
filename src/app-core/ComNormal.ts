@@ -266,6 +266,12 @@ export class ComNormal {
                 let handler = actionHandlers[h.action]
                 if(handler) {
                     this.registerMobileHandler(el, h.action, handler, func)
+
+                    el.addEventListener('touch', (ev) => {
+                        console.log('>>>  SANITY TOUCH TEST')
+                    })
+
+
                 }
             }
 
