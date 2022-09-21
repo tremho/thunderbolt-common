@@ -475,6 +475,7 @@ function handleSwipe(comp:any, mode:string, cb:any, cn:ComNormal) {
         const ed = new EventData()
         ed.tag = 'action'
         ed.value = mode
+        ed.eventName = 'swipe'
         ed.eventType = 'swipe'
         ed.app = cn.stdComp.cm.getApp()
         ed.platEvent = ev
@@ -632,6 +633,7 @@ function handleRotation(comp:any, mode:string, cb:any, cn:ComNormal) {
                 ed.app = cn.stdComp.cm.getApp()
                 ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
                 ed.tag = 'action'
+                ed.eventName = 'rotate'
                 ed.eventType = 'rotate'
                 ed.platEvent = ev
                 ed.value = angle
@@ -677,6 +679,7 @@ function handlePinch(comp:any, mode:string, cb:any, cn:ComNormal) {
                 ed.app = cn.stdComp.cm.getApp()
                 ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
                 ed.tag = 'action'
+                ed.eventName = 'pinch'
                 ed.eventType = 'pinch'
                 ed.platEvent = ev
                 ed.value = scale
