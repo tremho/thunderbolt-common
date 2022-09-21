@@ -452,7 +452,8 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
             clientX: ev.clientX,
             clientY: ev.clientY
         }
-        ed.eventType = 'mouse'+mode
+        ed.eventName = camelCase('touch-'+mode)
+        ed.eventType = 'touch'
         ed.app = cn.stdComp.cm.getApp()
         ed.platEvent = ev
         ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
@@ -520,6 +521,7 @@ function handleLongPress(comp:any, mode:string, cb:any, cn:ComNormal) {
                 clientX,
                 clientY
             }
+            ed.eventName = "longpress";
             ed.eventType = 'longpress'
             ed.app = cn.stdComp.cm.getApp()
             ed.platEvent = ev
@@ -566,6 +568,7 @@ function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
         else if(mx || my) { // only report actual movement
             ed.app = cn.stdComp.cm.getApp()
             ed.tag = 'action'
+            ed.eventName = "pan"
             ed.eventType = 'pan'
             ed.platEvent = ev
             // ed.value = {type, mx, my, tmx, tmy, clientX, clientY}
