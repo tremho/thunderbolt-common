@@ -444,26 +444,128 @@ export class ComNormal {
 // -- DOM event gesture handling
 function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
     let session:any = getSessionData(comp)
-    const callback = (ev:MouseEvent, mode:string) => {
+
+    // TODO: Make these configurable
+    const dblTime = 150
+    const longTime = 500
+
+    const emitTouch = (ev:MouseEvent, type:string) => {
         const ed = new EventData()
-        ed.tag = 'action'
+        ed.eventName = 'touch'
+        ed.eventType = type
         ed.value = {
-            type:mode,
+            type,
             clientX: ev.clientX,
-            clientY: ev.clientY
+            clientY: ev.clientY,
+            buttons: ev.buttons
         }
-        ed.eventName = camelCase('touch-'+mode)
-        ed.eventType = 'touch'
         ed.app = cn.stdComp.cm.getApp()
         ed.platEvent = ev
         ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
-        cb(ed)
+
+        const cb = session.touch
+        if(cb) {
+            cb(ed)
+        }
+    }
+    const emitDown = (ev:MouseEvent) => {
+        return emitTouch(ev, 'down')
+    }
+    const emitUp = (ev:MouseEvent) => {
+        return emitTouch(ev, 'up')
+    }
+    const emitDblPress = (ev:MouseEvent) => {
+        console.log('- emitting double press-')
+        const ed = new EventData()
+        ed.eventName = 'dblPress'
+        ed.eventType = 'dblPress'
+        ed.value = {
+            clientX: ev.clientX,
+            clientY: ev.clientY,
+            buttons: ev.buttons
+        }
+        ed.app = cn.stdComp.cm.getApp()
+        ed.platEvent = ev
+        ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
+
+        const cb = session.dblpress
+        if(cb) {
+            cb(ed)
+        }
+    }
+    const emitPress = (ev:MouseEvent) => {
+        console.log('- emitting press-')
+        const ed = new EventData()
+        ed.eventName = 'press'
+        ed.eventType = 'press'
+        ed.value = {
+            clientX: ev.clientX,
+            clientY: ev.clientY,
+            buttons: ev.buttons
+        }
+        ed.app = cn.stdComp.cm.getApp()
+        ed.platEvent = ev
+        ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
+
+        const cb = session.tap
+        if(cb) {
+            cb(ed)
+        }
+    }
+    const emitLongPress = (ev:MouseEvent) => {
+        console.log('- emitting long press-')
+        const ed = new EventData()
+        ed.eventName = 'longpress'
+        ed.eventType = 'longpress'
+        ed.value = {
+            clientX: ev.clientX,
+            clientY: ev.clientY,
+            buttons: ev.buttons
+        }
+        ed.app = cn.stdComp.cm.getApp()
+        ed.platEvent = ev
+        ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
+
+        const cb = session.longtap
+        if(cb) {
+            cb(ed)
+        }
+        delete session.longtap;
+
     }
     const hdlDown = (ev:any) => {
-        callback(ev, 'down')
+        if(!session.isDouble) {
+            session.startTime = Date.now()
+            session.touchX = ev.clientX
+            session.touchY = ev.clientY
+            setTimeout(() => {
+                if(session.isDouble)  emitPress(ev); // it was a quick single
+            }, dblTime*2)
+            setTimeout(() => {
+                if(session.longTap) emitLongPress(ev);
+            }, longTime)
+        }
+        emitDown(ev)
+        session.downCount++
     }
     const hdlUp = (ev:any) => {
-        callback(ev, 'up')
+        emitUp(ev)
+        session.upCount++
+        const elapsed = Date.now() - (session.startTime ?? dblTime)
+        console.log('elapsed', elapsed)
+        if(elapsed < dblTime) {
+            session.isDouble = true
+            return
+        }
+        if(session.isDouble) {
+            session.isDouble = false
+            return emitDblPress(ev)
+        }
+        if (elapsed >= longTime) {
+            emitLongPress(ev)
+        } else {
+            emitPress(ev)
+        }
     }
     cn.registerHandler(comp, 'touch', 'mousedown', hdlDown)
     cn.registerHandler(comp, 'touch', 'mouseup', hdlUp)
