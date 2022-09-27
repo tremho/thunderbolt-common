@@ -508,7 +508,8 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
 
         delete session.longtap;
-        
+        clearTimeout(session.ltimer)
+
         const cb = session.tap
         if(cb) {
             cb(ed)
@@ -533,6 +534,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
             cb(ed)
         }
         delete session.longtap;
+        clearTimeout(session.ltimer)
     }
     const hdlDown = (ev:any) => {
         if(!session.isDouble) {
@@ -542,7 +544,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
             setTimeout(() => {
                 if(session.isDouble)  emitPress(ev); // it was a quick single
             }, dblTime*2)
-            setTimeout(() => {
+            session.ltimer = setTimeout(() => {
                 if(session.longtap) emitLongPress(ev);
             }, longTime)
         }
