@@ -542,7 +542,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
                 if(session.isDouble)  emitPress(ev); // it was a quick single
             }, dblTime*2)
             setTimeout(() => {
-                if(session.longTap) emitLongPress(ev);
+                if(session.longtap) emitLongPress(ev);
             }, longTime)
         }
         emitDown(ev)
