@@ -507,6 +507,8 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         ed.platEvent = ev
         ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
 
+        delete session.longtap;
+        
         const cb = session.tap
         if(cb) {
             cb(ed)
@@ -531,7 +533,6 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
             cb(ed)
         }
         delete session.longtap;
-
     }
     const hdlDown = (ev:any) => {
         if(!session.isDouble) {
@@ -566,6 +567,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         } else {
             emitPress(ev)
         }
+
     }
     cn.registerHandler(comp, 'touch', 'mousedown', hdlDown)
     cn.registerHandler(comp, 'touch', 'mouseup', hdlUp)
