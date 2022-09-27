@@ -278,23 +278,23 @@ export class ComNormal {
 
         } else {
             const mappedEvents = {
-                'touch' : {handler: handleTouch},
-                    'mousedown': {action: 'mousedown'},
-                    'down': {aka: 'mousedown'},
-                    'mouseup': {action: 'mouseup'},
-                    'up': {aka: 'mouseup'},
-                'press': {action:'click'},
+                'touch' : {handler: handleTouch, mode:'touch'},
+                    'mousedown': {aka: 'touch'},
+                    'down': {aka: 'touch'},
+                    'mouseup': {aka:'touch'},
+                    'up': {aka: 'touch'},
+                'press': {handler: handleTouch, mode:'press'},
                     'tap': {aka:'press'},
                     'click': {aka: 'press'},
-                'dblpress' : {action: 'dblclick'},
+                'dblpress': {handler: handleTouch, mode:'dblpress'},
                     'dblclick' : {aka: 'dblpress'},
                     'dbltap' : {aka: 'dblpress'},
+                'longpress' : {handler:handleTouch, mode:'longpress'},
                 'swipe' : {handler: handleSwipe},
                     'swipeleft' : {handler:handleSwipe, mode: 'left'},
                     'swiperight' : {handler:handleSwipe, mode: 'right'},
                     'swipeup' : {handler:handleSwipe, mode: 'up'},
                     'swipedown' : {handler:handleSwipe, mode: 'down'},
-                'longpress' : {handler:handleLongPress},
                 'pan' : {handler:handlePan},
                     'drag': {aka: 'pan'},
                 'rotation': {handler:handleRotation},
@@ -644,6 +644,8 @@ function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
     let session:any = getSessionData(comp)
     const callback = (ev:MouseEvent, type:string) => {
         let ed = new EventData()
+        ed.eventName = "pan"
+        ed.eventType = 'pan'
         ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
         ed.platEvent = ev
         let mx = ev.movementX || 0
