@@ -445,6 +445,8 @@ export class ComNormal {
 function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
     let session:any = getSessionData(comp)
 
+    session[mode] = cb;
+
     // TODO: Make these configurable
     const dblTime = 150
     const longTime = 500
