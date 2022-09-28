@@ -283,13 +283,13 @@ export class ComNormal {
                     'down': {aka: 'touch'},
                     'mouseup': {aka:'touch'},
                     'up': {aka: 'touch'},
-                'press': {handler: handleTouch, mode:'press'},
+                'press': {handler: handleTouch, mode:'tap'},
                     'tap': {aka:'press'},
                     'click': {aka: 'press'},
-                'dblpress': {handler: handleTouch, mode:'dblpress'},
+                'dblpress': {handler: handleTouch, mode:'dbltap'},
                     'dblclick' : {aka: 'dblpress'},
                     'dbltap' : {aka: 'dblpress'},
-                'longpress' : {handler:handleTouch, mode:'longpress'},
+                'longpress' : {handler:handleTouch, mode:'longtap'},
                 'swipe' : {handler: handleSwipe},
                     'swipeleft' : {handler:handleSwipe, mode: 'left'},
                     'swiperight' : {handler:handleSwipe, mode: 'right'},
@@ -490,7 +490,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         ed.platEvent = ev
         ed.sourceComponent = cn.stdComp.cm.getComponent(comp)
 
-        const cb = session.dblpress
+        const cb = session.dbltap
         if(cb) {
             cb(ed)
         }
