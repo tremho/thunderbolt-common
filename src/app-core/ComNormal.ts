@@ -444,7 +444,7 @@ export class ComNormal {
 // -- DOM event gesture handling
 function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
     let session:any = getSessionData(comp)
-    session.element = comp.root;
+    session.comp = comp;
 
     session[mode] = cb;
     session.upCount = 0;
@@ -541,7 +541,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         clearTimeout(session.ltimer)
     }
     const hdlDown = (ev:any) => {
-        if(ev.target !== session.element) return;
+        if(ev.target !== session.comp) return;
         if(!session.isDouble) {
             session.startTime = Date.now()
             session.touchX = ev.clientX
@@ -557,7 +557,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         session.downCount++
     }
     const hdlUp = (ev:any) => {
-        if(ev.target !== session.element) return;
+        if(ev.target !== session.comp) return;
         emitUp(ev)
         session.upCount++
         const elapsed = Date.now() - (session.startTime ?? dblTime)
