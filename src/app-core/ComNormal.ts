@@ -443,9 +443,15 @@ export class ComNormal {
 
 // -- DOM event gesture handling
 function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
+
+    if(comp.hidden) {
+        return;
+    }
+
     let session:any = getSessionData(comp)
 
     session[mode] = cb;
+    session.upCount = 0;
 
     // TODO: Make these configurable
     const dblTime = 150
