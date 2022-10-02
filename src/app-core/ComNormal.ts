@@ -539,6 +539,12 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         clearTimeout(session.ltimer)
     }
     const hdlDown = (ev:any) => {
+        const el = ev.target;
+        let session = getSessionData(el);
+        if(!session) {
+            console.warn('(down) no session for event ', el)
+            return;
+        }
         if(!session.isDouble) {
             session.startTime = Date.now()
             session.touchX = ev.clientX
@@ -554,6 +560,12 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         session.downCount++
     }
     const hdlUp = (ev:any) => {
+        const el = ev.target;
+        let session = getSessionData(el);
+        if(!session) {
+            console.warn('(up) no session for event ', el)
+            return;
+        }
         emitUp(ev)
         session.upCount++
         const elapsed = Date.now() - (session.startTime ?? dblTime)
