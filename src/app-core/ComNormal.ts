@@ -444,6 +444,7 @@ export class ComNormal {
 // -- DOM event gesture handling
 function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
     let session:any = getSessionData(comp)
+    session.comp = comp;
     session[mode] = cb;
     session.upCount = 0;
 
@@ -541,7 +542,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
     const hdlDown = (ev:any) => {
         const el = ev.target;
         let session = getSessionData(el);
-        if(!session) {
+        if(!session || session.comp !== el) {
             console.warn('(down) no session for event ', el)
             return;
         }
@@ -562,7 +563,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
     const hdlUp = (ev:any) => {
         const el = ev.target;
         let session = getSessionData(el);
-        if(!session) {
+        if(!session || session.comp != el) {
             console.warn('(up) no session for event ', el)
             return;
         }
