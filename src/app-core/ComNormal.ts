@@ -549,7 +549,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         clearTimeout(session.ltimer)
     }
     const hdlDown = (ev:any) => {
-        const el = resolveTargetElement(ev.target);
+        const el = resolveTargetElement(ev);
 
         let session = getSessionData(el);
         if(!session || session.comp !== el) {
@@ -571,7 +571,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         session.downCount++
     }
     const hdlUp = (ev:any) => {
-        const el = resolveTargetElement(ev.target);
+        const el = resolveTargetElement(ev);
         let session = getSessionData(el);
         if(!session || session.comp != el) {
             console.warn('(up) no session for event ', el)
