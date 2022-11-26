@@ -540,7 +540,12 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         clearTimeout(session.ltimer)
     }
     const hdlDown = (ev:any) => {
-        const el = ev.target;
+        let el = ev.target;
+        // unmitigated hack
+        if(el.nodeName === "CANVAS") {
+            el = el.parentElement.parentElement.parentElement;
+        }
+
         let session = getSessionData(el);
         if(!session || session.comp !== el) {
             console.warn('(down) no session for event ', el)
