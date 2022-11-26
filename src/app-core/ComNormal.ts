@@ -452,6 +452,15 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
     const dblTime = 150
     const longTime = 500
 
+    function resolveTargetElement(ev:any) {
+        let el = ev.target;
+        // unmitigated hack
+        if(el.nodeName === "CANVAS") {
+            el = el.parentElement.parentElement.parentElement;
+        }
+        return el;
+    }
+
     const emitTouch = (ev:MouseEvent, type:string) => {
         const ed = new EventData()
         ed.eventName = 'touch'
@@ -540,11 +549,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         clearTimeout(session.ltimer)
     }
     const hdlDown = (ev:any) => {
-        let el = ev.target;
-        // unmitigated hack
-        if(el.nodeName === "CANVAS") {
-            el = el.parentElement.parentElement.parentElement;
-        }
+        const el = resolveTargetElement(ev.target);
 
         let session = getSessionData(el);
         if(!session || session.comp !== el) {
@@ -566,7 +571,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         session.downCount++
     }
     const hdlUp = (ev:any) => {
-        const el = ev.target;
+        const el = resolveTargetElement(ev.target);
         let session = getSessionData(el);
         if(!session || session.comp != el) {
             console.warn('(up) no session for event ', el)
