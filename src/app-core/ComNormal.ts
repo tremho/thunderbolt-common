@@ -14,6 +14,8 @@ These apis should be called from same-contract methods on the 'Component' for bo
 
  */
 
+import {compileFunction} from "vm";
+
 let self:ComNormal;
 
 class Bounds {
@@ -33,11 +35,15 @@ class Bounds {
 import {EventData} from "./EventData";
 
 const sessionDataMap:any = {}
+// TODO: Use a more specific identifier than comp
+// id, or class + x+y
 function getSessionData(comp:any) {
-    if(!sessionDataMap[comp]) {
-        sessionDataMap[comp] = {}
+    const compId = (comp.id ?? "")+(comp.style?.className ?? "")+(comp.x ?? "")+(comp.y ?? "")
+            +(comp.clientX ?? "")+(comp.clientY ?? "")+(comp.props ?? "")
+    if(!sessionDataMap[compId]) {
+        sessionDataMap[compId] = {}
     }
-    return sessionDataMap[comp]
+    return sessionDataMap[compId]
 }
 
 
