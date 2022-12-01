@@ -64,7 +64,7 @@ function getSessionHit(x:number,y:number) {
         const comp = sess.comp;
         if(comp.hidden) continue;
         if(comp.style?.visiblility === 'hidden') continue;
-        let z = comp.style?.zIndex ?? 0;
+        let z = comp.style?.zIndex || 0;
         const bounds = comp.getBoundingClientRect()
         if(z > hitz) {
             if(x >= bounds.left && x < bounds.right && y >= bounds.top && y < bounds.bottom) {
