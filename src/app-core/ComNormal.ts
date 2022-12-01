@@ -58,7 +58,7 @@ function getSessionHit(x:number,y:number) {
 
     let hitz = -999999;
     let hitting = null;
-    for (const id in Object.getOwnPropertyNames(sessionDataMap)) {
+    for (const id of Object.getOwnPropertyNames(sessionDataMap)) {
         const sess = sessionDataMap[id];
         if(!sess) continue;
         const comp = sess.comp;
