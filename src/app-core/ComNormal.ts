@@ -60,6 +60,7 @@ function getSessionHit(x:number,y:number) {
     let hitting = null;
     for (const id in Object.getOwnPropertyNames(sessionDataMap)) {
         const sess = sessionDataMap[id];
+        if(!sess) continue;
         const comp = sess.comp;
         if(comp.hidden) continue;
         if(comp.style?.visiblility === 'hidden') continue;
