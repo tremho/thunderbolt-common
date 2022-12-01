@@ -75,7 +75,7 @@ function getSessionHit(x:number,y:number) {
     }
     return hitting;
 }
-
+//ile/ComponentBase.ts:292:125 -
 
 export class ComNormal {
     stdComp:any
@@ -257,7 +257,7 @@ export class ComNormal {
      * @param {*} func the callback function called when the qualified event occurs
      *
      */
-    listenToFor(el:any, pseudoEventTag:string, func:(ed:any)=>{}) {
+    listenToFor(el:any, pseudoEventTag:string, func:(ed:any)=>void) {
         if(this.isMobile) {
             const mappedEvents = {
                 'touch': {action:'touch'},
