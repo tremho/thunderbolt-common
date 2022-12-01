@@ -40,10 +40,39 @@ const sessionDataMap:any = {}
 function getSessionData(comp:any) {
     const compId = (comp.id ?? "")+(comp.style?.className ?? "")+(comp.x ?? "")+(comp.y ?? "")
             +(comp.clientX ?? "")+(comp.clientY ?? "")+(comp.props ?? "")
+
+    // This is better, but still not what we want
+    // we need to go through all the components in the session map
+    // and get the client rect + zposition, sort by zpos and skip hidden rects
+    // find hitpoint inside.
+    // That's different than this one, which we can keep as is, I think.
+
     if(!sessionDataMap[compId]) {
         sessionDataMap[compId] = {}
     }
+
     return sessionDataMap[compId]
+}
+
+function getSessionHit(x:number,y:number) {
+
+    let hitz = -999999;
+    let hitting = null;
+    for (const id in Object.getOwnPropertyNames(sessionDataMap)) {
+        const sess = sessionDataMap[id];
+        const comp = sess.comp;
+        if(comp.hidden) continue;
+        if(comp.style?.visiblility === 'hidden') continue;
+        let z = comp.style?.zIndex ?? 0;
+        const bounds = comp.getBoundingClientRect()
+        if(z > hitz) {
+            if(x >= bounds.left && x < bounds.right && y >= bounds.top && y < bounds.bottom) {
+                hitz = z;
+                hitting = comp;
+            }
+        }
+    }
+    return hitting;
 }
 
 
@@ -555,11 +584,11 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         clearTimeout(session.ltimer)
     }
     const hdlDown = (ev:any) => {
-        const el = resolveTargetElement(ev);
-
-        let session = getSessionData(el);
-        if(!session || session.comp !== el) {
-            console.warn('(down) no session for event ', el)
+        // const el = resolveTargetElement(ev);
+        // let session = getSessionData(el);
+        let session = getSessionHit(ev.x, ev.y);
+        if(!session) {
+            console.warn('(down) no session for event ')
             return;
         }
         if(!session.isDouble) {
@@ -576,11 +605,13 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         emitDown(ev)
         session.downCount++
     }
+
     const hdlUp = (ev:any) => {
-        const el = resolveTargetElement(ev);
-        let session = getSessionData(el);
-        if(!session || session.comp != el) {
-            console.warn('(up) no session for event ', el)
+        // const el = resolveTargetElement(ev);
+        // let session = getSessionData(el);
+        let session = getSessionHit(ev.x, ev.y);
+        if(!session) {
+            console.warn('(up) no session for event')
             return;
         }
         emitUp(ev)
