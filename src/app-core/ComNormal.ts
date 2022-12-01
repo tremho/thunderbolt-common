@@ -62,6 +62,7 @@ function getSessionHit(x:number,y:number) {
         const sess = sessionDataMap[id];
         if(!sess) continue;
         const comp = sess.comp;
+        if(!comp) continue;
         if(comp.hidden) continue;
         if(comp.style?.visiblility === 'hidden') continue;
         let z = comp.style?.zIndex || 0;
