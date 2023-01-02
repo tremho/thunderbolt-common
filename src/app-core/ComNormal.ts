@@ -525,7 +525,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         return emitTouch(ev, 'up')
     }
     const emitDblPress = (ev:MouseEvent) => {
-        console.log('- emitting double press-')
+        // console.log('- emitting double press-')
         const ed = new EventData()
         ed.eventName = 'dblPress'
         ed.eventType = 'dblPress'
@@ -544,7 +544,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         }
     }
     const emitPress = (ev:MouseEvent) => {
-        console.log('- emitting press-')
+        // console.log('- emitting press-')
         const ed = new EventData()
         ed.eventName = 'press'
         ed.eventType = 'press'
@@ -566,7 +566,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         }
     }
     const emitLongPress = (ev:MouseEvent) => {
-        console.log('- emitting long press-')
+        // console.log('- emitting long press-')
         const ed = new EventData()
         ed.eventName = 'longpress'
         ed.eventType = 'longpress'
@@ -620,7 +620,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         emitUp(ev)
         session.upCount++
         const elapsed = Date.now() - (session.startTime ?? dblTime)
-        console.log('elapsed', elapsed)
+        // console.log('elapsed', elapsed)
         if(elapsed < dblTime) {
             session.isDouble = true
             return
@@ -915,7 +915,7 @@ function mobileTouchDiscriminator(ev:any) {
         return emitTouch('up')
     }
     const emitDblPress = () => {
-        console.log('- emitting double press-')
+        // console.log('- emitting double press-')
         ed.eventType = 'dblpress'
         ed.eventName = 'press'
         session.isDouble = false
@@ -936,7 +936,7 @@ function mobileTouchDiscriminator(ev:any) {
         }
     }
     const emitPress = () => {
-        console.log('- emitting press-')
+        // console.log('- emitting press-')
         const cb = session.tap
         session.isDouble = false
         if(cb) {
@@ -951,7 +951,7 @@ function mobileTouchDiscriminator(ev:any) {
         }
     }
     const emitLongPress = () => {
-        console.log('- emitting long press-')
+        // console.log('- emitting long press-')
         session.isDouble = false
         ed.eventName = 'press'
         ed.eventType = 'longpress'
@@ -987,7 +987,7 @@ function mobileTouchDiscriminator(ev:any) {
         emitUp()
         session.upCount++
         const elapsed = Date.now() - (session.startTime ?? dblTime)
-        console.log('elapsed', elapsed)
+        // console.log('elapsed', elapsed)
         if(elapsed < dblTime) {
             session.isDouble = true
             return
