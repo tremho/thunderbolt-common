@@ -598,9 +598,9 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
             session.startTime = Date.now()
             session.touchX = ev.clientX
             session.touchY = ev.clientY
-            // setTimeout(() => {
-            //     if(session.isDouble)  emitPress(ev); // it was a quick single
-            // }, dblTime*2)
+            setTimeout(() => {
+                if(session.isDouble)  emitPress(ev); // it was a quick single
+            }, dblTime*2)
             session.ltimer = setTimeout(() => {
                 if(session.longtap) emitLongPress(ev);
             }, longTime)
@@ -622,6 +622,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
         const elapsed = Date.now() - (session.startTime ?? dblTime)
         // console.log('elapsed', elapsed)
         if(elapsed < dblTime) {
+            console.log('double set at', elapsed)
             session.isDouble = true
             return
         }
@@ -630,6 +631,7 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
             return emitDblPress(ev)
         }
         if (elapsed >= longTime) {
+            console.log('elapsed', elapsed)
             emitLongPress(ev)
         } else {
             emitPress(ev)
