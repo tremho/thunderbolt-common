@@ -598,9 +598,9 @@ function handleTouch(comp:any, mode:string, cb:any, cn:ComNormal) {
             session.startTime = Date.now()
             session.touchX = ev.clientX
             session.touchY = ev.clientY
-            setTimeout(() => {
-                if(session.isDouble)  emitPress(ev); // it was a quick single
-            }, dblTime*2)
+            // setTimeout(() => {
+            //     if(session.isDouble)  emitPress(ev); // it was a quick single
+            // }, dblTime*2)
             session.ltimer = setTimeout(() => {
                 if(session.longtap) emitLongPress(ev);
             }, longTime)
