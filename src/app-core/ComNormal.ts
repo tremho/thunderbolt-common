@@ -561,6 +561,8 @@ function handlePan(comp:any, mode:string, cb:any, cn:ComNormal) {
             // align with mobile version
             ed.value = {
                 type,
+                clientX,
+                clientY,
                 mx:tmx,
                 my:tmy,
                 dx:mx,      // we now include the delta after all
