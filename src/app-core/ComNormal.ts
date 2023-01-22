@@ -14,6 +14,8 @@ These apis should be called from same-contract methods on the 'Component' for bo
 
  */
 
+import {register} from "riot";
+
 let self:ComNormal;
 
 class Bounds {
@@ -178,6 +180,10 @@ export class ComNormal {
             session[action] = callback
             console.log('registering '+action+' handler '+handler.constructor.name ||'(anon)'+' => '+callback.constructor.name || '(anon)')
             comp.on(action, handler)
+
+            if(handler === mobilePanHandler) {
+                this.registerMobileHandler(comp, 'touch', mobileTouchHandler, callback);
+            }
         }
 
     }
