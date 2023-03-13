@@ -237,7 +237,7 @@ export class AppCore {
 
         this.appFront = appFront // record this
 
-        this.checkForTest().then(isTest => {
+        return this.checkForTest().then(isTest => {
             console.log("check for test returns", isTest)
             // set the infomessage log handling
             if (!check.mobile) {
