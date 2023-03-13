@@ -244,7 +244,7 @@ export class AppCore {
                 // console.log('not mobile, clearing component gate')
                 this.componentIsReady() // not used in riot, so clear the gate
 
-                mainApi.messageInit().then(() => {
+                return mainApi.messageInit().then(() => {
                     // console.log('messages wired')
                     this.model.addSection('infoMessage', {messages: []})
                     mainApi.addMessageListener('IM', (data: any) => {
