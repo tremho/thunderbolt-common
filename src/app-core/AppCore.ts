@@ -237,156 +237,155 @@ export class AppCore {
 
         this.appFront = appFront // record this
 
-        this.checkForTest()
+        this.checkForTest().then(isTest => {
+            console.log("check for test returns", isTest)
+            // set the infomessage log handling
+            if (!check.mobile) {
+                // console.log('not mobile, clearing component gate')
+                this.componentIsReady() // not used in riot, so clear the gate
 
-        // set the infomessage log handling
-        if(!check.mobile) {
-            // console.log('not mobile, clearing component gate')
-            this.componentIsReady() // not used in riot, so clear the gate
-
-            mainApi.messageInit().then(() => {
-                // console.log('messages wired')
-                this.model.addSection('infoMessage', {messages: []})
-                mainApi.addMessageListener('IM', (data:any) => {
-                    writeMessage(data.subject, data.message)
-                })
-                mainApi.addMessageListener('EV', (data:any) => {
-                    // console.log('event info incoming:', data)
-                    let evName = data.subject;
-                    let evData = data.data;
-                    if (evName === 'resize') {
-                        const env = this.model.getAtPath('environment')
-                        if (!env.screen) env.screen = {}
-                        env.screen.width = evData[0]
-                        env.screen.height = evData[1]
-                        const window = {width:0, height:0}
-                        if(check.riot) {
-                          const bodSize = document.body.getBoundingClientRect()
-                          window.width = bodSize.width
-                          window.height = bodSize.height
-                        }
-                        this.model.setAtPath('environment.screen', env.screen)
-                    }
-                    if(evName === 'envInfo') {
-                        try {
-                            let env = this.model.getAtPath('environment')
-                            // @ts-ignore
-                            env = mergeEnvironmentData(env, data, this._riotVersion)
-                            this.model.setAtPath('environment', env)
-                            console.log('===================')
-                            console.log('environment', env)
-                            console.log('===================')
-                            setEnvironment(env) // for check
-                            this.setPlatformClass(env)
-                            this.setPathUtilInfo(env).then(() => {
-                                console.log('Setting up models annd menus')
-                                // Set up app models and menus
-                                this.model.addSection('menu', {})
-                                if (appFront && appFront.appStart) { // appStart in tbFrontApp will likely create its own menu
-                                    console.log('Starting app')
-                                    Promise.resolve(appFront.appStart(this)).then(() => {
-                                        console.log("Clearing model gate")
-                                        this.modelGateResolver()
-                                    })
-                                } else {
-                                    // no front app, or no appStart, so we are just vanilla default
-                                    console.log("Clearing model gate with no app")
-                                    this.modelGateResolver()
-                                }
-                            })
-                        } catch(e:any) {
-                            console.error('problem processing envInfo EV message', e)
-                            throw(e)
-                        }
-                    }
-                    if(evName === 'menuAction') {
-                        this.onMenuAction({id:evData})
-                    }
-
-                })
-                imrSingleton.subscribe((msgArray:string[]) => {
-                    this.model.setAtPath('infoMessage.messages', msgArray)
-                })
-            })
-        } else {
-            if(!mainApi) {
-                // console.log('setting mobile mainApi from injections')
-                mainApi = mobileInjections.mainApi
-            }
-        }
-
-
-        // console.log('SetUIElements past first check. now adding page section to model')
-
-        this.model.addSection('page', {navInfo: {pageId: '', context: {}}})
-
-        // Set environment items
-        // console.log('... now adding environment section to model')
-        // this will allow us to do platform branching and so on
-        this.model.addSection('environment', {}) // start empty; will get filled in on message.
-
-        // console.log('testing nsapplication', nsapplication)
-        let nsapplication = mobileInjections.nsapplication
-        if(nsapplication) { // i.e. if mobile
-            const res = nsapplication.getResources()
-            const env = res && res.passedEnvironment
-            // console.log('env', env)
-            // console.log('was passed by ', res)
-
-            this.model.setAtPath('environment', env)
-            // too verbose for mobile to spew onto console
-            // console.log('===================')
-            // console.log('environment', env)
-            // console.log('===================')
-            setEnvironment(env) // for check
-            // this.setPlatformClass(env) // not needed for mobile
-
-            // set up native back button listener
-            if(nsapplication.android) {
-                nsapplication.android.on("activityBackPressed", (data:any) => {
-                    // console.log('Android back button pressed')
-                    data.cancel = true // prevent further action
-                    this.navigateBack()
-                })
-            }
-
-            this.setPathUtilInfo(env).then(() => {
-                // console.log('Setting up models annd menus')
-                // Set up app models and menus
-                this.model.addSection('menu', {})
-                if (appFront && appFront.appStart) { // appStart in tbFrontApp will likely create its own menu
-                    // console.log('Starting app')
-                    Promise.resolve(appFront.appStart(this)).then(() => {
-                        // console.log("Clearing model gate")
-                        this.modelGateResolver()
+                mainApi.messageInit().then(() => {
+                    // console.log('messages wired')
+                    this.model.addSection('infoMessage', {messages: []})
+                    mainApi.addMessageListener('IM', (data: any) => {
+                        writeMessage(data.subject, data.message)
                     })
-                } else {
-                    // no front app, or no appStart, so we are just vanilla default
-                    // console.log("Clearing model gate with no app")
-                    this.modelGateResolver()
-                }
-            })
-        } else {
-            // only for Electron
-            // request a new emit of the environment on refresh
-            // console.log('##### Requesting environment on restart ---------!!!')
-            this.Api.requestEnvironment();
-            // console.log('##### Setting up resize checker -----------')
-            const window = {width:0, height:0}
-            // let resizeInterval = setInterval(() => {
-            let resizeChecker = new ResizeSensor(document.body, () =>{
-                const bodSize = document.body.getBoundingClientRect()
-                if (window.width != bodSize.width || window.height !== bodSize.height) {
-                    window.width = bodSize.width
-                    window.height = bodSize.height
-                    // console.log('see a body resize event', window)
-                    this.model.setAtPath('environment.window', window, true)
-                }
-            })
-        }
+                    mainApi.addMessageListener('EV', (data: any) => {
+                        // console.log('event info incoming:', data)
+                        let evName = data.subject;
+                        let evData = data.data;
+                        if (evName === 'resize') {
+                            const env = this.model.getAtPath('environment')
+                            if (!env.screen) env.screen = {}
+                            env.screen.width = evData[0]
+                            env.screen.height = evData[1]
+                            const window = {width: 0, height: 0}
+                            if (check.riot) {
+                                const bodSize = document.body.getBoundingClientRect()
+                                window.width = bodSize.width
+                                window.height = bodSize.height
+                            }
+                            this.model.setAtPath('environment.screen', env.screen)
+                        }
+                        if (evName === 'envInfo') {
+                            try {
+                                let env = this.model.getAtPath('environment')
+                                // @ts-ignore
+                                env = mergeEnvironmentData(env, data, this._riotVersion)
+                                this.model.setAtPath('environment', env)
+                                console.log('===================')
+                                console.log('environment', env)
+                                console.log('===================')
+                                setEnvironment(env) // for check
+                                this.setPlatformClass(env)
+                                this.setPathUtilInfo(env).then(() => {
+                                    console.log('Setting up models annd menus')
+                                    // Set up app models and menus
+                                    this.model.addSection('menu', {})
+                                    if (appFront && appFront.appStart) { // appStart in tbFrontApp will likely create its own menu
+                                        console.log('Starting app')
+                                        Promise.resolve(appFront.appStart(this)).then(() => {
+                                            console.log("Clearing model gate")
+                                            this.modelGateResolver()
+                                        })
+                                    } else {
+                                        // no front app, or no appStart, so we are just vanilla default
+                                        console.log("Clearing model gate with no app")
+                                        this.modelGateResolver()
+                                    }
+                                })
+                            } catch (e: any) {
+                                console.error('problem processing envInfo EV message', e)
+                                throw(e)
+                            }
+                        }
+                        if (evName === 'menuAction') {
+                            this.onMenuAction({id: evData})
+                        }
 
-        return this.waitReady()
+                    })
+                    imrSingleton.subscribe((msgArray: string[]) => {
+                        this.model.setAtPath('infoMessage.messages', msgArray)
+                    })
+                })
+            } else {
+                if (!mainApi) {
+                    // console.log('setting mobile mainApi from injections')
+                    mainApi = mobileInjections.mainApi
+                }
+            }
 
+            // console.log('SetUIElements past first check. now adding page section to model')
+
+            this.model.addSection('page', {navInfo: {pageId: '', context: {}}})
+
+            // Set environment items
+            // console.log('... now adding environment section to model')
+            // this will allow us to do platform branching and so on
+            this.model.addSection('environment', {}) // start empty; will get filled in on message.
+
+            // console.log('testing nsapplication', nsapplication)
+            let nsapplication = mobileInjections.nsapplication
+            if (nsapplication) { // i.e. if mobile
+                const res = nsapplication.getResources()
+                const env = res && res.passedEnvironment
+                // console.log('env', env)
+                // console.log('was passed by ', res)
+
+                this.model.setAtPath('environment', env)
+                // too verbose for mobile to spew onto console
+                // console.log('===================')
+                // console.log('environment', env)
+                // console.log('===================')
+                setEnvironment(env) // for check
+                // this.setPlatformClass(env) // not needed for mobile
+
+                // set up native back button listener
+                if (nsapplication.android) {
+                    nsapplication.android.on("activityBackPressed", (data: any) => {
+                        // console.log('Android back button pressed')
+                        data.cancel = true // prevent further action
+                        this.navigateBack()
+                    })
+                }
+
+                this.setPathUtilInfo(env).then(() => {
+                    // console.log('Setting up models annd menus')
+                    // Set up app models and menus
+                    this.model.addSection('menu', {})
+                    if (appFront && appFront.appStart) { // appStart in tbFrontApp will likely create its own menu
+                        // console.log('Starting app')
+                        Promise.resolve(appFront.appStart(this)).then(() => {
+                            // console.log("Clearing model gate")
+                            this.modelGateResolver()
+                        })
+                    } else {
+                        // no front app, or no appStart, so we are just vanilla default
+                        // console.log("Clearing model gate with no app")
+                        this.modelGateResolver()
+                    }
+                })
+            } else {
+                // only for Electron
+                // request a new emit of the environment on refresh
+                // console.log('##### Requesting environment on restart ---------!!!')
+                this.Api.requestEnvironment();
+                // console.log('##### Setting up resize checker -----------')
+                const window = {width: 0, height: 0}
+                // let resizeInterval = setInterval(() => {
+                let resizeChecker = new ResizeSensor(document.body, () => {
+                    const bodSize = document.body.getBoundingClientRect()
+                    if (window.width != bodSize.width || window.height !== bodSize.height) {
+                        window.width = bodSize.width
+                        window.height = bodSize.height
+                        // console.log('see a body resize event', window)
+                        this.model.setAtPath('environment.window', window, true)
+                    }
+                })
+            }
+
+            return this.waitReady()
+        })
     }
     setPlatformClass(env:any) {
         if(check.mobile) {
