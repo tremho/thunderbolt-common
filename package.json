@@ -1,6 +1,6 @@
 {
   "name": "@tremho/jove-common",
-  "version": "0.7.0-pre-release.7",
+  "version": "0.7.0-pre-release.8",
   "description": "Common component of the Jove framework",
   "main": "build/index.js",
   "types": "./index.d.ts",
