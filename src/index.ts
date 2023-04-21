@@ -136,12 +136,57 @@ export class FrameworkBackContext {
             console.log('window keeper before restore', this.windowKeeper)
             this.windowKeeper.restore().then(() => {
                 console.log('window keeper after restore', this.windowKeeper)
+
+                const convert = (dec:string = "*", screenVal:number) => {
+                    dec = dec.trim();
+                    if(dec === "*" || dec === "") return null;
+                    if (dec.substring(dec.length-2) === "px") {
+                        dec = dec.substring(0,dec.length-2).trim();
+                    }
+                    let val:number = parseInt(dec, 10);
+                    if(dec.charAt(dec.length-1) === '%') {
+                        const pct = parseInt(dec.substring(0,dec.length-1), 10) / 100;
+                        val = screenVal * pct;
+                    }
+                    return val;
+                }
+                const screen = this.electronApp.screen;
+                const screenWidth = screen.size.width;
+                const screenHeight = screen.size.height;
+                const windopts = this.backApp.options.window;
+                let width = convert(windopts.width, screenWidth);
+                let height = convert(windopts.height, screenHeight);
+                const rp = (windopts.ratio ?? "1:1").split(":")
+                const ratio = rp[0]/rp[1]
+                if(width === null) {
+                    width = (height ?? 600) * ratio;
+                }
+                if(height === null) {
+                    height = (width ?? 800) * (1/ratio);
+                }
+                let startX = convert(windopts.startX, screenWidth) ?? 0;
+                let startY = convert(windopts.startY, screenHeight) ?? 0;
+                if(windopts.center) {
+                    startX = screenWidth / 2 - width / 2;
+                }
+                if(windopts.middle) {
+                    startY = screenHeight / 2 - height / 2;
+                }
+                if(windopts.sizeable) {
+                    width = this.windowKeeper.width ?? width;
+                    height = this.windowKeeper.height ?? height;
+                }
+                if(windopts.moveable) {
+                    startX = this.windowKeeper.x ?? startX
+                    startY = this.windowKeeper.y ?? startY
+                }
+
                 // Create the browser window.
                 const mainWindow = new BrowserWindow({
-                    width: this.windowKeeper.width || (this.backApp.options && this.backApp.options.width) || 800,
-                    height: this.windowKeeper.height || (this.backApp.options && this.backApp.options.height) || 600,
-                    x: this.windowKeeper.x || (this.backApp.options && this.backApp.options.startX) || 0,
-                    y: this.windowKeeper.y || (this.backApp.options && this.backApp.options.startY) || 0,
+                    width,
+                    height,
+                    x: startX,
+                    y: startY,
                     icon: __dirname + '/assets/icon.png',
                     title: this.title,
                     webPreferences: {
