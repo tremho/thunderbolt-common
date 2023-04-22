@@ -7,6 +7,7 @@
 
 console.log("%%%%%%%%%%%%%%%%%%%%% top of index.js (common) %%%%%%%%%%%%%%%%%%%%%")
 
+let electron:any
 let electronApp:any, BrowserWindow:any, preloadPath:string, AppGateway:any, ipcMain:any
 let makeWindowStatePersist:any
 let nscore:any, nativescriptApp:any, registerExtensionModule:any
@@ -22,6 +23,7 @@ console.log("%%%%%%%%%%% past basic discovery %%%%%%%%%%%%%%%")
 // console.log("isNS = "+isNS)
 
 function injectDependencies(injected:any) {
+        electron = injected.electron;
         electronApp = injected.electronApp
         BrowserWindow = injected.BrowserWindow
         preloadPath = injected.preloadPath
@@ -52,6 +54,7 @@ function injectDependencies(injected:any) {
  * defines the Framework access object passed to the __appStart__ lifecycle callback for the back process
  */
 export class FrameworkBackContext {
+    public electron:any
     public electronWindow:any
     public electronApp: any
     public nativescriptApp:any
@@ -65,6 +68,7 @@ export class FrameworkBackContext {
 
 
     constructor(backApp: TBBackApp) {
+        this.electron = electron;
         this.electronApp = electronApp
         this.nativescriptApp = nativescriptApp
         this.backApp = backApp
@@ -150,9 +154,10 @@ export class FrameworkBackContext {
                     }
                     return val;
                 }
-                const screen = this.electronApp.screen;
-                const screenWidth = screen.size.width;
-                const screenHeight = screen.size.height;
+
+                const screen = this.electron?.screen;
+                const screenWidth = screen?.size.width ?? 2048;
+                const screenHeight = screen.size.height ?? 1450;
                 const windopts = this.backApp.options.window;
                 let width = convert(windopts.width, screenWidth);
                 let height = convert(windopts.height, screenHeight);
