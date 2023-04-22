@@ -119,13 +119,12 @@ export class FrameworkBackContext {
                 // for applications and their menu bar to stay active until the user quits
                 // explicitly with Cmd + Q.
                 electronApp.on('window-all-closed', () => {
-                    if (process.platform !== 'darwin') {
-                        console.warn('TODO: call appExit from here')
-                        // TODO: Check Electron docs for an explicit quit event and trap there instead
-                        Promise.resolve(this.backApp.appExit(this)).then(() => {
-                            electronApp.quit()
-                        })
-                    }
+                    console.log("App window Closed")
+                    Promise.resolve(this.backApp.appExit(this)).then(() => {
+                        // if (process.platform !== 'darwin') {
+                                electronApp.quit()
+                        // }
+                    })
                 })
             }
         } catch(e) {
