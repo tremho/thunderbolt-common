@@ -160,16 +160,18 @@ export class FrameworkBackContext {
 
                 // Note: more than likely, this will be an empty object
                 // so the defaults below are important.
+                const windopts = this.backApp.options.window;
                 const screen = this.electron?.screen;
                 console.log(">>> Screen object is",screen)
                 const screenWidth = screen?.size?.width ?? windopts?.presumedScreenWidth ?? 1024;
                 const screenHeight = screen.size?.height ?? windopts?.presumedScreenHeight ?? 768;
                 console.log(`screen determined: ${screenWidth} x ${screenHeight}`)
-                const windopts = this.backApp.options.window;
                 console.log("resolving from width", windopts.width)
                 let width = convert(windopts.width, screenWidth);
+                console.log("width=",width);
                 console.log("resolving from height", windopts.height)
                 let height = convert(windopts.height, screenHeight);
+                console.log("height=",height)
                 const rp = (windopts.ratio ?? "1:1").split(":")
                 const ratio = rp[0]/rp[1]
                 console.log(`post convert width, height = ${width}, ${height}, ratio = ${ratio}`)
