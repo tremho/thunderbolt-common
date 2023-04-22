@@ -155,10 +155,12 @@ export class FrameworkBackContext {
                     return val;
                 }
 
+                // Note: more than likely, this will be an empty object
+                // so the defaults below are important.
                 const screen = this.electron?.screen;
                 console.log(">>> Screen object is",screen)
-                const screenWidth = screen?.size?.width ?? 2048;
-                const screenHeight = screen.size?.height ?? 1450;
+                const screenWidth = screen?.size?.width ?? 2400;
+                const screenHeight = screen.size?.height ?? 1800;
                 console.log(`screen determined: ${screenWidth} x ${screenHeight}`)
                 const windopts = this.backApp.options.window;
                 let width = convert(windopts.width, screenWidth);
