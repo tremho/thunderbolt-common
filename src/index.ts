@@ -121,9 +121,9 @@ export class FrameworkBackContext {
                 electronApp.on('window-all-closed', () => {
                     console.log("App window Closed")
                     Promise.resolve(this.backApp.appExit(this)).then(() => {
-                        // if (process.platform !== 'darwin') {
+                        if (process.platform !== 'darwin') {
                                 electronApp.quit()
-                        // }
+                        }
                     })
                 })
             }
