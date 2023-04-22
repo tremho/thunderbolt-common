@@ -142,8 +142,10 @@ export class FrameworkBackContext {
                 console.log('window keeper after restore', this.windowKeeper)
 
                 const convert = (dec:string = "*", screenVal:number) => {
+                    console.log("convert resolving from",{dec, screenVal})
                     dec = dec.trim();
                     if(dec === "*" || dec === "") return null;
+                    console.log("convert resolving non-null",{dec, screenVal})
                     if (dec.substring(dec.length-2) === "px") {
                         dec = dec.substring(0,dec.length-2).trim();
                     }
@@ -152,6 +154,7 @@ export class FrameworkBackContext {
                         const pct = parseInt(dec.substring(0,dec.length-1), 10) / 100;
                         val = screenVal * pct;
                     }
+                    console.log(`value resolved = ${val}`)
                     return val;
                 }
 
@@ -163,7 +166,9 @@ export class FrameworkBackContext {
                 const screenHeight = screen.size?.height ?? 1800;
                 console.log(`screen determined: ${screenWidth} x ${screenHeight}`)
                 const windopts = this.backApp.options.window;
+                console.log("resolving from width", windopts.width)
                 let width = convert(windopts.width, screenWidth);
+                console.log("resolving from height", windopts.height)
                 let height = convert(windopts.height, screenHeight);
                 const rp = (windopts.ratio ?? "1:1").split(":")
                 const ratio = rp[0]/rp[1]
@@ -174,12 +179,16 @@ export class FrameworkBackContext {
                 if(height === null) {
                     height = (width ?? 800) * (1/ratio);
                 }
+                console.log("resolvin startX", windopts.startX)
                 let startX = convert(windopts.startX, screenWidth) ?? 0;
+                console.log("resolvin startY", windopts.startY)
                 let startY = convert(windopts.startY, screenHeight) ?? 0;
                 if(windopts.center) {
+                    console.log('centering')
                     startX = screenWidth / 2 - width / 2;
                 }
                 if(windopts.middle) {
+                    console.log('middling')
                     startY = screenHeight / 2 - height / 2;
                 }
                 if(windopts.sizeable) {
