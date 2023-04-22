@@ -176,14 +176,16 @@ export class FrameworkBackContext {
                 const ratio = rp[0]/rp[1]
                 console.log(`post convert width, height = ${width}, ${height}, ratio = ${ratio}`)
                 if(width === null) {
-                    width = (height ?? 600) * ratio;
+                    width = (height ?? 0) * ratio;
+                    console.log(`width as a factor of height = ${width}`)
                 }
                 if(height === null) {
-                    height = (width ?? 800) * (1/ratio);
+                    height = (width ?? 0) * (1/ratio);
+                    console.log(`height as a factor of width = ${height}`)
                 }
-                console.log("resolvin startX", windopts.startX)
+                console.log("resolving startX", windopts.startX)
                 let startX = convert(windopts.startX, screenWidth) ?? 0;
-                console.log("resolvin startY", windopts.startY)
+                console.log("resolving startY", windopts.startY)
                 let startY = convert(windopts.startY, screenHeight) ?? 0;
                 if(windopts.center) {
                     console.log('centering')
