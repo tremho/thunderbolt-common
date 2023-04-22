@@ -159,7 +159,7 @@ export class FrameworkBackContext {
                 }
 
                 // Note: more than likely, this will be an empty object
-                // so the defaults below are important.
+                // so the presumed values and defaults below are important.
                 const windopts = this.backApp.options.window;
                 const screen = this.electron?.screen;
                 console.log(">>> Screen object is",screen)
