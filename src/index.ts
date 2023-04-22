@@ -156,13 +156,16 @@ export class FrameworkBackContext {
                 }
 
                 const screen = this.electron?.screen;
-                const screenWidth = screen?.size.width ?? 2048;
-                const screenHeight = screen.size.height ?? 1450;
+                console.log(">>> Screen object is",screen)
+                const screenWidth = screen?.size?.width ?? 2048;
+                const screenHeight = screen.size?.height ?? 1450;
+                console.log(`screen determined: ${screenWidth} x ${screenHeight}`)
                 const windopts = this.backApp.options.window;
                 let width = convert(windopts.width, screenWidth);
                 let height = convert(windopts.height, screenHeight);
                 const rp = (windopts.ratio ?? "1:1").split(":")
                 const ratio = rp[0]/rp[1]
+                console.log(`post convert width, height = ${width}, ${height}, ratio = ${ratio}`)
                 if(width === null) {
                     width = (height ?? 600) * ratio;
                 }
@@ -185,6 +188,7 @@ export class FrameworkBackContext {
                     startX = this.windowKeeper.x ?? startX
                     startY = this.windowKeeper.y ?? startY
                 }
+                console.log("window values", {startX, startY, width, height, sizeable:windopts.sizeable, moveable:windopts.moveable})
 
                 // Create the browser window.
                 const mainWindow = new BrowserWindow({
